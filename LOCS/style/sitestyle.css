@@ -1,0 +1,93 @@
+#header {
+    display: grid;
+    grid-template-columns: 10% 90%;
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(88, 88, 88);
+    margin: 0;
+    padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    display: grid;
+    grid-template-rows: 1fr 4fr 1fr;
+}
+
+.logo {
+    float: left;
+    margin: 20px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+}
+
+#logo {
+    width: auto;
+    height: auto;
+    float: left;
+    margin: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+#body {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#foot {
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#tape {
+    display: grid;
+    grid-template-rows: 10% 10% 80%;
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#search {
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#tags {
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#area {
+    text-align: center;
+    border: 2px solid #a0a0a0;
+    background-color: rgb(255, 255, 255);
+    margin: 0;
+    padding: 0;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+}
