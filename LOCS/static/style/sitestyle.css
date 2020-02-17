@@ -17,14 +17,6 @@ body {
     grid-template-rows: 1fr 4fr 1fr;
 }
 
-.logo {
-    float: left;
-    margin: 20px;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-}
-
 #logo {
     width: auto;
     height: auto;
