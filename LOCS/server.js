@@ -1,9 +1,10 @@
 const express = require("express");
 const app = express();
 app.use(express.static('static'));
-const bodyParser = require("body-parser");
-// создаем парсер для данных application/x-www-form-urlencoded
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
+
+
+const userlistRouter = require("./static/JS/routes/userlistRouter.js");
+const mainRouter = require("./static/JS/routes/mainRouter.js");
 
 app.use(function(request, response, next) {
     /*
@@ -16,20 +17,19 @@ app.use(function(request, response, next) {
     console.log(data + request.url + "\n");*/
     next();
 });
-app.get("/", function(request, response) {
 
-    response.sendFile(__dirname + "/static/map.html");
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use("/user", userlistRouter);
+app.use("/$", mainRouter);
+
+
+
+
+
+app.use(function(req, res, next) {
+    res.status(404).send("Not Found");
+
 });
-app.get("/create_events", function(request, response) {
-
-    response.sendFile(__dirname + "/static/event_form.html");
-});
-app.post("/create_events/new", urlencodedParser, function(request, response) {
-
-    response.redirect("..");
-    console.log(request.body.event_name);
-    console.log(request.body.event_tag);
-    console.log(request.body.evet_info);
-});
-
 app.listen(3000);
