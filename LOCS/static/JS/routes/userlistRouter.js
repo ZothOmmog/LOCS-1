@@ -6,6 +6,7 @@ const userlistRouter = express.Router();
 userlistRouter.post("/registration/postreg$", userlistController.postRegistration);
 userlistRouter.use("/registration$", userlistController.registration);
 
-
+userlistRouter.use("/login$", userlistController.login);
+userlistRouter.use("/login/postlogin$", userlistController.postLogin);
 
 module.exports = userlistRouter;
