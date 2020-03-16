@@ -25,3 +25,14 @@ exports.postLogin = function(request, response) {
     console.log(request.body.password);
     response.redirect("/user");
 };
+
+exports.acc = function(request, response) {
+    // request.session.user_id_log = 'id';
+
+    // if (request.session.user_id_log) {
+    //     response.send(request.session.user_id_log);
+    // } else {
+    //     response.send("aaaaaaaaaaaaaaaaaa");
+    // }
+    response.send("account place");
+};

@@ -1,10 +1,10 @@
 const express = require("express");
 const app = express();
-app.use(express.static('static'));
-
-
+const session = require('express-session');
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const mainRouter = require("./static/JS/routes/mainRouter.js");
+
+app.use(express.static('static'));
 
 app.use(function(request, response, next) {
     /*
@@ -20,6 +20,11 @@ app.use(function(request, response, next) {
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+app.use(session({
+    key: 'session_cookie_name',
+    secret: 'session_cookie_secret'
+}))
 
 app.use("/user", userlistRouter);
 app.use("/$", mainRouter);

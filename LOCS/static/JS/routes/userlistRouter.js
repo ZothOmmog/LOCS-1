@@ -9,4 +9,7 @@ userlistRouter.use("/registration$", userlistController.registration);
 userlistRouter.use("/login$", userlistController.login);
 userlistRouter.use("/login/postlogin$", userlistController.postLogin);
 
+
+userlistRouter.use("/$", userlistController.acc);
+
 module.exports = userlistRouter;
