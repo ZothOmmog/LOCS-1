@@ -1,0 +1,7 @@
+node:
+	express
+	express-session
+	express-validator
+	nodemon
+	pg
+	pg-promise
