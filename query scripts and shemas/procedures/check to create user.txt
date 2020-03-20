@@ -1,0 +1,18 @@
+--Функция, которая возвращает 1, если нет такого мыла в базе
+--drop PROCEDURE CheckUser;
+CREATE OR REPLACE function CheckUser(login_ text)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    logs bigint;
+BEGIN
+	select into logs count(*) from userlist where login = login_;
+	    IF    logs = 0 THEN
+        RETURN 1;
+    	ELSE 
+        RETURN 0;
+    END IF;
+END;
+$BODY$;

@@ -1,10 +1,15 @@
 const express = require("express");
+
 const app = express();
 const session = require('express-session');
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const mainRouter = require("./static/JS/routes/mainRouter.js");
 
+let pgp = require("pg-promise")( /*options*/ );
+let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
+
 app.use(express.static('static'));
+//module.exports = db;
 
 app.use(function(request, response, next) {
     /*
@@ -15,6 +20,7 @@ app.use(function(request, response, next) {
     let data = `${hour}:${minutes}:${seconds} ${request.method} ${request.url} ${request.get("user-agent")}`;
     console.log(data);
     console.log(data + request.url + "\n");*/
+
     next();
 });
 

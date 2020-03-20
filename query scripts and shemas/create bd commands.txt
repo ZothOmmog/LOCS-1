@@ -1,0 +1,126 @@
+create table city(
+	id bigserial primary key,
+	title varchar(40)
+);
+create table topic(
+	id bigserial primary key,
+	title varchar(40)
+);
+create table userlist(
+	id bigserial primary key,
+	login varchar(40),
+	hashpassword varchar(200),
+	role varchar(40),
+	id_city bigint,
+  	FOREIGN KEY (id_city) REFERENCES city (id)
+);
+create table visitor(
+	id_user bigint,
+	nickname varchar(40),
+	profile_picture varchar(40),
+  	FOREIGN KEY (id_user) REFERENCES userlist (id)
+);
+create table group_list(
+	id bigserial primary key,
+	title varchar(40),
+	time_creation timestamp
+);
+create table group_member_list(
+	id bigserial primary key,
+	id_user bigint,
+  	FOREIGN KEY (id_user) REFERENCES userlist (id),
+	id_group bigint,
+  	FOREIGN KEY (id_group) REFERENCES group_list (id)
+);
+create table subscribe(
+	id bigserial primary key,
+	id_subscribe bigint,
+  	FOREIGN KEY (id_subscribe) REFERENCES userlist (id),
+	sub_user_on_id bigint,
+  	FOREIGN KEY (sub_user_on_id) REFERENCES userlist (id)
+);
+create table friend_list(
+	id bigserial primary key,
+	id_user bigint,
+  	FOREIGN KEY (id_user) REFERENCES userlist (id),
+	id_user2 bigint,
+  	FOREIGN KEY (id_user2) REFERENCES userlist (id)
+);
+create table organizer(
+	id_user bigint,
+  	FOREIGN KEY (id_user) REFERENCES userlist (id),
+	info varchar(400),
+	organization_name varchar(40),
+	organization_link varchar(80),
+	logo varchar(80)
+);
+create table topic_preference(
+	id bigserial primary key,
+	id_user bigint,
+  	FOREIGN KEY (id_user) REFERENCES userlist (id),
+	id_topic bigint,
+  	FOREIGN KEY (id_topic) REFERENCES topic (id)
+);
+create table meta_data(
+	id_user bigint,
+  	FOREIGN KEY (id_user) REFERENCES userlist (id),
+	date_create varchar(50),
+	date_last_change varchar(50),
+	deleted bool
+);
+create table district(
+	id bigserial primary key,
+	title varchar(40),
+	id_city bigint,
+  	FOREIGN KEY (id_city) REFERENCES city (id)
+);
+create table district_preference(
+	id bigserial primary key,
+	id_district bigint,
+	id_user bigint,
+  	FOREIGN KEY (id_district) REFERENCES district (id),
+	FOREIGN KEY (id_user) REFERENCES userlist (id)
+);
+create table address(
+	id bigserial primary key,
+	street varchar(40),
+	house varchar(40),
+	latitude decimal,
+	longitude decimal,
+	id_district bigint,
+  	FOREIGN KEY (id_district) REFERENCES district (id)
+);
+create table event(
+	id bigserial primary key,
+	name varchar(40),
+	info varchar(400),
+	link varchar(80),
+	ticket_price money ,
+	id_organizer bigint,
+  	FOREIGN KEY (id_organizer) REFERENCES userlist (id),
+	id_address bigint,
+	FOREIGN KEY (id_address) REFERENCES address (id)
+);
+create table event_topic(
+	id bigserial primary key,
+	id_event bigint,
+  	FOREIGN KEY (id_event) REFERENCES event (id),
+	id_topic bigint,
+	FOREIGN KEY (id_topic) REFERENCES topic (id)
+);
+create table visit(
+	id bigserial primary key,
+	id_event bigint,
+  	FOREIGN KEY (id_event) REFERENCES event (id),
+	id_user bigint,
+	FOREIGN KEY (id_user) REFERENCES userlist (id)
+);
+create table recommendation(
+	id bigserial primary key,
+	id_event bigint,
+  	FOREIGN KEY (id_event) REFERENCES event (id),
+	id_user bigint,
+	FOREIGN KEY (id_user) REFERENCES userlist (id)
+);
+alter table organizer add column banned bool;
+alter table event add column published bool;

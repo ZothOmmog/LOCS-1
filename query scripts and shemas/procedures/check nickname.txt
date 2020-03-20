@@ -1,0 +1,17 @@
+--drop PROCEDURE CheckNick
+CREATE OR REPLACE function CheckNick(Nick_ text)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    logs bigint;
+BEGIN
+	select into logs count(*) from visitor where nickname = Nick_;
+	    IF    logs = 0 THEN
+        RETURN 1;
+    	ELSE 
+        RETURN 0;
+    END IF;
+END;
+$BODY$;

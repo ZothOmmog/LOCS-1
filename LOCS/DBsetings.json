@@ -1,0 +1,9 @@
+{
+    "settings": {
+        "user": "postgres",
+        "host": "jdbc:postgresql://localhost",
+        "database": "LocsBD_Dev",
+        "password": "123",
+        "port": 5432
+    }
+}

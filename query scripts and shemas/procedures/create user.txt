@@ -1,0 +1,14 @@
+drop PROCEDURE CreateUser;
+CREATE OR REPLACE PROCEDURE CreateUser(nickname_ text,login_ text, hashpassword_ text,role_ text,id_city_ bigint, time_ text)
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    new_id bigint;
+BEGIN
+    INSERT INTO userlist(login, hashpassword, role, id_city) values (login_, hashpassword_ ,role_,id_city_);
+	select into new_id id from userlist where login = login_;
+	INSERT INTO visitor(id_user,nickname) values (new_id, nickname_ );
+	INSERT INTO meta_data(id_user,date_create, date_last_change,deleted) values (new_id,time_,time_, False  );
+END;
+$BODY$;
