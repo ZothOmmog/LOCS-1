@@ -8,7 +8,7 @@ DECLARE
 BEGIN
     INSERT INTO userlist(login, hashpassword, role, id_city) values (login_, hashpassword_ ,role_,id_city_);
 	select into new_id id from userlist where login = login_;
-	INSERT INTO visitor(id_user,nickname) values (new_id, nickname_ );
+	INSERT INTO visitor(id_user,nickname, profile_picture) values (new_id, nickname_,'1' );
 	INSERT INTO meta_data(id_user,date_create, date_last_change,deleted) values (new_id,time_,time_, False  );
 END;
 $BODY$;

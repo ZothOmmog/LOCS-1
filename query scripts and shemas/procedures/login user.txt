@@ -1,0 +1,17 @@
+--Функция, которая возвращает id пользователя, -1, если пользователь не правильно ввел лог/пас
+--drop PROCEDURE LogUser;
+CREATE OR REPLACE function LogUser(login_ text,password_ text)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    id_ bigint;
+BEGIN
+	select into id_ userlist.id from userlist where login = login_ and password_= hashpassword;
+	    IF  id_ > 0 THEN
+        RETURN id_;
+    	ELSE 
+        RETURN -1;
+    END IF;
+END;
+$BODY$;

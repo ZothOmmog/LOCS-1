@@ -5,7 +5,7 @@ const path = require('path')
 let pgp = require("pg-promise")( /*options*/ );
 let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
-
+const session = require('express-session');
 
 
 
@@ -56,20 +56,46 @@ exports.login = function(request, response) {
     response.sendFile(path.resolve('static/html/login.html'))
 };
 
-exports.postLogin = function(request, response) {
-    console.log("$$$$");
-    console.log(request.body.mail);
-    console.log(request.body.password);
-    response.redirect("/user");
+exports.postLogin = async function(request, response) {
+
+    var UserId = false;
+
+    await db.many("select LogUser($1,$2);", [request.body.mail, request.body.password])
+        .then(function(data) {
+            UserId = data[0].loguser;
+        }).catch(function(error) {
+            console.log("ERROR:", error);
+        });
+    if (UserId == -1) {
+        console.log("неправильные данные для входа");
+        response.redirect("/user/login");
+    } else {
+        console.log("Вошел user id -", UserId);
+        request.session.user_id_log = UserId;
+        response.redirect("/user");
+    }
 };
 
-exports.acc = function(request, response) {
-    // request.session.user_id_log = 'id';
-
-    // if (request.session.user_id_log) {
-    //     response.send(request.session.user_id_log);
-    // } else {
-    //     response.send("aaaaaaaaaaaaaaaaaa");
-    // }
-    response.send("account place");
+exports.acc = async function(request, response) {
+    if (request.session.user_id_log != null) {
+        console.log("кабинет user - ", request.session.user_id_log);
+        var masData;
+        await db.many("select DataUserAccount($1);", request.session.user_id_log)
+            .then(function(data) {
+                let strData = String(data[0].datauseraccount).replace(")", "");
+                strData = strData.replace("(", "");
+                masData = strData.split(',')
+            }).catch(function(error) {
+                console.log("ERROR:", error);
+            });
+        let UserMail = masData[0];
+        let UserNickname = masData[1];
+        let UserPicture = masData[2];
+        let UserCity = masData[3];
+        // response.sendFile(path.resolve('static/html/account.html'), { mail: UserMail })
+        response.send("<p> почта -" + UserMail + "</p>" + "<p> ник - " + UserNickname + "</p>" + "<p> город - " + UserPicture + "</p>");
+    } else {
+        console.log("Переход на страницу login");
+        response.redirect("/user/login");
+    }
 };

@@ -11,6 +11,9 @@ let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 app.use(express.static('static'));
 //module.exports = db;
 
+
+
+
 app.use(function(request, response, next) {
     /*
     let now = new Date();
@@ -28,8 +31,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
-    key: 'session_cookie_name',
-    secret: 'session_cookie_secret'
+    key: 'whatisname',
+    secret: 'xiaomitopzasvoidengi1488'
 }))
 
 app.use("/user", userlistRouter);
