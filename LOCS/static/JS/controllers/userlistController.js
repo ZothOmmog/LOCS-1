@@ -70,8 +70,16 @@ exports.postLogin = async function(request, response) {
         console.log("неправильные данные для входа");
         response.redirect("/user/login");
     } else {
-        console.log("Вошел user id -", UserId);
         request.session.user_id_log = UserId;
+        var Role;
+        await db.many("select RoleUser($1);", UserId)
+            .then(function(data) {
+                Role = data[0].roleuser;
+            }).catch(function(error) {
+                console.log("ERROR:", error);
+            });
+        request.session.user_role = Role;
+        console.log("Вошел user id -", UserId, "Роль ", Role);
         response.redirect("/user");
     }
 };
@@ -98,4 +106,13 @@ exports.acc = async function(request, response) {
         console.log("Переход на страницу login");
         response.redirect("/user/login");
     }
+};
+
+exports.logout = function(request, response) {
+    request.session.destroy((err) => {
+        if (err) {
+            return console.log(err);
+        }
+        response.redirect('/');
+    });
 };

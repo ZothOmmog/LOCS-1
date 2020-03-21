@@ -1,0 +1,21 @@
+--1 - user; 0 - admin; 2 - organizer
+
+CREATE OR REPLACE function RoleUser(id_ bigint)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    role_ text;
+BEGIN
+	select into role_ role from userlist where id = id_;
+	IF  role_ = 'User' THEN
+        RETURN 1;
+	ELSIF  role_ = 'Admin' then 
+		RETURN 0;
+	ELSIF  role_ = 'Organizer' then 
+		RETURN 2;
+    END IF;
+	RETURN -1;
+END;
+$BODY$;
+
