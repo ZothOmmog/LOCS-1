@@ -6,11 +6,17 @@
 Формат JSON ***сервер->React***
  Для списка событий:
  
-			[ "event": {
-				"name": String ,
-				"tags": [ String ],
-				"info": String
-			} ]
+			{ 
+			"events": [{
+                "Id":"Int",
+				"name": "String" ,
+				"tags": [{ 
+                                         "NameTag":"String"
+                            }],
+				"info": "String"
+			}],
+			"count": "int"
+			}
 
 
 ----------
@@ -20,13 +26,16 @@
  Данные аккаунта:
 
 
-			[ "User": {
-				"Mail": UserMail,
-				"Nick": UserNickname,
-				"City": UserCity,
-				"UrlPicture" : Url,
-				"Auth" : True //False
-			} ]
+		{ 
+			"User": 
+			{
+				"Mail": "String",
+				"Nick": "String",
+				"City": "String",
+				"UrlPicture" : "String",
+				"Auth" :"Bool"
+			} 
+		}
 
 
 ---
@@ -39,10 +48,13 @@
  Данные входа:
  
 
-			[ "Login": {
-				"Mail": UserMail,
-				"Password": UserNickname
-			} ]
+	{ 
+			"Login": 
+			{
+				"Mail": "String",
+				"Password": "String"
+			 }
+ 	}
 			
  
 - ***Ответ на корректность данных***
@@ -50,9 +62,12 @@
  Данные входа:
  
 
-			[ "Login": {
-				"Flag": True //False
-			} ]
+		{ 
+			"Login":
+			{
+				"Flag": "Bool"
+			}
+		}
 
 ---
 ###### **url/user/registration 
@@ -64,21 +79,25 @@
  Формат POST ***React->Сервер***
  Данные регистрации:
 
-
-			[ "Registration": {
-				"mail": Mail,
-				"nick": Nickname,
-				"pas": Password,
-				"acpas" : RepeatPassword
-			} ]
+		{ 
+			"Registration":
+			{
+				"mail": "String",
+				"nick": "String",
+				"pas": "String"
+			}
+		}
 
 - ***Ответ на корректность данных***
  Формат JSON *** Сервер->React***
  Данные входа:
  
 
-			[ "Login": {
-				"NickNameFlag": True, //False
-				"MailFlag": True, //False
-			} ]
+		{
+			"Login":
+			{
+				"NickNameFlag":"Bool",
+				"MailFlag": "Bool"
+			}
+		}
 
