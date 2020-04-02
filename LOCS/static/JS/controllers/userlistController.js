@@ -6,7 +6,7 @@ let pgp = require("pg-promise")( /*options*/ );
 let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
 const session = require('express-session');
-
+var bcrypt = require('bcrypt');
 
 
 exports.registration = function(request, response) {
@@ -31,14 +31,18 @@ exports.postRegistration = async function(request, response) {
     if (CheckMail == true & CheckNick == true) {
         await db.many("SELECT CURRENT_TIMESTAMP;")
             .then(function(data) {
-                CreateTime = String(data[0].current_timestamp) + "1";
+                CreateTime = String(data[0].current_timestamp);
                 console.log(CreateTime);
             })
             .catch(function(error) {
                 CreateTime = String("ERROR:", error);
             });
+
+        var salt = bcrypt.genSaltSync(CreateTime);
+        var passwordToSave = bcrypt.hashSync(request.body.pas, salt)
+
         ///тут где-то функция для хеш пароля
-        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, request.body.pas, "User", 1, CreateTime])
+        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, passwordToSave, "User", 1, CreateTime])
             .then(data => {
                 console.log(data);
             }).catch(function(error) {

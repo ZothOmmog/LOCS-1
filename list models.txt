@@ -6,3 +6,4 @@ node:
 	pg
 	pg-promise
 	body-parser hbs
+	bcrypt

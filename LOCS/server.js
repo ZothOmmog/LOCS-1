@@ -6,8 +6,8 @@ const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const mainRouter = require("./static/JS/routes/mainRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 
-let pgp = require("pg-promise")( /*options*/ );
-let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
+// let pgp = require("pg-promise")( /*options*/ );
+// let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
 app.use(express.static('static'));
 //module.exports = db;
