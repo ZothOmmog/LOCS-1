@@ -15,7 +15,7 @@
 
 ----------
 # url/user 
-- *** аккаунт***
+- ***аккаунт***
  Формат JSON ***сервер->React***
  Данные аккаунта:
 
@@ -33,7 +33,7 @@
 ###### **url/user/login 
 	**страница входа
 ---
-#url/user/login/postLogin
+# url/user/login/postLogin
 - ***валидация данных из формы входа***
  Формат POST ***React->Сервер***
  Данные входа:
@@ -55,12 +55,12 @@
 			} ]
 
 ---
-###### ** url/user/registration 
+###### **url/user/registration 
 	**переход на форму регистрации
 ---
 
-#url/user/registration/postreg 
-- *** Регистрация***
+# url/user/registration/postreg 
+- ***Регистрация***
  Формат POST ***React->Сервер***
  Данные регистрации:
 
