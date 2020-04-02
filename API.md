@@ -1,42 +1,84 @@
-**** - (не нужен для React)
+**** - (не нужен при реализации spa)
+
+--------
+# url/
+- **главная страница**
+Формат JSON ***сервер->React***
+ Для списка событий:
+ 
+			[ "event": {
+				"name": String ,
+				"tags": [ String ],
+				"info": String
+			} ]
+
 
 ----------
-# url/ - главная страница 
-----------
-	## Формат JSON ***сервер->React***
-		### Для списка событий:
-<
-[
-		"event": {
-			"name": String ,
-			"tags": [ String ],
-			"info": String
-		}
-]
->
-
-----------
-# url/user - аккаунт
-----------
-		## Формат JSON ***сервер->React***
-		### Данные аккаунта:
-<
-[
-		"Account": {
-			"Mail": UserMail,
-			"Nick": UserNickname,
-			"City": UserCity,
-			"UrlPicture" : Url
-		}
-]
->
+# url/user 
+- *** аккаунт***
+ Формат JSON ***сервер->React***
+ Данные аккаунта:
 
 
-	#### **** 2.1)url/user/login - переход на форму входа 
-	2.2)url/user/login/postLogin - валидация данных из формы входа, обработка и переадресация на пункт 2
-	#### **** 2.3)url/user/registration - переход на форму регистрации
-	2.4)url/user/registration/postreg - валидация данных из формы регистрации, обработка и переадресация на пункт 2
+			[ "User": {
+				"Mail": UserMail,
+				"Nick": UserNickname,
+				"City": UserCity,
+				"UrlPicture" : Url,
+				"Auth" : True //False
+			} ]
 
-# url/event -события
 
-	**** 3.1)url/event/create - переход на форму создания события
+---
+###### **url/user/login 
+	**страница входа
+---
+#url/user/login/postLogin
+- ***валидация данных из формы входа***
+ Формат POST ***React->Сервер***
+ Данные входа:
+ 
+
+			[ "Login": {
+				"Mail": UserMail,
+				"Password": UserNickname
+			} ]
+			
+ 
+- ***Ответ на корректность данных***
+ Формат JSON *** Сервер->React***
+ Данные входа:
+ 
+
+			[ "Login": {
+				"Flag": True //False
+			} ]
+
+---
+###### ** url/user/registration 
+	**переход на форму регистрации
+---
+
+#url/user/registration/postreg 
+- *** Регистрация***
+ Формат POST ***React->Сервер***
+ Данные регистрации:
+
+
+			[ "Registration": {
+				"mail": Mail,
+				"nick": Nickname,
+				"pas": Password,
+				"acpas" : RepeatPassword
+			} ]
+
+- ***Ответ на корректность данных***
+ Формат JSON *** Сервер->React***
+ Данные входа:
+ 
+
+			[ "Login": {
+				"NickNameFlag": True, //False
+				"MailFlag": True, //False
+			} ]
+
