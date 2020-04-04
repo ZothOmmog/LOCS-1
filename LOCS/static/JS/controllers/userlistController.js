@@ -1,12 +1,11 @@
 let User = require("../models/userlist.js");
 const path = require('path')
-    //const { body, validationResult } = require('express-validator');
-    //const { sanitizeBody } = require('express-validator');
 let pgp = require("pg-promise")( /*options*/ );
 let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
+let crypt = require("../scripts/password.js");
+
 const session = require('express-session');
-var bcrypt = require('bcrypt');
 
 
 exports.registration = function(request, response) {
@@ -32,21 +31,23 @@ exports.postRegistration = async function(request, response) {
         await db.many("SELECT CURRENT_TIMESTAMP;")
             .then(function(data) {
                 CreateTime = String(data[0].current_timestamp);
-                console.log(CreateTime);
             })
             .catch(function(error) {
                 CreateTime = String("ERROR:", error);
             });
 
-        var salt = bcrypt.genSaltSync(CreateTime);
-        var passwordToSave = bcrypt.hashSync(request.body.pas, salt)
 
         ///тут где-то функция для хеш пароля
-        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, passwordToSave, "User", 1, CreateTime])
-            .then(data => {
-                console.log(data);
-            }).catch(function(error) {
+        var hash = crypt.hash(request.body.pas, CreateTime);
+        console.log(CreateTime);
+        console.log(hash);
+        console.log(request.body.password);
+        console.log("++++");
+
+        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, hash, "User", 1, CreateTime])
+            .then(data => {}).catch(function(error) {
                 console.log("ERROR:", error);
+                response.redirect("/user/registration");
             });
         response.redirect("/user");
     } else {
@@ -63,8 +64,21 @@ exports.login = function(request, response) {
 exports.postLogin = async function(request, response) {
 
     var UserId = false;
+    var salt = "";
+    await db.many("select DateCreate($1);", [request.body.mail])
+        .then(function(data) {
+            salt = data[0].datecreate;
+        }).catch(function(error) {
+            console.log("ERROR:", error);
+        });
 
-    await db.many("select LogUser($1,$2);", [request.body.mail, request.body.password])
+
+    var hash = crypt.hash(request.body.password, salt);
+    console.log(request.body.password);
+    console.log(salt);
+    console.log(hash);
+    console.log("++++");
+    await db.many("select LogUser($1,$2);", [request.body.mail, hash])
         .then(function(data) {
             UserId = data[0].loguser;
         }).catch(function(error) {

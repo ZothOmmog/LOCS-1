@@ -1,0 +1,19 @@
+--Функция, которая по id пользователя возвращает дату создания, -1 если нет такого пользователя
+CREATE OR REPLACE function DateCreate(login_ text)
+	RETURNS text
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    ids bigint;
+	date_ text;
+BEGIN
+	select into ids id from userlist where login = login_;
+	    IF ids IS NULL  THEN
+        RETURN -1;
+    	ELSE 
+        select into date_ date_create from meta_data where id_user = ids;
+		return date_;
+    END IF;
+END;
+$BODY$;
