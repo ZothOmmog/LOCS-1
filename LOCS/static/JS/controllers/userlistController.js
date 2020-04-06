@@ -134,3 +134,12 @@ exports.logout = function(request, response) {
         response.redirect('/');
     });
 };
+
+exports.searchUser = function(request, response) {
+    db.many("select datauserlist($1) as User;", "%" + request.body.nick + "%")
+        .then(function(data) {
+            response.json(data);
+        }).catch(function(error) {
+            console.log("ERROR:", error);
+        });
+};
