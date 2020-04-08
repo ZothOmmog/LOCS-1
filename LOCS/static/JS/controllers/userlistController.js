@@ -140,6 +140,24 @@ exports.searchUser = function(request, response) {
         .then(function(data) {
             response.json(data);
         }).catch(function(error) {
-            console.log("ERROR:", error);
+            response.json([{
+                "user": {
+                    "id_user": -1,
+                    "nickname": error
+                }
+            }, ]);
         });
 };
+
+// exports.friendList = function(request, response) {
+//     if (request.session.user_id_log != null) {
+//         db.many("select friendList($1);",  request.session.user_id_log )
+//             .then(function(data) {
+//                 response.json(data);
+//             }).catch(function(error) {
+//                 response.json({ user: -1, friend: -1 });
+//             });
+//     } else {
+//         response.json({ user: -1, friend: -1 });
+//     }
+// };
