@@ -11,17 +11,17 @@ const session = require('express-session');
 exports.registration = function(request, response) {
     response.sendFile(path.resolve('static/html/registration.html'))
 };
+
+
 exports.postRegistration = async function(request, response) {
-    ///тут берем время (+хэш с солью), данные из формы и заполняем userlsit и visitor
     var CreateTime;
     var CheckMail = false;
     var CheckNick = false;
-
-    await db.many("select CheckUser($1);", request.body.mail)
+    await db.many("select CheckUser($1);", request.body.Registration.mail)
         .then(function(data) {
             CheckMail = data[0].checkuser;
         })
-    await db.many("select CheckNick($1);", request.body.nick)
+    await db.many("select CheckNick($1);", request.body.Registration.nick)
         .then(function(data) {
             CheckNick = data[0].checknick;
         })
@@ -34,25 +34,36 @@ exports.postRegistration = async function(request, response) {
             })
             .catch(function(error) {
                 CreateTime = String("ERROR:", error);
+                response.json({
+                    "Login": {
+                        "NickNameFlag": false,
+                        "MailFlag": false
+                    }
+                });
             });
 
+        var hash = crypt.hash(request.body.Registration.pas, CreateTime);
 
-        ///тут где-то функция для хеш пароля
-        var hash = crypt.hash(request.body.pas, CreateTime);
-        console.log(CreateTime);
-        console.log(hash);
-        console.log(request.body.password);
-        console.log("++++");
+        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime])
+            .then(data => {}).catch(function(error) {});
 
-        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, hash, "User", 1, CreateTime])
-            .then(data => {}).catch(function(error) {
-                console.log("ERROR:", error);
-                response.redirect("/user/registration");
-            });
-        response.redirect("/user");
+
+        response.json({
+            "Login": {
+                "NickNameFlag": CheckNick,
+                "MailFlag": CheckMail
+            }
+        });
+
+
     } else {
-        console.log('ПОЛЬЗОВАТЕЛЬ УЖЕ ЕСТЬ В БАЗЕ')
-        response.redirect("/user/registration");
+        //отвечаем, что данные не корректны 
+        response.json({
+            "Login": {
+                "NickNameFlag": CheckNick,
+                "MailFlag": CheckMail
+            }
+        });
     }
 
 };
@@ -74,10 +85,7 @@ exports.postLogin = async function(request, response) {
 
 
     var hash = crypt.hash(request.body.password, salt);
-    console.log(request.body.password);
-    console.log(salt);
-    console.log(hash);
-    console.log("++++");
+
     await db.many("select LogUser($1,$2);", [request.body.mail, hash])
         .then(function(data) {
             UserId = data[0].loguser;
