@@ -5,14 +5,13 @@ export const userAPI = {
         return fetch(baseURL + `user/login/postLogin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify({ Login: { Mail: mail, Password: pass } }),
-            credentials: 'include'
+            body: JSON.stringify({ Login: { mail: mail, pas: pass } }),
         })
             .then(responce => responce.json());
     },
 
     setMe() {
-        return fetch(baseURL + 'user/login/me', { credentials: "include" })
+        return fetch(baseURL + 'user')
             .then(res => res.json());
     },
 

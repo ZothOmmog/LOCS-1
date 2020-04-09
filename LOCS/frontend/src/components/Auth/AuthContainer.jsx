@@ -9,11 +9,24 @@ class AuthToApiContainer extends React.Component {
         const mail = this.props.auth.page.currentMail;
         const pass = this.props.auth.page.currentPass;
 
-        userAPI.login(mail, pass).then(res => {
-            if(res.Login.Flag) {
-                userAPI.setMe().then( res => {
-                    this.props.setUser(res.user);
-                    alert('Вы успешно авторизированы!');
+        userAPI.login(mail, pass).then(login => {
+            if (login.Login.Flag) {
+                userAPI.setMe().then(user => {
+                    if (user.User.Auth) {
+                        const mail = user.User.Mail;
+                        const nick = user.User.Nick;
+                        const city = user.User.City;
+                        const urlPicture = user.User.UrlPicture;
+                        const userAdd = {
+                            mail: mail,
+                            nick: nick,
+                            city: city,
+                            urlPicture: urlPicture
+                        };
+                        this.props.setUser(userAdd);
+                        alert('Вы успешно авторизированы!');
+                    }
+                    else alert('Ошибка сессии');
                 });
             }
             else alert('Неверно введены логин или пароль.');
