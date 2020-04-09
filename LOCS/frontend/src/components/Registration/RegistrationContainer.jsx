@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import { Registration } from './Registration';
 import {
     updateNick,
     updateMail,
     updatePass,
-    registration
+    registration,
+    updateIsReg
 } from '../../redux/registrationReducer';
 import { userAPI } from '../../api/api';
 
@@ -18,23 +20,33 @@ class RegistrationToApiContainer extends React.Component {
         this.props.updateMail('');
         this.props.updateNick('');
         this.props.updatePass('');
+        this.props.updateIsReg(false);
     }
 
-    registration(nick, mail, pass) {
+    registration = (nick, mail, pass) => {
         userAPI.registration(nick, mail, pass).then(isReg => {
             const nickFlag = isReg.Login.NickNameFlag;
             const mailFlag = isReg.Login.MailFlag;
 
-            const message = nickFlag && mailFlag ? 'Пользователь успешно загеристрирован!' : 
-                            nickFlag && !mailFlag ? 'почта уже зарегистрирована другим пользователем' :
-                           !nickFlag && mailFlag ? 'ник уже зарегистрирован другим пользователем!' :
-                            'Почта и ник уже зарегистрированы!';
-            alert(message);
+            let message = '';
 
+            if (nickFlag && mailFlag) {
+                message = 'Пользователь успешно загеристрирован, введите данные, чтобы войти.';
+                this.props.registration();
+            }
+            else {
+                message = nickFlag && !mailFlag ? 'почта уже зарегистрирована другим пользователем' :
+                    !nickFlag && mailFlag ? 'ник уже зарегистрирован другим пользователем!' :
+                        'Почта и ник уже зарегистрированы!';
+            }
+
+            alert(message);
         }, err => console.log(err));
     }
 
     render() {
+        if (this.props.state.isReg) return <Redirect to={'/Auth'} />;
+
         return <Registration
             state={this.props.state}
             updateMail={this.props.updateMail}
@@ -52,4 +64,4 @@ const mapStateToProps = (state) => {
 }
 
 export const RegistrationContainer = connect(mapStateToProps,
-    { updateNick, updateMail, updatePass, registration })(RegistrationToApiContainer);
+    { updateNick, updateMail, updatePass, updateIsReg, registration })(RegistrationToApiContainer);

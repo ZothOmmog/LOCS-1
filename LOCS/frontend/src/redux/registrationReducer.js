@@ -1,12 +1,14 @@
 const UPDATE_NICK = "UPDATE_NICK";
 const UPDATE_MAIL = "UPDATE_MAIL";
 const UPDATE_PASS = "UPDATE_PASS";
+const UPDATE_IS_REG = "UPDATE_IS_REG";
 const ADD_NEW_USER = "ADD_NEW_USER";
 
 const initialState = {
     nick: "",
     mail: "",
-    pass: ""
+    pass: "",
+    isReg: false
 }
 
 const registrationReducer = (state = initialState, action) => {
@@ -17,12 +19,16 @@ const registrationReducer = (state = initialState, action) => {
             return { ...state, mail: action.mail };
         case UPDATE_PASS:
             return { ...state, pass: action.pass };
+        case UPDATE_IS_REG:
+            debugger;
+            return { ...state, isReg: action.isReg }
         case ADD_NEW_USER:
-            return { 
+            return {
                 ...state,
                 nick: "",
                 mail: "",
-                pass: ""
+                pass: "",
+                isReg: true
             };
         default:
             return state;
@@ -47,14 +53,15 @@ export const updatePass = (newPass) => {
         pass: newPass
     };
 };
-export const registration = (newNick, newMail, newPass) => {
+export const updateIsReg = (isReg) => {
+    return {
+        type: UPDATE_IS_REG,
+        isReg: isReg
+    };
+};
+export const registration = () => {
     return {
         type: ADD_NEW_USER,
-        event: {
-            nick: newNick,
-            mail: newMail,
-            pass: newPass
-        }
     };
 }
 
