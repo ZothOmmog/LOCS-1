@@ -6,6 +6,14 @@ const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const mainRouter = require("./static/JS/routes/mainRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 
+const cors = require('cors');
+const corsOptions = {
+    credentials: true,
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 // let pgp = require("pg-promise")( /*options*/ );
 // let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
@@ -15,7 +23,7 @@ app.use(express.static('static'));
 
 
 
-app.use(function(request, response, next) {
+app.use(function (request, response, next) {
     /*
     let now = new Date();
     let hour = now.getHours();
@@ -44,8 +52,8 @@ app.use("/$", mainRouter);
 
 
 
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
     res.status(404).send("Not Found");
 
 });
-app.listen(3000);
+app.listen(4000);

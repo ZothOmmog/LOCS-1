@@ -1,0 +1,5 @@
+.Tag {
+    display: inline-block;
+    cursor: pointer;
+    padding-right: 5px;
+}

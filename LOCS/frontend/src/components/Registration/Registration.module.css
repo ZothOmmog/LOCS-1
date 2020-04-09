@@ -1,0 +1,40 @@
+.Registration {
+    grid-area: cnt;
+
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas: "nick" "mail" "pass" "submit";
+    grid-row-gap: 5px;
+
+    align-items: center;
+    justify-items: center;
+    width: 75%;
+}
+
+.Registration > * {
+    width: 250px;
+}
+
+.Registration > input {
+    height: 2em;
+}
+
+.nick {
+    grid-area: nick;
+}
+
+.mail {
+    grid-area: mail;
+}
+
+.pass {
+    grid-area: pass;
+    resize: vertical;
+    height: 200px;
+}
+
+.submit {
+    grid-area: submit;
+    display: grid;
+    justify-items: center;
+}

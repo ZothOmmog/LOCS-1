@@ -1,0 +1,21 @@
+.search {
+    grid-area: search;
+
+	display: grid;
+	grid-template-rows: 1fr 1fr;
+
+	justify-items: center;
+	align-items: center;
+	margin-right: 15px;
+}
+
+.searchArea {
+    display: grid;
+    grid-template-columns: 15fr 1fr;
+}
+
+
+
+.btn {
+    border-radius: 0px;
+}
