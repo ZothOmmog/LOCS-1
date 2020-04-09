@@ -8,9 +8,9 @@ let crypt = require("../scripts/password.js");
 const session = require('express-session');
 
 
-exports.registration = function(request, response) {
-    response.sendFile(path.resolve('static/html/registration.html'))
-};
+// exports.registration = function(request, response) {
+//     response.sendFile(path.resolve('static/html/registration.html'))
+// };
 
 
 exports.postRegistration = async function(request, response) {
@@ -26,7 +26,7 @@ exports.postRegistration = async function(request, response) {
             CheckNick = data[0].checknick;
         })
 
-
+    console.log(request.body.Registration.mail);
     if (CheckMail == true & CheckNick == true) {
         await db.many("SELECT CURRENT_TIMESTAMP;")
             .then(function(data) {
@@ -43,6 +43,11 @@ exports.postRegistration = async function(request, response) {
             });
 
         var hash = crypt.hash(request.body.Registration.pas, CreateTime);
+
+        console.log(request.body.Registration.pas);
+        console.log(CreateTime);
+        console.log(hash);
+
 
         db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime])
             .then(data => {}).catch(function(error) {});
@@ -68,51 +73,75 @@ exports.postRegistration = async function(request, response) {
 
 };
 
-exports.login = function(request, response) {
-    response.sendFile(path.resolve('static/html/login.html'))
-};
+// exports.login = function(request, response) {
+//     response.sendFile(path.resolve('static/html/login.html'))
+// };
 
 exports.postLogin = async function(request, response) {
 
     var UserId = false;
     var salt = "";
-    await db.many("select DateCreate($1);", [request.body.mail])
+    await db.many("select DateCreate($1);", [request.body.Login.mail])
         .then(function(data) {
             salt = data[0].datecreate;
         }).catch(function(error) {
-            console.log("ERROR:", error);
+            console.log("1");
+            response.json({
+                "Login": {
+                    "Flag": false
+                }
+            });
         });
 
+    var hash = crypt.hash(request.body.Login.pas, salt);
 
-    var hash = crypt.hash(request.body.password, salt);
-
-    await db.many("select LogUser($1,$2);", [request.body.mail, hash])
+    await db.many("select LogUser($1,$2);", [request.body.Login.mail, hash])
         .then(function(data) {
             UserId = data[0].loguser;
         }).catch(function(error) {
-            console.log("ERROR:", error);
+            console.log("12");
+            response.json({
+                "Login": {
+                    "Flag": false
+                }
+            });
         });
     if (UserId == -1) {
-        console.log("неправильные данные для входа");
-        response.redirect("/user/login");
+        console.log("122");
+        //неправильные данные для входа
+        response.json({
+            "Login": {
+                "Flag": false
+            }
+        });
+
     } else {
+
         request.session.user_id_log = UserId;
         var Role;
         await db.many("select RoleUser($1);", UserId)
             .then(function(data) {
                 Role = data[0].roleuser;
             }).catch(function(error) {
-                console.log("ERROR:", error);
+                console.log("13");
+                response.json({
+                    "Login": {
+                        "Flag": false
+                    }
+                });
             });
+        console.log(Role);
         request.session.user_role = Role;
-        console.log("Вошел user id -", UserId, "Роль ", Role);
-        response.redirect("/user");
+        response.json({
+            "Login": {
+                "Flag": true
+            }
+        });
     }
 };
 
 exports.acc = async function(request, response) {
     if (request.session.user_id_log != null) {
-        console.log("кабинет user - ", request.session.user_id_log);
         var masData;
         await db.many("select DataUserAccount($1);", request.session.user_id_log)
             .then(function(data) {
@@ -120,26 +149,54 @@ exports.acc = async function(request, response) {
                 strData = strData.replace("(", "");
                 masData = strData.split(',')
             }).catch(function(error) {
-                console.log("ERROR:", error);
+                response.json({
+                    "User": {
+                        "Mail": "",
+                        "Nick": "",
+                        "City": "",
+                        "UrlPicture": "",
+                        "Auth": false
+                    }
+                });
             });
         let UserMail = masData[0];
         let UserNickname = masData[1];
         let UserPicture = masData[2];
         let UserCity = masData[3];
-        // response.sendFile(path.resolve('static/html/account.html'), { mail: UserMail })
-        response.send("<p> почта -" + UserMail + "</p>" + "<p> ник - " + UserNickname + "</p>" + "<p> город - " + UserPicture + "</p>");
+
+        response.json({
+            "User": {
+                "Mail": UserMail,
+                "Nick": UserNickname,
+                "City": UserCity,
+                "UrlPicture": UserPicture,
+                "Auth": false
+            }
+        });
     } else {
-        console.log("Переход на страницу login");
-        response.redirect("/user/login");
+        //Переход на страницу login
+        response.json({
+            "User": {
+                "Mail": "",
+                "Nick": "",
+                "City": "",
+                "UrlPicture": "",
+                "Auth": false
+            }
+        });
     }
 };
 
 exports.logout = function(request, response) {
     request.session.destroy((err) => {
         if (err) {
-            return console.log(err);
+            response.json({
+                "logout": false
+            });
         }
-        response.redirect('/');
+        response.json({
+            "logout": true
+        });
     });
 };
 
