@@ -1,36 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Auth from './Auth';
-import { setUser, changeCurrentMail, changeCurrentPass } from '../../redux/authReducer';
+import { setUser, changeCurrentMail, changeCurrentPass, setUserThunk } from '../../redux/authReducer';
 import { userAPI } from '../../api/api';
 
 class AuthToApiContainer extends React.Component {
     setUser = () => {
         const mail = this.props.auth.page.currentMail;
         const pass = this.props.auth.page.currentPass;
-
-        userAPI.login(mail, pass).then(login => {
-            if (login.Login.Flag) {
-                userAPI.setMe().then(user => {
-                    if (user.User.Auth) {
-                        const mail = user.User.Mail;
-                        const nick = user.User.Nick;
-                        const city = user.User.City;
-                        const urlPicture = user.User.UrlPicture;
-                        const userAdd = {
-                            mail: mail,
-                            nick: nick,
-                            city: city,
-                            urlPicture: urlPicture
-                        };
-                        this.props.setUser(userAdd);
-                        alert('Вы успешно авторизированы!');
-                    }
-                    else alert('Ошибка сессии');
-                });
-            }
-            else alert('Неверно введены логин или пароль.');
-        });
+        
+        this.props.setUserThunk(mail, pass);
     }
 
     changeCurrentMail = (e) => {
@@ -61,4 +40,5 @@ const mapStateToProps = (state) => ({
     auth: state.auth
 });
 
-export const AuthContainer = connect(mapStateToProps, { setUser, changeCurrentMail, changeCurrentPass })(AuthToApiContainer);
+export const AuthContainer = connect(mapStateToProps, { 
+    setUser, changeCurrentMail, changeCurrentPass, setUserThunk })(AuthToApiContainer);

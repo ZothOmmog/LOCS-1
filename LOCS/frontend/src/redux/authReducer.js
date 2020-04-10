@@ -1,3 +1,5 @@
+import { userAPI } from "../api/api";
+
 const SET_USER = 'SET_USER';
 const UNSET_USER = 'UNSET_USER';
 const CHANGE_CURRENT_MAIL = 'CHANGE_CURRENT_MAIL';
@@ -36,6 +38,33 @@ const auth = (state = initialState, action) => {
         default:
             return state;
     }
+}
+
+export const setUserThunk = (mail, pass) => (dispatch) => {
+    userAPI.login(mail, pass).then(login => {
+        if (login.Login.Flag) {
+            userAPI.setMe().then(user => {
+                if (user.User.Auth) {
+                    const mail = user.User.Mail;
+                    const nick = user.User.Nick;
+                    const city = user.User.City;
+                    const urlPicture = user.User.UrlPicture;
+
+                    const userAdd = {
+                        mail: mail,
+                        nick: nick,
+                        city: city,
+                        urlPicture: urlPicture
+                    };
+
+                    dispatch(setUser(userAdd));
+                    alert('Вы успешно авторизированы!');
+                }
+                else alert('Ошибка сессии');
+            });
+        }
+        else alert('Неверно введены логин или пароль.');
+    });
 }
 
 export const setUser = (user) => {

@@ -1,4 +1,5 @@
-import { combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 
 import searchReducer from './searchReducer';
 import addEventReducer from './addEventReducer';
@@ -16,7 +17,7 @@ const reducers = combineReducers({
     registrationPage: registrationReducer
 });
 
-const store = createStore(reducers);
+const store = createStore(reducers, applyMiddleware(thunkMiddleware));
 
 window.store = store;
 
