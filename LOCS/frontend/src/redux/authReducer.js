@@ -70,9 +70,29 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
             else dispatch(changeCurrentMessage('Ошибка сессии.'));
         }
         else dispatch(changeCurrentMessage('Неверно введены логин или пароль.'));
-    } 
-    catch (err) { 
-        dispatch(changeCurrentMessage('Ошибка при логинизации: ' + err)); 
+    }
+    catch (err) {
+        dispatch(changeCurrentMessage('Ошибка при логинизации: ' + err));
+    }
+}
+
+export const setMeThunk = () => async (dispatch) => {
+    const user = await userAPI.setMe();
+
+    if (user.User.Auth) {
+        const mail = user.User.Mail;
+        const nick = user.User.Nick;
+        const city = user.User.City;
+        const urlPicture = user.User.UrlPicture;
+
+        const userAdd = {
+            mail: mail,
+            nick: nick,
+            city: city,
+            urlPicture: urlPicture
+        };
+
+        dispatch(setUser(userAdd));
     }
 }
 

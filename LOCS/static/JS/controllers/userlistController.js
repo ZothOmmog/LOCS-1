@@ -7,6 +7,8 @@ let crypt = require("../scripts/password.js");
 
 const session = require('express-session');
 
+let tokensUsers = new Map();
+
 
 // exports.registration = function(request, response) {
 //     response.sendFile(path.resolve('static/html/registration.html'))
@@ -52,7 +54,6 @@ exports.postRegistration = async function(request, response) {
         db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime])
             .then(data => {}).catch(function(error) {});
 
-
         response.json({
             "Login": {
                 "NickNameFlag": CheckNick,
@@ -78,7 +79,6 @@ exports.postRegistration = async function(request, response) {
 // };
 
 exports.postLogin = async function(request, response) {
-
     var UserId = false;
     var salt = "";
     await db.many("select DateCreate($1);", [request.body.Login.mail])
@@ -132,7 +132,11 @@ exports.postLogin = async function(request, response) {
             });
         console.log(Role);
         request.session.user_role = Role;
-        response.json({
+
+        const hashId = crypt.hash(UserId, hash); //сделай вторым аргументом что-нибудь другое, наверно.
+        tokensUsers.set(hashId, UserId);
+
+        response.cookie('userId', hashId).json({
             "Login": {
                 "Flag": true
             }
@@ -141,9 +145,11 @@ exports.postLogin = async function(request, response) {
 };
 
 exports.acc = async function(request, response) {
-    if (request.session.user_id_log != null) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+
+    if (userId) {
         var masData;
-        await db.many("select DataUserAccount($1);", request.session.user_id_log)
+        await db.many("select DataUserAccount($1);", userId)
             .then(function(data) {
                 let strData = String(data[0].datauseraccount).replace(")", "");
                 strData = strData.replace("(", "");
@@ -170,7 +176,7 @@ exports.acc = async function(request, response) {
                 "Nick": UserNickname,
                 "City": UserCity,
                 "UrlPicture": UserPicture,
-                "Auth": false
+                "Auth": true
             }
         });
     } else {

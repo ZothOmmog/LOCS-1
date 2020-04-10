@@ -2,16 +2,12 @@ import React from 'react';
 import "../CommonStyles/Link/Link.css";
 import { Header } from './Header';
 import { connect } from 'react-redux';
-import { setUser } from '../../redux/authReducer';
+import { setUser, setMeThunk } from '../../redux/authReducer';
 // import { userAPI } from '../../api/api';
 
 class HeaderToApiContainer extends React.Component {
 	componentDidMount() {
-		// userAPI.setMe().then(res => {
-		// 	if (res.user) {
-		// 		this.props.setUser(res.user);
-		// 	};
-		// });
+		this.props.setMeThunk();
 	}
 
 	render() {
@@ -25,4 +21,4 @@ const mapStateToProps = (state) => ({
 	nick: state.auth.user.nick
 });
 
-export const HeaderContainer = connect(mapStateToProps, { setUser })(HeaderToApiContainer);
+export const HeaderContainer = connect(mapStateToProps, { setUser, setMeThunk })(HeaderToApiContainer);
