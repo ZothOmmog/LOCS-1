@@ -2,13 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Auth from './Auth';
 import { setUser, changeCurrentMail, changeCurrentPass, setUserThunk } from '../../redux/authReducer';
-import { userAPI } from '../../api/api';
 
 class AuthToApiContainer extends React.Component {
     setUser = () => {
         const mail = this.props.auth.page.currentMail;
         const pass = this.props.auth.page.currentPass;
-        
+
         this.props.setUserThunk(mail, pass);
     }
 

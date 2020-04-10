@@ -40,31 +40,33 @@ const auth = (state = initialState, action) => {
     }
 }
 
-export const setUserThunk = (mail, pass) => (dispatch) => {
-    userAPI.login(mail, pass).then(login => {
+export const setUserThunk = (mail, pass) => async (dispatch) => {
+    try {
+        const login = await userAPI.login(mail, pass);
+
         if (login.Login.Flag) {
-            userAPI.setMe().then(user => {
-                if (user.User.Auth) {
-                    const mail = user.User.Mail;
-                    const nick = user.User.Nick;
-                    const city = user.User.City;
-                    const urlPicture = user.User.UrlPicture;
+            const user = await userAPI.setMe();
 
-                    const userAdd = {
-                        mail: mail,
-                        nick: nick,
-                        city: city,
-                        urlPicture: urlPicture
-                    };
+            if (user.User.Auth) {
+                const mail = user.User.Mail;
+                const nick = user.User.Nick;
+                const city = user.User.City;
+                const urlPicture = user.User.UrlPicture;
 
-                    dispatch(setUser(userAdd));
-                    alert('Вы успешно авторизированы!');
-                }
-                else alert('Ошибка сессии');
-            });
+                const userAdd = {
+                    mail: mail,
+                    nick: nick,
+                    city: city,
+                    urlPicture: urlPicture
+                };
+
+                dispatch(setUser(userAdd));
+                alert('Вы успешно авторизированы!');
+            }
+            else alert('Ошибка сессии');
         }
         else alert('Неверно введены логин или пароль.');
-    });
+    } catch(err) { console.log(err); }
 }
 
 export const setUser = (user) => {
