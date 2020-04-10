@@ -3,7 +3,7 @@
 
     display: grid;
     grid-template-rows: auto auto auto auto;
-    grid-template-areas: "nick" "mail" "pass" "submit";
+    grid-template-areas: "message" "nick" "mail" "pass" "submitPass" "submit";
     grid-row-gap: 5px;
 
     align-items: center;
@@ -19,6 +19,13 @@
     height: 2em;
 }
 
+.message {
+    width: auto;
+    color: red;
+    grid-area: message;
+    margin-bottom: 10px;
+}
+
 .nick {
     grid-area: nick;
 }
@@ -31,6 +38,10 @@
     grid-area: pass;
     resize: vertical;
     height: 200px;
+}
+
+.submitPass {
+    grid-area: submitPass;
 }
 
 .submit {

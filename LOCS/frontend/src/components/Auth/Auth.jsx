@@ -1,22 +1,31 @@
 import React from 'react';
 import '../CommonStyles/Button/Button.css';
+import s from './Auth.module.css';
 
 const Auth = (props) => {
     return (
-        <div>
-            <div><input
+        <div className={s.auth}>
+            <div className={s.message}>{props.currentMessage}</div>
+            <input
+                className={s.email}
                 type='email'
-                placeholder='email'
+                placeholder='Почта'
                 value={props.currentMail}
                 onChange={props.changeCurrentMail}
-            /></div>
-            <div><input
+            />
+            <input
+                className={s.password}
                 type="password"
-                placeholder='password'
+                placeholder='Пароль'
                 value={props.currentPass}
                 onChange={props.changeCurrentPass}
-            /></div>
-            <div className='button' onClick={props.setUser}>Подтвердить</div>
+            />
+            <div
+                className={`button ${s.submit}`}
+                onClick={props.setUser}
+            >
+                Подтвердить
+            </div>
         </div>
     );
 }

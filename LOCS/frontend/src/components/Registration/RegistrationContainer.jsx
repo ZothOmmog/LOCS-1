@@ -6,53 +6,58 @@ import {
     updateNick,
     updateMail,
     updatePass,
-    registration,
-    updateIsReg
+    updateIsReg,
+    registrationThunk,
+    updateMessage,
+    updateSubmitPass
 } from '../../redux/registrationReducer';
-import { userAPI } from '../../api/api';
 
 class RegistrationToApiContainer extends React.Component {
-    componentDidMount() {
-
-    }
-
     componentWillUnmount() {
         this.props.updateMail('');
         this.props.updateNick('');
         this.props.updatePass('');
+        this.props.updatePass('');
+        this.props.updateSubmitPass('');
         this.props.updateIsReg(false);
     }
 
-    registration = (nick, mail, pass) => {
-        userAPI.registration(nick, mail, pass).then(isReg => {
-            const nickFlag = isReg.Login.NickNameFlag;
-            const mailFlag = isReg.Login.MailFlag;
+    onNickChange = (e) => {
+        this.props.updateNick(e.target.value);
+    };
 
-            let message = '';
+    onMailChange = (e) => {
+        this.props.updateMail(e.target.value);
+    };
 
-            if (nickFlag && mailFlag) {
-                message = 'Пользователь успешно загеристрирован, введите данные, чтобы войти.';
-                this.props.registration();
-            }
-            else {
-                message = nickFlag && !mailFlag ? 'почта уже зарегистрирована другим пользователем' :
-                    !nickFlag && mailFlag ? 'ник уже зарегистрирован другим пользователем!' :
-                        'Почта и ник уже зарегистрированы!';
-            }
+    onPassChange = (e) => {
+        this.props.updatePass(e.target.value);
+    };
 
-            alert(message);
-        }, err => console.log(err));
-    }
+    onSubmitPassChange = (e) => {
+        this.props.updateSubmitPass(e.target.value);
+    };
+
+    onSubmitButtonClick = (e) => {
+        const nick = this.props.state.nick;
+        const mail = this.props.state.mail;
+        const pass = this.props.state.pass;
+        const submitPass = this.props.state.submitPass;
+
+        this.props.registrationThunk(nick, mail, pass, submitPass);
+    };
 
     render() {
         if (this.props.state.isReg) return <Redirect to={'/Auth'} />;
 
         return <Registration
             state={this.props.state}
-            updateMail={this.props.updateMail}
-            updateNick={this.props.updateNick}
-            updatePass={this.props.updatePass}
-            registration={this.registration}
+            onNickChange={this.onNickChange}
+            onMailChange={this.onMailChange}
+            onPassChange={this.onPassChange}
+            onSubmitPassChange={this.onSubmitPassChange}
+            onSubmitButtonClick={this.onSubmitButtonClick}
+            registration={this.props.registrationThunk}
         />
     }
 }
@@ -62,6 +67,7 @@ const mapStateToProps = (state) => {
         state: state.registrationPage
     };
 }
-
-export const RegistrationContainer = connect(mapStateToProps,
-    { updateNick, updateMail, updatePass, updateIsReg, registration })(RegistrationToApiContainer);
+export const RegistrationContainer = connect(mapStateToProps, {
+    updateNick, updateMail, updatePass, 
+    updateMessage, updateIsReg, updateSubmitPass, registrationThunk
+})(RegistrationToApiContainer);

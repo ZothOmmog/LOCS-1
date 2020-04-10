@@ -4,49 +4,42 @@ import '../CommonStyles/Button/Button.css';
 
 
 export const Registration = (props) => {
-    const onNickChange = (e) => {
-        props.updateNick(e.target.value);
-    }
-    const onMailChange = (e) => {
-        props.updateMail(e.target.value);
-    }
-    const onPassChange = (e) => {
-        props.updatePass(e.target.value);
-    }
-    const onSubmitButtonClick = () => {
-        const nick = props.state.nick;
-        const mail = props.state.mail;
-        const pass = props.state.pass;
-
-        props.registration(nick, mail, pass);
-    }
-
     return (
-        <div className={`${s.Registration}`}>
+        <div className={s.Registration}>
+            <div className={s.message}>
+                {props.state.message}
+            </div>
             <input
                 className={s.nick}
                 type="text"
                 placeholder="Никнейм"
                 value={props.state.nick}
-                onChange={onNickChange}
+                onChange={props.onNickChange}
             />
             <input
                 className={s.mail}
                 type="email"
                 placeholder="Адрес электронной почты"
                 value={props.state.mail}
-                onChange={onMailChange}
+                onChange={props.onMailChange}
             />
             <input
                 className={s.pass}
                 type="password"
                 placeholder="Пароль"
                 value={props.state.pass}
-                onChange={onPassChange}
+                onChange={props.onPassChange}
+            />
+            <input
+                className={s.submitPass}
+                type="password"
+                placeholder="Повторите пароль"
+                value={props.state.submitPass}
+                onChange={props.onSubmitPassChange}
             />
             <div
                 className={s.submit}
-                onClick={onSubmitButtonClick}
+                onClick={props.onSubmitButtonClick}
             >
                 <div className={"button"}>
                     Зарегистрироваться

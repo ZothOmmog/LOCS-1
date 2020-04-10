@@ -4,6 +4,7 @@ const SET_USER = 'SET_USER';
 const UNSET_USER = 'UNSET_USER';
 const CHANGE_CURRENT_MAIL = 'CHANGE_CURRENT_MAIL';
 const CHANGE_CURRENT_PASS = 'CHANGE_CURRENT_PASS';
+const CHANGE_CURRENT_MESSAGE = 'CHANGE_CURRENT_MESSAGE';
 
 const initialState = {
     user: {
@@ -16,7 +17,8 @@ const initialState = {
     isAuth: false,
     page: {
         currentMail: '',
-        currentPass: ''
+        currentPass: '',
+        currentMessage: ''
     }
 }
 
@@ -33,6 +35,8 @@ const auth = (state = initialState, action) => {
             return { ...state, user: { mail: null, nick: null, city: null, urlPicture: null }, isAuth: false }
         case CHANGE_CURRENT_MAIL:
             return { ...state, page: { ...state.page, currentMail: action.mail } };
+        case CHANGE_CURRENT_MESSAGE:
+            return { ...state, page: { ...state.page, currentMessage: action.currentMessage } };
         case CHANGE_CURRENT_PASS:
             return { ...state, page: { ...state.page, currentPass: action.pass } };
         default:
@@ -63,10 +67,13 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
                 dispatch(setUser(userAdd));
                 alert('Вы успешно авторизированы!');
             }
-            else alert('Ошибка сессии');
+            else dispatch(changeCurrentMessage('Ошибка сессии.'));
         }
-        else alert('Неверно введены логин или пароль.');
-    } catch(err) { console.log(err); }
+        else dispatch(changeCurrentMessage('Неверно введены логин или пароль.'));
+    } 
+    catch (err) { 
+        dispatch(changeCurrentMessage('Ошибка при логинизации: ' + err)); 
+    }
 }
 
 export const setUser = (user) => {
@@ -77,6 +84,9 @@ export const unsetUres = () => {
 }
 export const changeCurrentMail = (newMail) => {
     return { type: CHANGE_CURRENT_MAIL, mail: newMail };
+}
+export const changeCurrentMessage = (currentMessage) => {
+    return { type: CHANGE_CURRENT_MESSAGE, currentMessage: currentMessage };
 }
 export const changeCurrentPass = (newPass) => {
     return { type: CHANGE_CURRENT_PASS, pass: newPass };
