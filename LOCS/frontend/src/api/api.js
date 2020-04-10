@@ -1,31 +1,34 @@
 const baseURL = 'http://localhost:4000/';
 
 export const userAPI = {
-    login(mail, pass) {
-        return fetch(baseURL + `user/login/postLogin`, {
+    async login(mail, pass) {
+        const responce = await fetch(baseURL + `user/login/postLogin`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
             body: JSON.stringify({ Login: { mail: mail, pas: pass } }),
-        })
-            .then(responce => responce.json());
+            credentials: 'include'
+        });
+
+        return responce.json();
     },
 
-    setMe() {
-        return fetch(baseURL + 'user')
-            .then(res => res.json());
+    async setMe() {
+        const responce = await fetch(baseURL + 'user', { credentials: 'include' });
+
+        return responce.json();
     },
 
     async registration(nick, mail, pass) {
         const response = await fetch(baseURL + `user/registration/postreg`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json;charset=utf-8' },
-            body: JSON.stringify({ 
-                Registration: { 
-                    mail: mail, nick: nick, pas: pass 
+            body: JSON.stringify({
+                Registration: {
+                    mail: mail, nick: nick, pas: pass
                 }
             }),
         });
-        
+
         const isReg = await response.json();
 
         return isReg;
