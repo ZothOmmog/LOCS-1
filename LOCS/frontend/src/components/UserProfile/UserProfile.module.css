@@ -1,0 +1,44 @@
+.userProfile {
+    display: grid;
+    grid-template-areas: 'head' 'profile' 'exit';
+    grid-template-rows: 1fr 10fr 1fr;
+    justify-items: center;
+    align-items: center;
+
+    background-color: white;
+    width: 1000px;
+    height: 500px;
+}
+
+.profile {
+    display: grid;
+    grid-template-areas: 'picture profileInfo';
+    grid-column-gap: 10px;
+}
+
+.pictureZone {
+    grid-area: picture;
+    display: grid;
+    grid-row-gap: 2px;
+    justify-items: center;
+}
+
+.addImg {
+    padding: 0px 2px;
+    border-radius: 0;
+}
+
+.picture {
+    width: 100px;
+    height: 100px;
+}
+.profileInfo {
+    grid-area: profileInfo;
+    display: grid;
+    align-items: end;
+}
+
+.exit {
+    width: auto;
+    height: auto;
+}

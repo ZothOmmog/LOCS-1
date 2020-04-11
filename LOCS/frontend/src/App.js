@@ -9,7 +9,8 @@ import {
   AddEventContainer, 
   RegistrationContainer, 
   EventProfileContainer, 
-  AuthContainer 
+  AuthContainer,
+  UserProfileContainer
 } from './components/indexComponents.js';
 
 
@@ -38,6 +39,10 @@ function App() {
       <Route
         path='/EventProfile/:eventId'
         render={() => <EventProfileContainer />}
+      />
+      <Route
+        path='/UserProfile/:userId'
+        render={() => <UserProfileContainer />}
       />
     </div>
   );

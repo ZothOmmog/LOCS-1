@@ -6,3 +6,4 @@ export {AddEventContainer} from './AddEvent/AddEventContainer.jsx';
 export {RegistrationContainer} from './Registration/RegistrationContainer.jsx';
 export {EventProfileContainer} from './EventProfile/EventProfileContainer.jsx';
 export {AuthContainer} from './Auth/AuthContainer.jsx';
+export {UserProfileContainer} from './UserProfile/UserProfileContainer.jsx';
