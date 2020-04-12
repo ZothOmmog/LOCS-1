@@ -1,11 +1,5 @@
-let User = require("../models/userlist.js");
 const path = require('path')
-    //const { body, validationResult } = require('express-validator');
-    //const { sanitizeBody } = require('express-validator');
 let pgp = require("pg-promise")( /*options*/ );
-let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
-
-const session = require('express-session');
 
 
 exports.create = function(request, response) {

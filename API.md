@@ -51,8 +51,8 @@
 		{ 
 			"Login": 
 			{
-				"Mail": "String",
-				"Password": "String"
+				"mail": "String",
+				"pas": "String"
 			 }
 		}
 			

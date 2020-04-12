@@ -17,17 +17,9 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
-
-// let pgp = require("pg-promise")( /*options*/ );
-// let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
-
 app.use(express.static('static'));
-//module.exports = db;
 
-
-
-
-app.use(function (request, response, next) {
+app.use(function(request, response, next) {
     /*
     let now = new Date();
     let hour = now.getHours();
@@ -56,7 +48,7 @@ app.use("/$", mainRouter);
 
 
 
-app.use(function (req, res, next) {
+app.use(function(req, res, next) {
     res.status(404).send("Not Found");
 
 });
