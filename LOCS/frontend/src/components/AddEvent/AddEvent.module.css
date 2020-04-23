@@ -1,0 +1,39 @@
+.AddEvent {
+    grid-area: cnt;
+
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas: "name" "tags" "info" "submit";
+    grid-row-gap: 5px;
+
+    align-items: left;
+    width: 75%;
+}
+
+.AddEvent > * {
+    width: 400px;
+}
+
+.AddEvent > input {
+    height: 2em;
+}
+
+.name {
+    grid-area: name;
+}
+
+.tags {
+    grid-area: tags;
+}
+
+.info {
+    grid-area: info;
+    resize: vertical;
+    height: 200px;
+}
+
+.submit {
+    grid-area: submit;
+    display: grid;
+    justify-items: left;
+}

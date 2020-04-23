@@ -1,0 +1,40 @@
+.Header {
+	grid-area: hdr;
+
+	width: 100%;
+	height: 150px;
+	background-image: url("./logo.svg");
+	background-position: center;
+	
+	display: grid;
+	grid-template-rows: 100%;
+	justify-items: right;
+	align-items: center;
+}
+
+.buttons {
+	margin-right: 5px;
+	display: grid;
+	grid-template-columns: 1fr 0.05fr 2.5fr;
+}
+
+.partition {
+	background-color: black;
+	width: 100%;
+	height: 100%;
+}
+
+.button {
+	background-color: whitesmoke;
+	padding: 5px;
+	text-align: center;
+}
+
+.button:active {
+	background-color: black;
+	color: whitesmoke;
+}
+
+.auth {
+	margin-right: 5px;
+}

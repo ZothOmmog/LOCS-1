@@ -1,163 +1,241 @@
 let User = require("../models/userlist.js");
 const path = require('path')
-let pgp = require("pg-promise")( /*options*/ );
-let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
-
 let crypt = require("../scripts/password.js");
+let tokensUsers = new Map();
+var config = require('../configs/config.json');
+var DataBase = require('../scripts/DataBase.js');
 
-const session = require('express-session');
 
-
-exports.registration = function(request, response) {
-    response.sendFile(path.resolve('static/html/registration.html'))
-};
 exports.postRegistration = async function(request, response) {
-    ///тут берем время (+хэш с солью), данные из формы и заполняем userlsit и visitor
     var CreateTime;
     var CheckMail = false;
     var CheckNick = false;
 
-    await db.many("select CheckUser($1);", request.body.mail)
-        .then(function(data) {
-            CheckMail = data[0].checkuser;
-        })
-    await db.many("select CheckNick($1);", request.body.nick)
-        .then(function(data) {
-            CheckNick = data[0].checknick;
-        })
+    await DataBase.CheckUser(request.body.Registration.mail).then(function(val) {
+        CheckMail = val;
+    });
 
+
+    await DataBase.CheckNick(request.body.Registration.nick).then(function(val) {
+        CheckNick = val;
+    });
 
     if (CheckMail == true & CheckNick == true) {
-        await db.many("SELECT CURRENT_TIMESTAMP;")
-            .then(function(data) {
-                CreateTime = String(data[0].current_timestamp);
-            })
-            .catch(function(error) {
-                CreateTime = String("ERROR:", error);
+        await DataBase.TimeNow().then(function(val) {
+            CreateTime = val;
+        });
+        if (!CreateTime) {
+            response.json({
+                "Login": {
+                    "NickNameFlag": CheckNick,
+                    "MailFlag": CheckMail
+                }
             });
+        }
 
-
-        ///тут где-то функция для хеш пароля
-        var hash = crypt.hash(request.body.pas, CreateTime);
-        console.log(CreateTime);
-        console.log(hash);
-        console.log(request.body.password);
-        console.log("++++");
-
-        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.nick, request.body.mail, hash, "User", 1, CreateTime])
-            .then(data => {}).catch(function(error) {
-                console.log("ERROR:", error);
-                response.redirect("/user/registration");
+        var hash = crypt.hash(request.body.Registration.pas, CreateTime);
+        let checkAdd = false;
+        await DataBase.AddUser(request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime).then(function(val) {
+            checkAdd = val;
+        });
+        if (!checkAdd) {
+            response.json({
+                "Login": {
+                    "NickNameFlag": false,
+                    "MailFlag": false
+                }
             });
-        response.redirect("/user");
+        }
+
+        response.json({
+            "Login": {
+                "NickNameFlag": CheckNick,
+                "MailFlag": CheckMail
+            }
+        });
+
+
     } else {
-        console.log('ПОЛЬЗОВАТЕЛЬ УЖЕ ЕСТЬ В БАЗЕ')
-        response.redirect("/user/registration");
+        //отвечаем, что данные не корректны 
+        response.json({
+            "Login": {
+                "NickNameFlag": CheckNick,
+                "MailFlag": CheckMail
+            }
+        });
     }
 
 };
 
-exports.login = function(request, response) {
-    response.sendFile(path.resolve('static/html/login.html'))
-};
-
 exports.postLogin = async function(request, response) {
-
-    var UserId = false;
+    var UserId;
     var salt = "";
-    await db.many("select DateCreate($1);", [request.body.mail])
-        .then(function(data) {
-            salt = data[0].datecreate;
-        }).catch(function(error) {
-            console.log("ERROR:", error);
-        });
+    await DataBase.DateCreate(request.body.Login.mail).then(function(val) {
+        salt = val;
+    });
 
-
-    var hash = crypt.hash(request.body.password, salt);
-    console.log(request.body.password);
     console.log(salt);
-    console.log(hash);
-    console.log("++++");
-    await db.many("select LogUser($1,$2);", [request.body.mail, hash])
-        .then(function(data) {
-            UserId = data[0].loguser;
-        }).catch(function(error) {
-            console.log("ERROR:", error);
+    if (!salt) {
+        response.json({
+            "Login": {
+                "Flag": false
+            }
         });
+    }
+
+    var hash = crypt.hash(request.body.Login.pas, salt);
+
+    await DataBase.LogUser(request.body.Login.mail, hash).then(function(val) {
+        UserId = val;
+    });
+
+    console.log(UserId);
+
     if (UserId == -1) {
-        console.log("неправильные данные для входа");
-        response.redirect("/user/login");
+        //неправильные данные для входа
+        response.json({
+            "Login": {
+                "Flag": false
+            }
+        });
+
     } else {
-        request.session.user_id_log = UserId;
+
+        //request.session.user_id_log = UserId;
         var Role;
-        await db.many("select RoleUser($1);", UserId)
-            .then(function(data) {
-                Role = data[0].roleuser;
-            }).catch(function(error) {
-                console.log("ERROR:", error);
+
+        await DataBase.RoleUser(UserId).then(function(val) {
+            Role = val;
+        });
+
+        if (!Role) {
+            response.json({
+                "Login": {
+                    "Flag": false
+                }
             });
+        }
+        console.log(Role);
         request.session.user_role = Role;
-        console.log("Вошел user id -", UserId, "Роль ", Role);
-        response.redirect("/user");
+
+        const hashId = crypt.hash(UserId, hash); //сделай вторым аргументом что-нибудь другое, наверно.
+        tokensUsers.set(hashId, UserId);
+
+        response.cookie('userId', hashId, { maxAge: config.cookieLive }).json({
+            "Login": {
+                "Flag": true
+            }
+        });
     }
 };
 
 exports.acc = async function(request, response) {
-    if (request.session.user_id_log != null) {
-        console.log("кабинет user - ", request.session.user_id_log);
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    //console.log(userId);
+    if (userId) {
         var masData;
-        await db.many("select DataUserAccount($1);", request.session.user_id_log)
-            .then(function(data) {
-                let strData = String(data[0].datauseraccount).replace(")", "");
-                strData = strData.replace("(", "");
-                masData = strData.split(',')
-            }).catch(function(error) {
-                console.log("ERROR:", error);
+        await DataBase.DataUserAccount(userId).then(function(val) {
+            masData = val;
+        });
+        if (!masData) {
+            response.json({
+                "User": {
+                    "Mail": "",
+                    "Nick": "",
+                    "City": "",
+                    "UrlPicture": "",
+                    "Auth": false
+                }
             });
+        }
         let UserMail = masData[0];
         let UserNickname = masData[1];
         let UserPicture = masData[2];
         let UserCity = masData[3];
-        // response.sendFile(path.resolve('static/html/account.html'), { mail: UserMail })
-        response.send("<p> почта -" + UserMail + "</p>" + "<p> ник - " + UserNickname + "</p>" + "<p> город - " + UserPicture + "</p>");
+
+        response.json({
+            "User": {
+                "Mail": UserMail,
+                "Nick": UserNickname,
+                "City": UserCity,
+                "UrlPicture": UserPicture,
+                "Auth": true
+            }
+        });
     } else {
-        console.log("Переход на страницу login");
-        response.redirect("/user/login");
+        //Переход на страницу login
+        response.json({
+            "User": {
+                "Mail": "",
+                "Nick": "",
+                "City": "",
+                "UrlPicture": "",
+                "Auth": false
+            }
+        });
     }
 };
 
 exports.logout = function(request, response) {
+
     request.session.destroy((err) => {
         if (err) {
-            return console.log(err);
+            console.log(err);
+            response.json({
+                "logout": false
+            });
         }
-        response.redirect('/');
+        response.json({
+            "logout": true
+        });
     });
 };
 
-exports.searchUser = function(request, response) {
-    db.many("select datauserlist($1) as User;", "%" + request.body.nick + "%")
-        .then(function(data) {
-            response.json(data);
-        }).catch(function(error) {
+exports.searchUser = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+
+        await DataBase.datauserlist(request.body.nick).then(function(val) {
+            data = val;
+        });
+
+        console.log(request.body.nick)
+        console.log(data)
+
+        if (!data) {
             response.json([{
                 "user": {
-                    "id_user": -1,
-                    "nickname": error
+                    "id_user": 0,
+                    "nickname": "not found"
                 }
             }, ]);
-        });
+        } else {
+            response.json(data);
+        }
+    } else {
+        response.json([{
+            "user": {
+                "id_user": -1,
+                "nickname": "user dont sing in"
+            }
+        }, ]);
+    }
 };
 
-// exports.friendList = function(request, response) {
-//     if (request.session.user_id_log != null) {
-//         db.many("select friendList($1);",  request.session.user_id_log )
-//             .then(function(data) {
-//                 response.json(data);
-//             }).catch(function(error) {
-//                 response.json({ user: -1, friend: -1 });
-//             });
-//     } else {
-//         response.json({ user: -1, friend: -1 });
-//     }
-// };
+
+exports.friendList = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+        await DataBase.friendList(userId).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
+        response.json(data);
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};

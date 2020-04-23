@@ -1,0 +1,22 @@
+.button {
+	background-color: black;
+	
+	color: white;
+	text-decoration: none;
+	border: none;
+
+	padding: 5px;
+	border-radius: 10px;
+
+	user-select: none;
+}
+
+.button:hover {
+	background-color: gray;
+	color: black;
+	cursor: pointer;
+}
+
+.button:active {
+	background-color: white;
+}

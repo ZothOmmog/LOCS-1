@@ -1,0 +1,51 @@
+.Registration {
+    grid-area: cnt;
+
+    display: grid;
+    grid-template-rows: auto auto auto auto;
+    grid-template-areas: "message" "nick" "mail" "pass" "submitPass" "submit";
+    grid-row-gap: 5px;
+
+    align-items: center;
+    justify-items: center;
+    width: 75%;
+}
+
+.Registration > * {
+    width: 250px;
+}
+
+.Registration > input {
+    height: 2em;
+}
+
+.message {
+    width: auto;
+    color: red;
+    grid-area: message;
+    margin-bottom: 10px;
+}
+
+.nick {
+    grid-area: nick;
+}
+
+.mail {
+    grid-area: mail;
+}
+
+.pass {
+    grid-area: pass;
+    resize: vertical;
+    height: 200px;
+}
+
+.submitPass {
+    grid-area: submitPass;
+}
+
+.submit {
+    grid-area: submit;
+    display: grid;
+    justify-items: center;
+}

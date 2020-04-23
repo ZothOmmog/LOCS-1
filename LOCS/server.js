@@ -5,15 +5,19 @@ const session = require('express-session');
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const mainRouter = require("./static/JS/routes/mainRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
-// let pgp = require("pg-promise")( /*options*/ );
-// let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
+const corsOptions = {
+    credentials: true,
+    origin: 'http://localhost:3000',
+    optionsSuccessStatus: 200
+};
 
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
 app.use(express.static('static'));
-//module.exports = db;
-
-
-
 
 app.use(function(request, response, next) {
     /*
@@ -48,4 +52,5 @@ app.use(function(req, res, next) {
     res.status(404).send("Not Found");
 
 });
-app.listen(3000);
+
+app.listen(4000);

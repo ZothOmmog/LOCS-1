@@ -1,0 +1,20 @@
+.Navbar {
+	grid-area: nav;
+
+	width: 100%;
+	display: grid;
+	grid-template-rows: 50px;
+
+	justify-items: center;
+	align-items: center;
+
+	background-color: #333;
+}
+
+.events {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-column-gap: 10px;
+	justify-items: center;
+	align-items: center;
+}

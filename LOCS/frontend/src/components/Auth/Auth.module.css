@@ -1,0 +1,34 @@
+.auth {
+    display: grid;
+    grid-template-areas: 'message' 'email' 'password' 'submit';
+    grid-row-gap: 5px;
+    justify-items: center;
+}
+
+.auth > * {
+    width: 250px;
+}
+
+.auth > input {
+    height: 2em;
+}
+
+.message {
+    grid-area: message;
+    width: auto;
+    margin-bottom: 10px;
+}
+
+.email {
+    grid-area: email;
+}
+
+.password {
+    grid-area: password;
+}
+
+.submit {
+    grid-area: submit;
+    width: auto;
+}
+
