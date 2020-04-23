@@ -223,6 +223,7 @@ exports.searchUser = async function(request, response) {
     }
 };
 
+
 exports.friendList = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
     if (userId) {
@@ -235,6 +236,6 @@ exports.friendList = async function(request, response) {
 
         response.json(data);
     } else {
-        response.json({ err: "not sign up" });
+        response.json({ err: "user dont sing in" });
     }
 };
