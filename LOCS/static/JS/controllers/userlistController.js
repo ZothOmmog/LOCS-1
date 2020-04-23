@@ -2,13 +2,9 @@ let User = require("../models/userlist.js");
 const path = require('path')
 let crypt = require("../scripts/password.js");
 let tokensUsers = new Map();
-var config = require('../scripts/config.json');
+var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
-//const session = require('express-session');
 
-// exports.registration = function(request, response) {
-//     response.sendFile(path.resolve('static/html/registration.html'))
-// };
 
 exports.postRegistration = async function(request, response) {
     var CreateTime;
@@ -18,20 +14,11 @@ exports.postRegistration = async function(request, response) {
     await DataBase.CheckUser(request.body.Registration.mail).then(function(val) {
         CheckMail = val;
     });
-    // await db.many("select CheckUser($1);", request.body.Registration.mail)
-    //     .then(function(data) {
-    //         CheckMail = data[0].checkuser;
-    //     })
+
 
     await DataBase.CheckNick(request.body.Registration.nick).then(function(val) {
         CheckNick = val;
     });
-    // await db.many("select CheckNick($1);", request.body.Registration.nick)
-    //     .then(function(data) {
-    //         CheckNick = data[0].checknick;
-    //     })
-
-
 
     if (CheckMail == true & CheckNick == true) {
         await DataBase.TimeNow().then(function(val) {
@@ -45,18 +32,6 @@ exports.postRegistration = async function(request, response) {
                 }
             });
         }
-        // await db.many("SELECT CURRENT_TIMESTAMP;")
-        //     .then(function(data) {
-        //         CreateTime = String(data[0].current_timestamp);
-        //     })
-        //     .catch(function(error) {
-        //         response.json({
-        //             "Login": {
-        //                 "NickNameFlag": false,
-        //                 "MailFlag": false
-        //             }
-        //         });
-        //     });
 
         var hash = crypt.hash(request.body.Registration.pas, CreateTime);
         let checkAdd = false;
@@ -71,10 +46,6 @@ exports.postRegistration = async function(request, response) {
                 }
             });
         }
-
-
-        // db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime])
-        //     .then(data => {}).catch(function(error) {});
 
         response.json({
             "Login": {
@@ -96,21 +67,9 @@ exports.postRegistration = async function(request, response) {
 
 };
 
-// exports.login = function(request, response) {
-//     response.sendFile(path.resolve('static/html/login.html'))
-// };
-
 exports.postLogin = async function(request, response) {
     var UserId;
     var salt = "";
-    //console.log(await DataBase.DateCreate(request.body.Login.mail));
-    // DataBase.DateCreate(request.body.Login.mail).then(function(value) {
-    //     console.log("##############3");
-    //     console.log(value);
-    // }).catch(function(error) {
-    //     console.log(error);
-    // });
-
     await DataBase.DateCreate(request.body.Login.mail).then(function(val) {
         salt = val;
     });
@@ -124,18 +83,6 @@ exports.postLogin = async function(request, response) {
         });
     }
 
-    // await db.many("select DateCreate($1);", [request.body.Login.mail])
-    //     .then(function(data) {
-    //         salt = data[0].datecreate;
-    //     }).catch(function(error) {
-    //         console.log("1");
-    //         response.json({
-    //             "Login": {
-    //                 "Flag": false
-    //             }
-    //         });
-    //     });
-
     var hash = crypt.hash(request.body.Login.pas, salt);
 
     await DataBase.LogUser(request.body.Login.mail, hash).then(function(val) {
@@ -143,17 +90,6 @@ exports.postLogin = async function(request, response) {
     });
 
     console.log(UserId);
-    // await db.many("select LogUser($1,$2);", [request.body.Login.mail, hash])
-    //     .then(function(data) {
-    //         UserId = data[0].loguser;
-    //     }).catch(function(error) {
-    //         console.log("12");
-    //         response.json({
-    //             "Login": {
-    //                 "Flag": false
-    //             }
-    //         });
-    //     });
 
     if (UserId == -1) {
         //неправильные данные для входа
@@ -165,24 +101,12 @@ exports.postLogin = async function(request, response) {
 
     } else {
 
-        request.session.user_id_log = UserId;
+        //request.session.user_id_log = UserId;
         var Role;
 
         await DataBase.RoleUser(UserId).then(function(val) {
             Role = val;
         });
-
-        // await db.many("select RoleUser($1);", UserId)
-        //     .then(function(data) {
-        //         Role = data[0].roleuser;
-        //     }).catch(function(error) {
-        //         console.log("13");
-        //         response.json({
-        //             "Login": {
-        //                 "Flag": false
-        //             }
-        //         });
-        //     });
 
         if (!Role) {
             response.json({
@@ -207,7 +131,7 @@ exports.postLogin = async function(request, response) {
 
 exports.acc = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
-
+    //console.log(userId);
     if (userId) {
         var masData;
         await DataBase.DataUserAccount(userId).then(function(val) {
@@ -224,22 +148,6 @@ exports.acc = async function(request, response) {
                 }
             });
         }
-        // await db.many("select DataUserAccount($1);", userId)
-        //     .then(function(data) {
-        //         let strData = String(data[0].datauseraccount).replace(")", "");
-        //         strData = strData.replace("(", "");
-        //         masData = strData.split(',')
-        //     }).catch(function(error) {
-        //         response.json({
-        //             "User": {
-        //                 "Mail": "",
-        //                 "Nick": "",
-        //                 "City": "",
-        //                 "UrlPicture": "",
-        //                 "Auth": false
-        //             }
-        //         });
-        //     });
         let UserMail = masData[0];
         let UserNickname = masData[1];
         let UserPicture = masData[2];
@@ -283,41 +191,50 @@ exports.logout = function(request, response) {
     });
 };
 
-exports.searchUser = function(request, response) {
-    var data;
-    data = DataBase.datauserlist(request.body.nick);
-    if (!data) {
+exports.searchUser = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+
+        await DataBase.datauserlist(request.body.nick).then(function(val) {
+            data = val;
+        });
+
+        console.log(request.body.nick)
+        console.log(data)
+
+        if (!data) {
+            response.json([{
+                "user": {
+                    "id_user": 0,
+                    "nickname": "not found"
+                }
+            }, ]);
+        } else {
+            response.json(data);
+        }
+    } else {
         response.json([{
             "user": {
                 "id_user": -1,
-                "nickname": error
+                "nickname": "user dont sing in"
             }
         }, ]);
-    } else {
-        response.json(data);
     }
-    // db.many("select datauserlist($1) as User;", "%" + request.body.nick + "%")
-    //     .then(function(data) {
-    //         response.json(data);
-    //     }).catch(function(error) {
-    //         response.json([{
-    //             "user": {
-    //                 "id_user": -1,
-    //                 "nickname": error
-    //             }
-    //         }, ]);
-    //     });
 };
 
-// exports.friendList = function(request, response) {
-//     if (request.session.user_id_log != null) {
-//         db.many("select friendList($1);",  request.session.user_id_log )
-//             .then(function(data) {
-//                 response.json(data);
-//             }).catch(function(error) {
-//                 response.json({ user: -1, friend: -1 });
-//             });
-//     } else {
-//         response.json({ user: -1, friend: -1 });
-//     }
-// };
+exports.friendList = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+        await DataBase.friendList(userId).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
+        response.json(data);
+    } else {
+        response.json({ err: "not sign up" });
+    }
+};

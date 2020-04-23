@@ -57,7 +57,7 @@ const AddUser = (nick, mail, hashpas, role, city, createtime) => {
 
 const DateCreate = (mail) => {
     return new Promise((resolve, reject) => {
-        db.many("select DateCreate($1);", [mail])
+        db.manyOrNone("select DateCreate($1);", [mail])
             .then(function(data) {
                 resolve(data[0].datecreate);
             }).catch(function() {
@@ -70,7 +70,7 @@ const DateCreate = (mail) => {
 //ID авторазации 
 const LogUser = (mail, hashpas) => {
     return new Promise((resolve, reject) => {
-        db.many("select LogUser($1,$2);", [mail, hashpas])
+        db.manyOrNone("select LogUser($1,$2);", [mail, hashpas])
             .then(function(data) {
                 resolve(data[0].loguser);
             }).catch(function() {
@@ -83,7 +83,7 @@ const LogUser = (mail, hashpas) => {
 //Роль пользователя
 const RoleUser = (UserId) => {
     return new Promise((resolve, reject) => {
-        db.many("select RoleUser($1);", UserId)
+        db.manyOrNone("select RoleUser($1);", UserId)
             .then(function(data) {
                 resolve(data[0].roleuser);
             }).catch(function() {
@@ -97,7 +97,7 @@ const RoleUser = (UserId) => {
 
 const DataUserAccount = (userId) => {
     return new Promise((resolve, reject) => {
-        db.many("select DataUserAccount($1);", userId)
+        db.manyOrNone("select DataUserAccount($1);", userId)
             .then(function(data) {
 
                 let strData = String(data[0].datauseraccount).replace(")", "");
@@ -113,13 +113,55 @@ const DataUserAccount = (userId) => {
 
 
 //ID и ник по поиску 
-let datauserlist = (nick) => {
+const datauserlist = (nick) => {
     return new Promise((resolve, reject) => {
-        db.many("select datauserlist($1) as User;", "%" + nick + "%")
+        db.manyOrNone("select datauserlist($1) as User;", "%" + nick + "%")
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
                 reject("ERROR BD: datauserlist");
+                return;
+            });
+    });
+};
+
+//Список друзей
+const friendList = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendList($1) as friend;", [id])
+            .then(data => {
+                resolve(data);
+            }).catch(function(err) {
+                console.log(err);
+                reject("ERROR BD: friendList ");
+                return;
+            });
+
+    });
+};
+
+//Список отправленых заявок 
+const friendRequestsSent = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendRequestsSent($1) as request;", [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: friendRequestsSent");
+                return;
+            });
+    });
+};
+
+
+//Список входящих заявок 
+let friendRequests = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendRequests($1) as request;", [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: friendRequests");
                 return;
             });
     });
@@ -134,5 +176,8 @@ module.exports = {
     'LogUser': LogUser,
     'RoleUser': RoleUser,
     'DataUserAccount': DataUserAccount,
-    'datauserlist': datauserlist
+    'datauserlist': datauserlist,
+    'friendList': friendList,
+    'friendRequestsSent': friendRequestsSent,
+    'friendRequests': friendRequests
 };

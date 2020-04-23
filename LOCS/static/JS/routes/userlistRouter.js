@@ -11,7 +11,8 @@ userlistRouter.use("/login/postlogin$", userlistController.postLogin);
 
 userlistRouter.use("/logout$", userlistController.logout);
 
-
 userlistRouter.post("/SearchUser$", userlistController.searchUser);
+
+userlistRouter.get("/Friends$", userlistController.friendList);
 
 module.exports = userlistRouter;
