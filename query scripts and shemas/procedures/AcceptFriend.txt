@@ -1,0 +1,9 @@
+--Подтверждение заявки в друзья (user 1 Подтверждает)
+--drop PROCEDURE AcceptFriend;
+CREATE OR REPLACE PROCEDURE AcceptFriend(iduser1 bigint,iduser2 bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update friend_list set accept = true where id_user = iduser2 and id_user2 = iduser1; 
+END;
+$BODY$;

@@ -1,0 +1,9 @@
+--добавление заявки в друзья
+--drop PROCEDURE AddFriend;
+CREATE OR REPLACE PROCEDURE AddFriend(iduser1 bigint,iduser2 bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO friend_list(id_user, id_user2) values (iduser1, iduser2);
+END;
+$BODY$;
