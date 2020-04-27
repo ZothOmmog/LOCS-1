@@ -116,11 +116,15 @@ exports.postLogin = async function(request, response) {
             });
         }
         console.log(Role);
-        request.session.user_role = Role;
+        //request.session.user_role = Role;
 
         const hashId = crypt.hash(UserId, hash); //сделай вторым аргументом что-нибудь другое, наверно.
-        tokensUsers.set(hashId, UserId);
+        const hashIdR = crypt.hash(Role, hash);
 
+        tokensUsers.set(hashId, UserId);
+        tokensUsers.set(hashIdR, Role);
+
+        response.cookie('userRole', hashIdR, { maxAge: config.cookieLive })
         response.cookie('userId', hashId, { maxAge: config.cookieLive }).json({
             "Login": {
                 "Flag": true
