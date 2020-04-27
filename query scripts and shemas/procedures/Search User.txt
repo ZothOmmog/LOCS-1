@@ -1,4 +1,4 @@
---Функция, которая по id пользователя возвращает данные для л.к.
+--Функция, которая по id пользователя возвращает данные пользователей, поиск 
 
 CREATE OR REPLACE FUNCTION datauserlist(text_ text) 
 RETURNS table (j json) AS

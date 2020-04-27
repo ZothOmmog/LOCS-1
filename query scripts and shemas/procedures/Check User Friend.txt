@@ -1,0 +1,37 @@
+--Проверка,  -1 - нет в друзьях, 0 отпралена заявка, 1 - входящая заявка, 2 - в друзьях
+CREATE OR REPLACE function FriendStatus(iduser1 bigint,iduser2 bigint)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    friend_ bool;
+ 	toAccept_ bool;
+  	sent_ bool;
+BEGIN
+	select into friend_ accept from (select accept from friend_list where 
+								  id_user = iduser1 and iduser2 = id_user2 
+								  and deleted = false and accept= true 
+								  union all select accept from friend_list where 
+								  id_user = iduser2 and iduser1 = id_user2 
+								  and deleted = false and accept= true) a;
+								  
+  	select into toAccept_ accept from friend_list where id_user = iduser2 
+									and id_user2 = iduser1 
+								  	and deleted = false; 
+									
+	select into sent_ accept from friend_list where  id_user = iduser1 
+									and id_user2 = iduser2 
+								  	and deleted = false; 
+	IF  friend_ = true THEN
+        	RETURN 2;
+			END IF;
+	IF  toAccept_ =  false then 
+		RETURN 1;
+		END IF;
+	IF  sent_ =  false then 
+		RETURN 0;		
+    END IF;
+	RETURN -1;
+END;
+$BODY$;
+

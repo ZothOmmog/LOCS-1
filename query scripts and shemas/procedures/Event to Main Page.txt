@@ -1,0 +1,3 @@
+///в процессе
+SELECT a.name, a.info, a.title FROM ( select event.name, event.info, topic.title 
+									 from event, topic, event_topic where topic.id = event_topic.id_topic and event_topic.id_event = event.id) a;

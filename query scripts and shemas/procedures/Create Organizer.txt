@@ -1,0 +1,14 @@
+--добавление организатора
+--drop PROCEDURE AddOrganizer;
+CREATE OR REPLACE PROCEDURE AddOrganizer(id_ bigint,info_ text, organization_name text, organization_link text, logo_ text, banned bool default false)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	if (select count(*) from organizer where id_user=id_)=0 then
+   INSERT INTO organizer(id_user, info, organization_name, organization_link, logo, banned ) values ( id_,info_, organization_name, organization_link, logo_, banned);
+	end if;
+END;
+$BODY$;
+
+
+

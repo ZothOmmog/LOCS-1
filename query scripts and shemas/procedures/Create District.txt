@@ -1,0 +1,9 @@
+--добавление района
+--drop PROCEDURE AddDistrict;
+CREATE OR REPLACE PROCEDURE AddDistrict(title_ text,idcity bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO district(title, id_city) values (title_, idcity);
+END;
+$BODY$;

@@ -1,0 +1,10 @@
+--добавление мероприятия
+--drop PROCEDURE AddEvent;
+CREATE OR REPLACE PROCEDURE AddEvent(name_ text,info_ text, link_ text, ticket_price_ numeric, id_org bigint, id_address_ bigint, publish_ bool default false)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO event( name, info, link, ticket_price, id_organizer, id_address, published ) values (name_ ,info_ , link_ , ticket_price_ , id_org , id_address_ , false );
+END;
+$BODY$;
+
