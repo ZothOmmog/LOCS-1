@@ -1,20 +1,15 @@
 .Navbar {
-	grid-area: nav;
-
-	width: 100%;
-	display: grid;
-	grid-template-rows: 50px;
-
-	justify-items: center;
-	align-items: center;
-
+	display: flex;
 	background-color: #333;
+	justify-content: center;
+	align-items: center;
+	height: 50px;
 }
 
-.events {
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	grid-column-gap: 10px;
-	justify-items: center;
-	align-items: center;
+.NavbarOutherWrapper {
+	margin-top: 1vh;
+}
+
+.Navbar__item + .Navbar__item {
+	margin-left: 1%;
 }

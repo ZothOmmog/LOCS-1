@@ -1,34 +1,38 @@
 .Lenta {
-	grid-area: cnt;
-
-	width: 1000px;
-	height: 1400px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
 	background-color: white;
-	margin-bottom: 100px;
+	height: 150vh;
+}
 
-	display: grid;
-	grid-template-columns: 1fr;
-	grid-template-rows: 2fr 40fr 1fr;
-	grid-template-areas: "head" "events" "pages";
-	grid-row-gap: 10px;
-
-	justify-items: center;
+.LentaOutherWrapper {
+	margin: 3vh 5vw 2vh;
 }
 
 .head {
-	grid-area: head;
 	font-size: 2.5em;
+	text-align: center;
+	width: 50%;
+	padding-bottom: 1vw;
+	margin-top: 2vw;
+	border-bottom: 2px #434343 solid;
+
+}
+
+@media (max-width: 600px) {
+	.head {
+		font-size: 1.5em;
+	}	
 }
 
 .events {
-	/* overflow-x: auto; */
-	grid-area: events;
 	height: 100%;
 	width: 100%;
 }
 
 .pages {
-	grid-area: pages;
 	padding-bottom: 20px;
 }
 

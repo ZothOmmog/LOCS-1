@@ -1,34 +1,37 @@
-.auth {
-    display: grid;
-    grid-template-areas: 'message' 'email' 'password' 'submit';
-    grid-row-gap: 5px;
-    justify-items: center;
+.Auth {
+    display: flex;
+    height: 60vh;
+    justify-content: center;
+    align-items: center;
 }
 
-.auth > * {
-    width: 250px;
+.AuthOutherWrapper {
+    margin: 0 5vw;
+} 
+
+.AuthInnerWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 250px;
 }
 
-.auth > input {
-    height: 2em;
+.Auth__Title {
+    margin: 0 0 1vh;
+    text-align: center;
 }
 
-.message {
-    grid-area: message;
-    width: auto;
-    margin-bottom: 10px;
+.Auth__Message {
+    margin-bottom: 1vh;
+    text-align: center;
 }
 
-.email {
-    grid-area: email;
+.Auth__Input {
+    padding: 10px;
+    margin-bottom: 1vh;
 }
 
-.password {
-    grid-area: password;
+.Auth__Button {
+    width: 150px;
+    text-align: center;
+    align-self: center;
 }
-
-.submit {
-    grid-area: submit;
-    width: auto;
-}
-

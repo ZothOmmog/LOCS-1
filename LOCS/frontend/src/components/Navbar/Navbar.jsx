@@ -6,16 +6,14 @@ import { NavLink } from 'react-router-dom';
 
 export function Navbar() {
 	return (
-		<div className={s.Navbar}>
-			<div className={s.events}>
-				<NavLink to="/Lenta" className="button">
-					Лента Мероприятий
-				</NavLink>
+		<div className={s.Navbar + ' ' + s.NavbarOutherWrapper}>
+			<NavLink to="/Lenta" className={s.Navbar__item + ' button'}>
+				Лента Мероприятий
+			</NavLink>
 
-				<NavLink to="/AddEvent" className="button">
-					Новое Мероприятие
-				</NavLink>
-			</div>
+			<NavLink to="/AddEvent" className={s.Navbar__item + ' button'}>
+				Новое Мероприятие
+			</NavLink>
 		</div>
 	);
 }

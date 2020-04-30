@@ -24,7 +24,7 @@ const Lenta = (props) => {
 	// });
 
 	return (
-		<div className={s.Lenta}>
+		<div className={s.Lenta + ' ' + s.LentaOutherWrapper}>
 			<div className={s.head}>Лента Мероприятий</div>
 			<div className={s.events}>
 				{/* {events} */}

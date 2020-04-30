@@ -1,0 +1,51 @@
+.UserProfile {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+
+    &__Title {
+        margin: 1vh 0 0;
+    }
+
+    &OutherWrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    &InnerWrapper {
+        display: flex;
+
+        &Picture {
+            display: flex;
+            flex-direction: column;
+
+            &__Img {
+                max-width: 110px;
+            }
+
+            &__Button {
+                max-width: 110px;
+                text-align: center;
+                border-radius: 0;
+            }
+        }
+
+        &Describtion {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin-left: 1vw;
+        }
+
+        &__ExitButton {
+            text-align: center;
+            margin-top: 2vh;
+            align-self: center;
+        }
+    }
+}
+

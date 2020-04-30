@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
-import style from './App.module.css';
+import style from './App.module.scss';
 import { 
   HeaderContainer, 
   Navbar, 
@@ -42,7 +42,7 @@ function App() {
       />
       <Route
         path='/UserProfile/:userId'
-        render={() => <UserProfileContainer />}
+        render={() => <div className={style.AppUserProfileOutherWrapper}> <UserProfileContainer /> </div>}
       />
     </div>
   );
