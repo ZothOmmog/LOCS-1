@@ -125,10 +125,40 @@ const datauserlist = (nick) => {
     });
 };
 
+//ID и ник по поиску с ограничениями 
+const datauserlistLimit = (nick, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select datauserlistwithlimit($1,$2,$3) as User;", ["%" + nick + "%", limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: datauserlist");
+                return;
+            });
+    });
+};
+
+
 //Список друзей
 const friendList = (id) => {
     return new Promise((resolve, reject) => {
         db.manyOrNone("select friendList($1) as friend;", [id])
+            .then(data => {
+                resolve(data);
+            }).catch(function(err) {
+                console.log(err);
+                reject("ERROR BD: friendList ");
+                return;
+            });
+
+    });
+};
+
+
+//Список друзей странично
+const friendListLimit = (id, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendListWithLimit($1,$2,$3) as friend;", [id, limit, offset])
             .then(data => {
                 resolve(data);
             }).catch(function(err) {
@@ -167,17 +197,151 @@ let friendRequests = (id) => {
     });
 };
 
+
+//Список входящих заявок  странично
+let friendRequestsWithLimit = (id, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendRequestsWithLimit($1,$2,$3) as request;", [id, limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: friendRequestsWithLimit");
+                return;
+            });
+    });
+};
+
+
+//доабвление в друзья
+let addFriend = (id, id2) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddFriend($1, $2);', [id, id2])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddFriend");
+                return;
+            });
+    })
+}
+
+//Подтверждение заявки в друзья (user 1 Подтверждает)
+let acceptFriend = (id, id2) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AcceptFriend($1, $2);', [id, id2])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AcceptFriend");
+                return;
+            });
+    })
+}
+
+//Удаление из друзей
+let deleteFriend = (id, id2) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call DeleteFriend($1, $2);', [id, id2])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: DeleteFriend");
+                return;
+            });
+    })
+}
+
+
+// Статус друзей. Проверка,  -1 - нет в друзьях, 0 отпралена заявка, 1 - входящая заявка, 2 - в друзьях
+let friendStatus = (id, id2) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select FriendStatus($1);", [id, id2])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: FriendStatus");
+                return;
+            });
+    });
+};
+
+///////////////////
+//Добавить район
+let addDistrict = (title, id_city) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddDistrict($1, $2);', [title, id_city])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddDistrict");
+                return;
+            });
+    })
+}
+
+//Добавить адрес
+let addAddress = (street, house, latitude, longitude, idDistrict) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddAddress($1, $2,$3,$4,$5);', [street, house, latitude, longitude, idDistrict])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddAddress");
+                return;
+            });
+    })
+}
+
+
+///////////////////
+//Добавить событие (не учитывает теги, отдельная процедура)
+let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddEvent");
+                return;
+            });
+    })
+}
+
 module.exports = {
-    'CheckUser': CheckUser,
-    'CheckNick': CheckNick,
-    'TimeNow': TimeNow,
-    'AddUser': AddUser,
-    'DateCreate': DateCreate,
-    'LogUser': LogUser,
-    'RoleUser': RoleUser,
-    'DataUserAccount': DataUserAccount,
-    'datauserlist': datauserlist,
-    'friendList': friendList,
-    'friendRequestsSent': friendRequestsSent,
-    'friendRequests': friendRequests
+
+    //пользователь
+    'CheckUser': CheckUser, //проверка, что такое мыло есть
+    'CheckNick': CheckNick, //проверка, что такой ник есть
+    'AddUser': AddUser, //регистрация нового пользователя
+    'DateCreate': DateCreate, //Дата создания по почте
+    'LogUser': LogUser, //ID авторазации 
+    'RoleUser': RoleUser, //Роль пользователя
+    'DataUserAccount': DataUserAccount, //Данные об аккаунте по ID
+    'datauserlist': datauserlist, //ID и ник по поиску 
+    'datauserlistLimit': datauserlistLimit, //ID и ник по поиску с ограничениями
+    'friendList': friendList, //Список друзей
+    'friendListLimit': friendListLimit, //Список друзей странично
+    'friendRequestsWithLimit': friendRequestsWithLimit, //Список входящих заявок постранично 
+    'friendRequests': friendRequests, //Список входящих заявок
+
+    'friendRequestsSent': friendRequestsSent, //Список отправленых заявок 
+
+
+
+
+    'addFriend': addFriend, //доабвление в друзья
+    'acceptFriend': acceptFriend, //Подтверждение заявки в друзья (user 1 Подтверждает)
+    'deleteFriend': deleteFriend, //Удаление из друзей
+    'friendStatus': friendStatus, // Статус друзей. Проверка,  -1 - нет в друзьях, 0 отпралена заявка, 1 - входящая заявка, 2 - в друзьях
+
+    ///бд
+    'TimeNow': TimeNow, //время бд сейчас
+
+    //для админки 
+    'addDistrict': addDistrict, //Добавить район
+    'addAddress': addAddress, //Добавить адрес
+
+
+    //события 
+    'addEvent': addEvent,
 };

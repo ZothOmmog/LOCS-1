@@ -243,3 +243,92 @@ exports.friendList = async function(request, response) {
         response.json({ err: "user dont sing in" });
     }
 };
+
+////дальше в api нет :с
+
+exports.friendListWithLimit = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        let limit = request.params.limit;
+        let offset = (request.params.offset - 1) * limit;
+        var data;
+        await DataBase.friendListLimit(userId, limit, offset).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+        response.json(data);
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+exports.searchUserWithLimit = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+        let limit = request.params.limit;
+        let offset = (request.params.offset - 1) * limit;
+        await DataBase.datauserlistLimit(request.body.nick, limit, offset).then(function(val) {
+            data = val;
+        });
+
+        if (!data) {
+            response.json([{
+                "user": {
+                    "id_user": 0,
+                    "nickname": "not found"
+                }
+            }, ]);
+        } else {
+            response.json(data);
+        }
+    } else {
+        response.json([{
+            "user": {
+                "id_user": -1,
+                "nickname": "user dont sing in"
+            }
+        }, ]);
+    }
+};
+
+
+
+
+exports.friendRequests = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+        await DataBase.friendRequests(userId).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+        response.json(data);
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+
+
+
+exports.friendRequestsWithLimit = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        let limit = request.params.limit;
+        let offset = (request.params.offset - 1) * limit;
+        var data;
+        await DataBase.friendRequestsWithLimit(userId, limit, offset).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+        response.json(data);
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};

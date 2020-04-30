@@ -1,0 +1,12 @@
+--Функция, которая по id пользователя возвращает друзей (подтвержденные) с ограничениями
+CREATE OR REPLACE FUNCTION friendListWithLimit(num_user bigint, count_ numeric, start_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (SELECT id_user,nickname FROM visitor WHERE id_user in
+										  (select id_user2 as friend_id from friend_list where accept=true
+										   and id_user=num_user and deleted = false union all
+										   select id_user as friend_id from friend_list where accept=true
+										   and id_user2=num_user and deleted = false)) a LIMIT count_ OFFSET start_ ;
+END;
+$$ LANGUAGE plpgsql;

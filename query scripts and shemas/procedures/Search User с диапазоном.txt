@@ -1,5 +1,5 @@
 --Функция, которая по id пользователя возвращает данные пользователей, поиск c заданной выборкой 
-CREATE OR REPLACE FUNCTION datauserlist(text_ text, count_ numeric, start_ numeric) 
+CREATE OR REPLACE FUNCTION datauserlistwithlimit(text_ text, count_ numeric, start_ numeric) 
 RETURNS table (j json) AS
 $$
 BEGIN
