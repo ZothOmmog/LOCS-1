@@ -9,7 +9,7 @@ const CheckUser = (mail) => {
             .then(function(data) {
                 resolve(data[0].checkuser);
             }).catch(function() {
-                reject("ERROR BD: DateCreate");
+                reject("ERROR BD: CheckUser");
                 return;
             });
     });
@@ -47,7 +47,7 @@ const AddUser = (nick, mail, hashpas, role, city, createtime) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: TimeNow");
+                reject("ERROR BD: AddUser");
                 return;
             });
     });
@@ -125,6 +125,19 @@ const datauserlist = (nick) => {
     });
 };
 
+//count(ID и ник по поиску )
+const Countdatauserlist = (nick) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select count(*) from ( select datauserlist($1) )a;", ["%" + nick + "%"])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: Countdatauserlist");
+                return;
+            });
+    });
+};
+
 //ID и ник по поиску с ограничениями 
 const datauserlistLimit = (nick, limit, offset) => {
     return new Promise((resolve, reject) => {
@@ -132,7 +145,7 @@ const datauserlistLimit = (nick, limit, offset) => {
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
-                reject("ERROR BD: datauserlist");
+                reject("ERROR BD: datauserlistLimit");
                 return;
             });
     });
@@ -163,7 +176,22 @@ const friendListLimit = (id, limit, offset) => {
                 resolve(data);
             }).catch(function(err) {
                 console.log(err);
-                reject("ERROR BD: friendList ");
+                reject("ERROR BD: friendListLimit ");
+                return;
+            });
+
+    });
+};
+
+//Размер списка друзей 
+const CountfriendListLimit = (id, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select count(*) from (select friendList($1))a;", [id])
+            .then(data => {
+                resolve(data);
+            }).catch(function(err) {
+                console.log(err);
+                reject("ERROR BD: CountfriendListLimit ");
                 return;
             });
 
@@ -183,6 +211,34 @@ const friendRequestsSent = (id) => {
     });
 };
 
+//колличество отправленых заявок 
+const countfriendRequestsSent = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select count(*) from (select friendRequestsSent($1))a;", [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: countfriendRequestsSent");
+                return;
+            });
+    });
+};
+
+
+//Список отправленых заявок странично 
+const friendRequestsSentWithLimit = (id, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select friendRequestsSentWithLimit($1,$2,$3) as request;", [id, limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: friendRequestsSentWithLimit");
+                return;
+            });
+    });
+};
+
+
 
 //Список входящих заявок 
 let friendRequests = (id) => {
@@ -192,6 +248,19 @@ let friendRequests = (id) => {
                 resolve(data);
             }).catch(function() {
                 reject("ERROR BD: friendRequests");
+                return;
+            });
+    });
+};
+
+//Список входящих заявок (колличество)
+let CountfriendRequests = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select count(*) from (select friendRequests($1))a;", [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: CountfriendRequests");
                 return;
             });
     });
@@ -317,16 +386,22 @@ module.exports = {
     'LogUser': LogUser, //ID авторазации 
     'RoleUser': RoleUser, //Роль пользователя
     'DataUserAccount': DataUserAccount, //Данные об аккаунте по ID
+
     'datauserlist': datauserlist, //ID и ник по поиску 
     'datauserlistLimit': datauserlistLimit, //ID и ник по поиску с ограничениями
+    'Countdatauserlist': Countdatauserlist, //count(ID и ник по поиску )
+
     'friendList': friendList, //Список друзей
     'friendListLimit': friendListLimit, //Список друзей странично
+    'CountfriendListLimit': CountfriendListLimit, //Размер списка друзей 
+
     'friendRequestsWithLimit': friendRequestsWithLimit, //Список входящих заявок постранично 
     'friendRequests': friendRequests, //Список входящих заявок
+    'CountfriendRequests': CountfriendRequests, //Колличество  входящих заявок
 
     'friendRequestsSent': friendRequestsSent, //Список отправленых заявок 
-
-
+    'countfriendRequestsSent': countfriendRequestsSent, //Колличество отправленых заявок
+    'friendRequestsSentWithLimit': friendRequestsSentWithLimit, //Список отправленых заявок с ограничениями
 
 
     'addFriend': addFriend, //доабвление в друзья

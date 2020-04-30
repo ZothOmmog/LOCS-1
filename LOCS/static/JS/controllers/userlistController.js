@@ -251,13 +251,24 @@ exports.friendListWithLimit = async function(request, response) {
     if (userId) {
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
+        offset = offset <= 0 ? 1 : offset;
+        limit = limit <= 0 ? 1 : limit;
         var data;
+        var count;
+
+        await DataBase.CountfriendListLimit(userId, limit, offset).then(function(val) {
+            count = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
         await DataBase.friendListLimit(userId, limit, offset).then(function(val) {
             data = val;
         }).catch(function(er) {
             response.json({ err: "#" + er });
         });
-        response.json(data);
+
+        response.json({ "count": count[0].count, data });
     } else {
         response.json({ err: "user dont sing in" });
     }
@@ -270,6 +281,14 @@ exports.searchUserWithLimit = async function(request, response) {
         var data;
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
+        offset = offset <= 0 ? 1 : offset;
+        limit = limit <= 0 ? 1 : limit;
+        let count;
+
+        await DataBase.Countdatauserlist(request.body.nick, limit, offset).then(function(val) {
+            count = val;
+        });
+
         await DataBase.datauserlistLimit(request.body.nick, limit, offset).then(function(val) {
             data = val;
         });
@@ -282,7 +301,7 @@ exports.searchUserWithLimit = async function(request, response) {
                 }
             }, ]);
         } else {
-            response.json(data);
+            response.json({ "count": count[0].count, data });
         }
     } else {
         response.json([{
@@ -294,14 +313,56 @@ exports.searchUserWithLimit = async function(request, response) {
     }
 };
 
-
-
-
 exports.friendRequests = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
     if (userId) {
         var data;
         await DataBase.friendRequests(userId).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+        response.json({ count: 123, data });
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+exports.friendRequestsWithLimit = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        let limit = request.params.limit;
+        let offset = (request.params.offset - 1) * limit;
+        offset = offset <= 0 ? 1 : offset;
+        limit = limit <= 0 ? 1 : limit;
+        var data;
+        var count;
+        await DataBase.friendRequestsWithLimit(userId, limit, offset).then(function(val) {
+            data = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
+        await DataBase.CountfriendRequests(userId, limit, offset).then(function(val) {
+            count = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
+        response.json({ "count": count[0].count, data });
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+
+
+exports.friendRequestsSent = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    if (userId) {
+        var data;
+        await DataBase.friendRequestsSent(userId).then(function(val) {
             data = val;
         }).catch(function(er) {
             response.json({ err: "#" + er });
@@ -312,22 +373,110 @@ exports.friendRequests = async function(request, response) {
     }
 };
 
-
-
-
-
-exports.friendRequestsWithLimit = async function(request, response) {
+exports.friendRequestsWithLimitSentWithLimit = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
     if (userId) {
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
+        offset = offset <= 0 ? 1 : offset;
+        limit = limit <= 0 ? 1 : limit;
         var data;
-        await DataBase.friendRequestsWithLimit(userId, limit, offset).then(function(val) {
+        var count;
+
+        await DataBase.friendRequestsSentWithLimit(userId, limit, offset).then(function(val) {
             data = val;
         }).catch(function(er) {
             response.json({ err: "#" + er });
         });
-        response.json(data);
+
+        await DataBase.countfriendRequestsSent(userId).then(function(val) {
+            count = val;
+        }).catch(function(er) {
+            response.json({ err: "#" + er });
+        });
+
+        response.json({ "count": count[0].count, data });
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+exports.addfriend = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+    if (userId) {
+        if (userid2 && userId != userid2) {
+            let checkAdd = false;
+            await DataBase.addFriend(userId, userid2).then(function(val) {
+                checkAdd = val;
+            });
+            if (!checkAdd) {
+                response.json({
+                    err: "error on AddFriend"
+                });
+            }
+            response.json({
+                "add": true
+            });
+        } else {
+            response.json({ err: "error Id on AddFriend" });
+        }
+
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+exports.acceptfriend = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+    if (userId) {
+        if (userid2 && userId != userid2) {
+            let checkAdd = false;
+            await DataBase.acceptFriend(userId, userid2).then(function(val) {
+                checkAdd = val;
+            });
+            if (!checkAdd) {
+                response.json({
+                    err: "error on acceptfriend"
+                });
+            }
+            response.json({
+                "accept": true
+            });
+        } else {
+            response.json({ err: "error Id on acceptfriend" });
+        }
+
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+
+exports.deletefriend = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+    if (userId) {
+        if (userid2 && userId != userid2) {
+            let checkAdd = false;
+            await DataBase.deleteFriend(userId, userid2).then(function(val) {
+                checkAdd = val;
+            });
+            if (!checkAdd) {
+                response.json({
+                    err: "error on deleteFriend"
+                });
+            }
+            response.json({
+                "accept": true
+            });
+        } else {
+            response.json({ err: "error Id on deleteFriend" });
+        }
+
     } else {
         response.json({ err: "user dont sing in" });
     }
