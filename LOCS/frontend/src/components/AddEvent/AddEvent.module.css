@@ -1,16 +1,39 @@
 .AddEvent {
-    grid-area: cnt;
-
-    display: grid;
-    grid-template-rows: auto auto auto auto;
-    grid-template-areas: "name" "tags" "info" "submit";
-    grid-row-gap: 5px;
-
-    align-items: left;
-    width: 75%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60vh;
 }
 
-.AddEvent > * {
+.AddEventOutherWrapper {
+    margin: 0 5vh;
+}
+
+.AddEventInnerWrapper {
+    display: flex;
+    flex-direction: column;
+    flex-basis: 400px;
+}
+
+.AddEvent__Input {
+    padding: 10px;
+    margin-bottom: 1vh;
+}
+
+.AddEvent__TextArea {
+    margin-bottom: 1vh;
+    padding: 10px;
+    resize: none;
+    height: 250px;
+}
+
+.AddEvent__Button {
+    max-width: 200px;
+    text-align: center;
+    align-self: center;
+}
+
+/* .AddEvent > * {
     width: 400px;
 }
 
@@ -36,4 +59,4 @@
     grid-area: submit;
     display: grid;
     justify-items: left;
-}
+} */

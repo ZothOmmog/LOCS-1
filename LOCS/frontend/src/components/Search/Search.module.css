@@ -1,21 +1,24 @@
-.search {
-    grid-area: search;
-
-	display: grid;
-	grid-template-rows: 1fr 1fr;
-
-	justify-items: center;
-	align-items: center;
-	margin-right: 15px;
+.Search {
+	display: flex;
+	flex-direction: column;
 }
 
-.searchArea {
-    display: grid;
-    grid-template-columns: 15fr 1fr;
+.SearchOutherWrapper {
+	margin: 1vh 5vw 0;
 }
 
+.SearchArea {
+	display: flex;
+}
 
+.SearchArea__Input {
+	flex-grow: 1;
+}
 
-.btn {
-    border-radius: 0px;
+.SearchArea__Button {
+	border-radius: 0;
+}
+
+.TagsArea {
+	margin-top: 0.5vh;
 }

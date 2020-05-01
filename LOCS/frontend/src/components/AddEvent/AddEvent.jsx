@@ -23,32 +23,32 @@ const AddEvent = (props) => {
     }
 
     return (
-        <div className={`${s.AddEvent}`}>
-            <input
-                className={s.name}
-                type="text"
-                placeholder="Название мероприятия"
-                value={props.state.nameNewEvent}
-                onChange={onNameNewEventChange}
-            />
-            <input
-                className={s.tags}
-                type="text"
-                placeholder="Тэги мероприятия"
-                value={props.state.tagNewEvent}
-                onChange={onTagsNewEventChange}
-            />
-            <textarea
-                className={s.info}
-                placeholder="Информация о мероприятии"
-                value={props.state.infoNewEvent}
-                onChange={onInfoNewEventChange}
-            />
-            <div 
-                className={s.submit}
-                onClick={onSubmitButtonClick}
-            >
-                <div className={"button"}>
+        <div className={s.AddEvent + ' ' + s.AddEventOutherWrapper}>
+            <div className={s.AddEventInnerWrapper}>
+                <input
+                    className={s.AddEvent__Input}
+                    type="text"
+                    placeholder="Название мероприятия"
+                    value={props.state.nameNewEvent}
+                    onChange={onNameNewEventChange}
+                />
+                <input
+                    className={s.AddEvent__Input}
+                    type="text"
+                    placeholder="Тэги мероприятия"
+                    value={props.state.tagNewEvent}
+                    onChange={onTagsNewEventChange}
+                />
+                <textarea
+                    className={s.AddEvent__TextArea}
+                    placeholder="Информация о мероприятии"
+                    value={props.state.infoNewEvent}
+                    onChange={onInfoNewEventChange}
+                />
+                <div
+                    className={s.AddEvent__Button + " button"}
+                    onClick={onSubmitButtonClick}
+                >
                     Добавить Мероприятие
                 </div>
             </div>

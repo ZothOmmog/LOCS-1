@@ -13,18 +13,19 @@ const Search = (props) => {
         props.onQueryTextChange(newQueryText);
     }
     return (
-        <div className={s.Search}>
-            <div className={s.searchArea}>
+        <div className={s.Search + ' ' + s.SearchOutherWrapper}>
+            <div className={s.SearchArea}>
                 <input
+                    className={s.SearchArea__Input}
                     type="text"
                     placeholder="Поиск..."
                     value={props.state.queryText}
                     onChange={onQueryTextChange}
                 />
-                <div className={`button ${s.btn}`}>Найти</div>
+                <div className={`button ${s.SearchArea__Button}`}>Найти</div>
             </div>
 
-            <div className={s.tagsArea}>{tags}</div>
+            <div className={s.TagsArea}>{tags}</div>
         </div>
     );
 }
