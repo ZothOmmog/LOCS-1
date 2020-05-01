@@ -322,7 +322,7 @@ exports.friendRequests = async function(request, response) {
         }).catch(function(er) {
             response.json({ err: "#" + er });
         });
-        response.json({ count: 123, data });
+        response.json(data);
     } else {
         response.json({ err: "user dont sing in" });
     }
