@@ -138,7 +138,6 @@ exports.postLogin = async function(request, response) {
 
 exports.acc = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
-    //console.log(userId);
     if (userId) {
         var masData;
         await DataBase.DataUserAccount(userId).then(function(val) {
@@ -201,18 +200,6 @@ exports.logout = function(request, response) {
             "logout": false
         });
     }
-
-    // request.session.destroy((err) => {
-    //     if (err) {
-    //         console.log(err);
-    //         response.json({
-    //             "logout": false
-    //         });
-    //     }
-    //     response.json({
-    //         "logout": true
-    //     });
-    // });
 };
 
 exports.searchUser = async function(request, response) {
@@ -493,6 +480,44 @@ exports.deletefriend = async function(request, response) {
             response.json({ err: "error Id on deleteFriend" });
         }
 
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+};
+
+
+exports.UserAccount = async function(request, response) {
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId2 = request.body.user ? request.body.user : undefined;
+    if (userId) {
+        var data;
+        var status;
+
+        await DataBase.friendStatus(userId, userId2).then(function(val) {
+            status = val;
+        });
+        await DataBase.DataUserAccount(userId2).then(function(val) {
+            data = val;
+        });
+
+        if (!data) {
+            response.json({ err: "account search data" });
+        }
+
+        let UserMail = data[0];
+        let UserNickname = data[1];
+        let UserPicture = data[2];
+        let UserCity = data[3];
+
+        response.json({
+            "Status": status[0].friendstatus,
+            "User": {
+                "Mail": UserMail,
+                "Nick": UserNickname,
+                "City": UserCity,
+                "UrlPicture": UserPicture,
+            }
+        });
     } else {
         response.json({ err: "user dont sing in" });
     }

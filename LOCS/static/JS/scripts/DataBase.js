@@ -324,7 +324,7 @@ let deleteFriend = (id, id2) => {
 // Статус друзей. Проверка,  -1 - нет в друзьях, 0 отпралена заявка, 1 - входящая заявка, 2 - в друзьях
 let friendStatus = (id, id2) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select FriendStatus($1);", [id, id2])
+        db.manyOrNone("select FriendStatus($1, $2);", [id, id2])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
