@@ -69,12 +69,15 @@ exports.postRegistration = async function(request, response) {
 
 exports.postLogin = async function(request, response) {
     var UserId;
-    var salt = "";
+    var salt;
+    var CreateTime;
+
+    await DataBase.TimeNow().then(function(val) {
+        CreateTime = val;
+    });
     await DataBase.DateCreate(request.body.Login.mail).then(function(val) {
         salt = val;
     });
-
-    console.log(salt);
     if (!salt) {
         response.json({
             "Login": {
@@ -115,11 +118,11 @@ exports.postLogin = async function(request, response) {
                 }
             });
         }
-        console.log(Role);
+        //console.log(Role);
         //request.session.user_role = Role;
 
-        const hashId = crypt.hash(UserId, hash); //сделай вторым аргументом что-нибудь другое, наверно.
-        const hashIdR = crypt.hash(Role, hash);
+        const hashId = crypt.hash(UserId, CreateTime); //сделай вторым аргументом что-нибудь другое, наверно.
+        const hashIdR = crypt.hash(Role, CreateTime);
 
         tokensUsers.set(hashId, UserId);
         tokensUsers.set(hashIdR, Role);
@@ -181,18 +184,35 @@ exports.acc = async function(request, response) {
 };
 
 exports.logout = function(request, response) {
-
-    request.session.destroy((err) => {
-        if (err) {
-            console.log(err);
-            response.json({
-                "logout": false
-            });
-        }
+    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userRole = request.cookies.userRole ? tokensUsers.get(request.cookies.userRole) : undefined;
+    try {
+        response.clearCookie("userRole");
+        response.clearCookie("userId");
+        response.clearCookie("whatisname");
+        tokensUsers.delete(userId);
+        tokensUsers.delete(userRole);
         response.json({
             "logout": true
         });
-    });
+    } catch (e) {
+        console.log(e);
+        response.json({
+            "logout": false
+        });
+    }
+
+    // request.session.destroy((err) => {
+    //     if (err) {
+    //         console.log(err);
+    //         response.json({
+    //             "logout": false
+    //         });
+    //     }
+    //     response.json({
+    //         "logout": true
+    //     });
+    // });
 };
 
 exports.searchUser = async function(request, response) {
@@ -243,8 +263,6 @@ exports.friendList = async function(request, response) {
         response.json({ err: "user dont sing in" });
     }
 };
-
-////дальше в api нет :с
 
 exports.friendListWithLimit = async function(request, response) {
     const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
@@ -354,8 +372,6 @@ exports.friendRequestsWithLimit = async function(request, response) {
         response.json({ err: "user dont sing in" });
     }
 };
-
-
 
 
 exports.friendRequestsSent = async function(request, response) {
