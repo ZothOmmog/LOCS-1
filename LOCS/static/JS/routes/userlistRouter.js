@@ -29,4 +29,6 @@ userlistRouter.post("/AcceptFriend$", userlistController.acceptfriend); //под
 
 userlistRouter.post("/DeleteFriend$", userlistController.deletefriend); //удаление из друзей
 
+userlistRouter.post("/UserAccount$", userlistController.UserAccount); //аккаунт другого человека 
+
 module.exports = userlistRouter;
