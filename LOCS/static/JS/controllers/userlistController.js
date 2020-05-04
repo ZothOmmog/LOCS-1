@@ -135,8 +135,6 @@ exports.postLogin = async function(request, response) {
         //tokensUsers.set(hashIdR, Role);
         let ok1;
         let ok2;
-        console.log(hashId, UserId);
-        console.log(hashIdR, Role);
         await DataBase.addToken(hashId, UserId).then(function(val) {
             ok1 = val;
         });
