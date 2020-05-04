@@ -1,5 +1,7 @@
 import { UserProfile } from "./UserProfile";
 import { connect } from "react-redux";
+import { logoutMeThunk } from "../../redux/authReducer";
+import { withAuthRedirect } from "../../hoc/indexHoc";
 
 const mapStateToProps = (state) => ({
     nick: state.auth.user.nick,
@@ -8,4 +10,4 @@ const mapStateToProps = (state) => ({
     urlPicture: state.auth.user.urlPicture
 })
 
-export const UserProfileContainer = connect(mapStateToProps)(UserProfile);
+export const UserProfileContainer = withAuthRedirect(connect(mapStateToProps, { logoutMeThunk })(UserProfile), false);

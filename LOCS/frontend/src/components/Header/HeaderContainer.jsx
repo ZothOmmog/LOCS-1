@@ -21,4 +21,6 @@ const mapStateToProps = (state) => ({
 	nick: state.auth.user.nick
 });
 
+
+
 export const HeaderContainer = connect(mapStateToProps, { setUser, setMeThunk })(HeaderToApiContainer);

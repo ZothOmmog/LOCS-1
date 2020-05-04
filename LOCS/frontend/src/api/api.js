@@ -18,6 +18,11 @@ export const userAPI = {
         return responce.json();
     },
 
+    async logoutMe() {
+        const response = await fetch(baseURL + 'user/logout');
+        return response.json();
+    },
+
     async registration(nick, mail, pass) {
         const response = await fetch(baseURL + `user/registration/postreg`, {
             method: 'POST',
