@@ -13,7 +13,7 @@ export const UserProfile = (props) => {
                         <img className={s.UserProfileInnerWrapperPicture__Img} src={imgUrl} alt='' />
                         <div className={`button ${s.UserProfileInnerWrapperPicture__Button}`}>
                             Загрузить изображение
-                    </div>
+                        </div>
                     </div>
 
                     <div className={s.UserProfileInnerWrapperDescribtion}>
@@ -22,7 +22,12 @@ export const UserProfile = (props) => {
                         <div className={s.UserProfileInnerWrapperDescribtion__Item}><b>Город:</b> {props.city}</div>
                     </div>
                 </div>
-                    <div className={`button ${s.UserProfileInnerWrapper__ExitButton}`}>Выход</div>
+                    <div 
+                        className={`button ${s.UserProfileInnerWrapper__ExitButton}`}
+                        onClick={props.logoutMeThunk}
+                    >
+                        Выход
+                    </div>
             </div>
         </div>
     );

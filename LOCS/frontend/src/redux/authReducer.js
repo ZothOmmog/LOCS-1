@@ -65,7 +65,7 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
                 };
 
                 dispatch(setUser(userAdd));
-                alert('Вы успешно авторизированы!');
+                // alert('Вы успешно авторизированы!');
             }
             else dispatch(changeCurrentMessage('Ошибка сессии.'));
         }
@@ -74,6 +74,14 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
     catch (err) {
         dispatch(changeCurrentMessage('Ошибка при логинизации: ' + err));
     }
+}
+
+export const logoutMeThunk = () => async (dispatch) => {
+    document.cookie = '';
+    
+    const isLogout = await userAPI.logoutMe();
+    debugger;
+    if (isLogout.logout) dispatch(unsetUser);
 }
 
 export const setMeThunk = () => async (dispatch) => {
@@ -99,7 +107,7 @@ export const setMeThunk = () => async (dispatch) => {
 export const setUser = (user) => {
     return { type: SET_USER, user: user };
 }
-export const unsetUres = () => {
+export const unsetUser = () => {
     return { type: UNSET_USER };
 }
 export const changeCurrentMail = (newMail) => {
