@@ -1,0 +1,11 @@
+--drop PROCEDURE AddToken; 
+CREATE OR REPLACE PROCEDURE AddToken(tok_ text,obj_ text)
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    new_id bigint;
+BEGIN
+    INSERT INTO Tokens(token, obj) values (tok_,obj_);
+END;
+$BODY$;

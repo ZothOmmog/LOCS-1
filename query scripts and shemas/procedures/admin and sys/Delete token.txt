@@ -1,0 +1,11 @@
+--drop PROCEDURE DeleteToken; 
+CREATE OR REPLACE PROCEDURE DeleteToken(tok_ text)
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+    new_id bigint;
+BEGIN
+    delete from Tokens where token = tok_ ;
+END;
+$BODY$;

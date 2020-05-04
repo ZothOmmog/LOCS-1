@@ -335,6 +335,47 @@ let friendStatus = (id, id2) => {
 };
 
 ///////////////////
+//добавить токен
+let addToken = (tok, obj) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddToken($1, $2);', [String(tok), String(obj)])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: addToken");
+                return;
+            });
+    })
+}
+
+//удалить токен
+let DeleteToken = (tok) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call DeleteToken($1);', [tok])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: DeleteToken");
+                return;
+            });
+    })
+}
+
+// вернуть токен 
+let TakeToken = (tok) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone("select TakeToken($1);", [tok])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: TakeToken");
+                return;
+            });
+    });
+};
+
+
 //Добавить район
 let addDistrict = (title, id_city) => {
     return new Promise((resolve, reject) => {
@@ -411,7 +452,9 @@ module.exports = {
 
     ///бд
     'TimeNow': TimeNow, //время бд сейчас
-
+    'addToken': addToken, //добавить токен
+    'TakeToken': TakeToken, //вернуть токен
+    'deleteToken': DeleteToken, //удалить токен
     //для админки 
     'addDistrict': addDistrict, //Добавить район
     'addAddress': addAddress, //Добавить адрес

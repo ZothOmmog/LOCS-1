@@ -1,9 +1,16 @@
 let User = require("../models/userlist.js");
 const path = require('path')
 let crypt = require("../scripts/password.js");
-let tokensUsers = new Map();
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
+
+async function takeObj(token) {
+    let data;
+    await DataBase.TakeToken(token).then(function(val) {
+        data = val;
+    });
+    return data;
+}
 
 
 exports.postRegistration = async function(request, response) {
@@ -121,11 +128,22 @@ exports.postLogin = async function(request, response) {
         //console.log(Role);
         //request.session.user_role = Role;
 
-        const hashId = crypt.hash(UserId, CreateTime); //сделай вторым аргументом что-нибудь другое, наверно.
+        const hashId = crypt.hash(UserId, CreateTime);
         const hashIdR = crypt.hash(Role, CreateTime);
 
-        tokensUsers.set(hashId, UserId);
-        tokensUsers.set(hashIdR, Role);
+        //tokensUsers.set(hashId, UserId);
+        //tokensUsers.set(hashIdR, Role);
+        let ok1;
+        let ok2;
+        console.log(hashId, UserId);
+        console.log(hashIdR, Role);
+        await DataBase.addToken(hashId, UserId).then(function(val) {
+            ok1 = val;
+        });
+        console.log('11');
+        await DataBase.addToken(hashIdR, Role).then(function(val) {
+            ok2 = val;
+        });
 
         response.cookie('userRole', hashIdR, { maxAge: config.cookieLive })
         response.cookie('userId', hashId, { maxAge: config.cookieLive }).json({
@@ -137,7 +155,7 @@ exports.postLogin = async function(request, response) {
 };
 
 exports.acc = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var masData;
         await DataBase.DataUserAccount(userId).then(function(val) {
@@ -182,15 +200,22 @@ exports.acc = async function(request, response) {
     }
 };
 
-exports.logout = function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
-    const userRole = request.cookies.userRole ? tokensUsers.get(request.cookies.userRole) : undefined;
+exports.logout = async function(request, response) {
+    // const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    //const userRole = request.cookies.userRole ? tokensUsers.get(request.cookies.userRole) : undefined;
     try {
+        let masData;
+        await DataBase.deleteToken(request.cookies.userId).then(function(val) {
+            masData = val;
+        });
+
+        await DataBase.deleteToken(request.cookies.userRole).then(function(val) {
+            masData = val;
+        });
+
         response.clearCookie("userRole");
         response.clearCookie("userId");
         response.clearCookie("whatisname");
-        tokensUsers.delete(userId);
-        tokensUsers.delete(userRole);
         response.json({
             "logout": true
         });
@@ -203,7 +228,7 @@ exports.logout = function(request, response) {
 };
 
 exports.searchUser = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var data;
 
@@ -236,7 +261,7 @@ exports.searchUser = async function(request, response) {
 
 
 exports.friendList = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var data;
         await DataBase.friendList(userId).then(function(val) {
@@ -252,7 +277,7 @@ exports.friendList = async function(request, response) {
 };
 
 exports.friendListWithLimit = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
@@ -281,7 +306,7 @@ exports.friendListWithLimit = async function(request, response) {
 
 
 exports.searchUserWithLimit = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var data;
         let limit = request.params.limit;
@@ -319,7 +344,7 @@ exports.searchUserWithLimit = async function(request, response) {
 };
 
 exports.friendRequests = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var data;
         await DataBase.friendRequests(userId).then(function(val) {
@@ -334,7 +359,7 @@ exports.friendRequests = async function(request, response) {
 };
 
 exports.friendRequestsWithLimit = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
@@ -362,7 +387,7 @@ exports.friendRequestsWithLimit = async function(request, response) {
 
 
 exports.friendRequestsSent = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         var data;
         await DataBase.friendRequestsSent(userId).then(function(val) {
@@ -377,7 +402,7 @@ exports.friendRequestsSent = async function(request, response) {
 };
 
 exports.friendRequestsWithLimitSentWithLimit = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         let limit = request.params.limit;
         let offset = (request.params.offset - 1) * limit;
@@ -405,7 +430,7 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response)
 };
 
 exports.addfriend = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
     if (userId) {
         if (userid2 && userId != userid2) {
@@ -432,7 +457,7 @@ exports.addfriend = async function(request, response) {
 
 
 exports.acceptfriend = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
     if (userId) {
         if (userid2 && userId != userid2) {
@@ -460,7 +485,7 @@ exports.acceptfriend = async function(request, response) {
 
 
 exports.deletefriend = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
     if (userId) {
         if (userid2 && userId != userid2) {
@@ -487,7 +512,7 @@ exports.deletefriend = async function(request, response) {
 
 
 exports.UserAccount = async function(request, response) {
-    const userId = request.cookies.userId ? tokensUsers.get(request.cookies.userId) : undefined;
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     const userId2 = request.body.user ? request.body.user : undefined;
     if (userId) {
         var data;

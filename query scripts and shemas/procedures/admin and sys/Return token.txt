@@ -1,0 +1,13 @@
+DROP FUNCTION taketoken(text);
+CREATE OR REPLACE function TakeToken(tok_ text)
+	RETURNS text
+  LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    obj_ text;
+BEGIN
+    SELECT into obj_ obj FROM Tokens where token = tok_ limit 1;
+	return obj_;
+END;
+$BODY$;
+

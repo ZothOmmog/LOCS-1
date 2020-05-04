@@ -126,3 +126,8 @@ alter table organizer add column banned bool;
 alter table event add column published bool;
 alter table friend_list add column accept bool DEFAULT false;
 alter table friend_list add column deleted bool default false;
+
+create table Tokens(
+	token text,
+	obj text
+);
