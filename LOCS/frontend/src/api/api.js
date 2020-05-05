@@ -19,7 +19,7 @@ export const userAPI = {
     },
 
     async logoutMe() {
-        const response = await fetch(baseURL + 'user/logout');
+        const response = await fetch(baseURL + 'user/logout', { credentials: 'include' });
         return response.json();
     },
 

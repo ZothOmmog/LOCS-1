@@ -77,11 +77,14 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
 }
 
 export const logoutMeThunk = () => async (dispatch) => {
-    document.cookie = '';
-    
-    const isLogout = await userAPI.logoutMe();
-    debugger;
-    if (isLogout.logout) dispatch(unsetUser);
+    try {
+        const isLogout = await userAPI.logoutMe();
+        if (!isLogout.logout) throw new Error('Ошибка при выходе из аккаунта');
+        dispatch( unsetUser() );
+    }
+    catch(e) {
+        alert(e);
+    }
 }
 
 export const setMeThunk = () => async (dispatch) => {
