@@ -1,0 +1,54 @@
+--Функция, которая возвращает теги ивента 
+
+CREATE OR REPLACE FUNCTION EventTags(id_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select topic.title from topic, event_topic where event_topic.id_event=id_ and event_topic.id_topic = topic.id)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+///////////не работает///////////
+
+CREATE OR REPLACE FUNCTION testTags(VARIADIC idArray_ int[])
+	RETURNS table (j json) AS
+	declare TABLE tags
+(
+    id numeric,
+    tags text[]
+);
+$func$
+BEGIN
+
+	FOREACH i IN ARRAY idArray_
+	LOOP 
+	   insert into tags(id,tags) values(i, (select topic.title from topic,event_topic  where topic.id = event_topic.id_topic and event_topic.id_event = i));
+	END LOOP;
+
+
+  RETURN QUERY  SELECT to_json(a) FROM (select topic.title from topic, event_topic where event_topic.id_event=id_ and event_topic.id_topic = topic.id)a;
+END
+$func$ LANGUAGE plpgsql;
+
+//////////////
+CREATE table toTags(
+    id numeric,
+    tags text[]
+);
+CREATE OR REPLACE FUNCTION testTags(VARIADIC idArray_ int[])
+	RETURNS table (id numeric, tags text[])  
+	LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+tags toTags;
+l_value INT;     
+BEGIN
+	FOREACH l_value IN ARRAY idArray_        
+	LOOP 
+	insert into tags(id,tags) values(i, (select topic.title from topic,event_topic  where topic.id = event_topic.id_topic and event_topic.id_event = i));
+	END LOOP;
+	RETURN QUERY select * from tags;
+	-- return next tags;
+END
+$BODY$;
