@@ -4,4 +4,6 @@ const eventRouter = express.Router();
 
 eventRouter.use("/create$", eventController.create);
 
+eventRouter.get("/:limit/:offset", eventController.shortList);
+
 module.exports = eventRouter;

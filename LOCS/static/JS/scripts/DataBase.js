@@ -417,6 +417,33 @@ let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = fa
     })
 }
 
+//Теги по Id евента
+let EventTags = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select EventTags($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: EventTags");
+                return;
+            });
+    })
+}
+
+//  данные для главной страницы 
+let eventShortList = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select eventShortList($1,$2);', [limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: eventShortList");
+                return;
+            });
+    })
+}
+
 module.exports = {
 
     //пользователь
@@ -462,4 +489,6 @@ module.exports = {
 
     //события 
     'addEvent': addEvent,
+    'EventTags': EventTags, //Теги по Id евента
+    'eventShortList': eventShortList, //  данные для главной страницы 
 };

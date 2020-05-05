@@ -1,0 +1,9 @@
+--Функция, которая возвращает данные евентов без тегов 
+
+CREATE OR REPLACE FUNCTION eventShortList(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, name, info, image FROM event where published=true LIMIT limit_ OFFSET offset_ )a;
+END;
+$$ LANGUAGE plpgsql;
