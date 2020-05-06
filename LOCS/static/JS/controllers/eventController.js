@@ -16,7 +16,7 @@ exports.delete = function(request, response) {
 };
 
 
-exports.list = function(request, response) {
+exports.event = function(request, response) {
 
 };
 

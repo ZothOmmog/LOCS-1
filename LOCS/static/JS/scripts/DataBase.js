@@ -444,6 +444,36 @@ let eventShortList = (limit, offset) => {
     })
 }
 
+
+
+//Удалить событие
+let deleteEvent = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call DeleteEvent($1);', [id])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: deleteEvent");
+                return;
+            });
+    })
+}
+
+// полные данные о событии
+let event = (id) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select Event($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: Event");
+                return;
+            });
+    })
+}
+
+
 module.exports = {
 
     //пользователь
@@ -491,4 +521,6 @@ module.exports = {
     'addEvent': addEvent,
     'EventTags': EventTags, //Теги по Id евента
     'eventShortList': eventShortList, //  данные для главной страницы 
+    'deleteEvent': deleteEvent, //удалить событие
+    'event': event, //полные данные о событии
 };
