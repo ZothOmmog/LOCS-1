@@ -132,3 +132,4 @@ create table Tokens(
 	obj text
 );
 alter table event add column image text;
+alter table event add column deleted bool default false;

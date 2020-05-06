@@ -1,0 +1,8 @@
+--Удаление мероприятия
+CREATE OR REPLACE PROCEDURE DeleteEvent(idev_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update event set deleted = true where id = idev_; 
+END;
+$BODY$;
