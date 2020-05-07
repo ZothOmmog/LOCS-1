@@ -1,0 +1,23 @@
+--добавление тега мероприятия по id
+--drop PROCEDURE AddEventTag;
+CREATE OR REPLACE PROCEDURE AddEventTag(id_event_ bigint, id_tag_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO event_topic(id_event, id_topic  ) values (id_event_, id_tag_  );
+END;
+$BODY$;
+
+--добавление тега мероприятия по названию
+--drop PROCEDURE AddEventTag;
+CREATE OR REPLACE PROCEDURE AddEventTag(id_event_ bigint, tag_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+declare
+	ids_ bigint;
+BEGIN
+	select into ids_ id from topic where title like tag_;
+    INSERT INTO event_topic(id_event, id_topic  ) values (id_event_, ids_  );
+END;
+$BODY$;
+
