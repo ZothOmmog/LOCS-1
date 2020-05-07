@@ -473,6 +473,18 @@ let event = (id) => {
     })
 }
 
+//добавить тег евенту (tag - или название или id)
+let addEventTag = (id_ev, tag) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddEventTag($1,$2);', [id_ev, tag])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddEventTag");
+                return;
+            });
+    })
+}
 
 module.exports = {
 
@@ -523,4 +535,6 @@ module.exports = {
     'eventShortList': eventShortList, //  данные для главной страницы 
     'deleteEvent': deleteEvent, //удалить событие
     'event': event, //полные данные о событии
+    'addEventTag': addEventTag, //добавить тег евенту
+
 };
