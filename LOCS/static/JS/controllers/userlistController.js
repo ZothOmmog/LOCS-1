@@ -99,8 +99,6 @@ exports.postLogin = async function(request, response) {
         UserId = val;
     });
 
-    console.log(UserId);
-
     if (UserId == -1) {
         //неправильные данные для входа
         response.json({
@@ -111,7 +109,6 @@ exports.postLogin = async function(request, response) {
 
     } else {
 
-        //request.session.user_id_log = UserId;
         var Role;
 
         await DataBase.RoleUser(UserId).then(function(val) {
@@ -125,20 +122,17 @@ exports.postLogin = async function(request, response) {
                 }
             });
         }
-        //console.log(Role);
-        //request.session.user_role = Role;
+
 
         const hashId = crypt.hash(UserId, CreateTime);
         const hashIdR = crypt.hash(Role, CreateTime);
 
-        //tokensUsers.set(hashId, UserId);
-        //tokensUsers.set(hashIdR, Role);
         let ok1;
         let ok2;
+
         await DataBase.addToken(hashId, UserId).then(function(val) {
             ok1 = val;
         });
-        console.log('11');
         await DataBase.addToken(hashIdR, Role).then(function(val) {
             ok2 = val;
         });
