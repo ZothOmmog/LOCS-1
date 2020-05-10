@@ -271,10 +271,11 @@ exports.friendList = async function(request, response) {
 exports.friendListWithLimit = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
-        let limit = request.params.limit;
-        let offset = (request.params.offset - 1) * limit;
+        let limit = Number(request.params.limit);
+        let offset = Number(request.params.offset);
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
+        offset = (offset - 1) * limit;
         var data;
         var count;
 
