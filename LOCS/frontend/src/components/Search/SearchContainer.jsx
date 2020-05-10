@@ -1,41 +1,20 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import Search from './Search';
-import { updateQueryText, searchClear } from '../../redux/searchReducer';
-
-class SearchToStateContainer extends React.Component {
-    updateQueryText = (e) => {
-        const newQueryText = e.target.value;
-        this.props.updateQueryText(newQueryText);
-    }
-
-    searchGo = () => {
-        const pageSize = this.props.pageSize;
-        const currentPage = this.props.currentPage;
-        const queryText = this.props.state.queryText;
-
-        this.props.searchGo(pageSize, currentPage, queryText);
-    }
-
-    componentWillUnmount() {
-        this.props.searchClear();
-    }
-
-    render() {
-        return (
-            <Search
-                state={this.props.state}
-                updateQueryText={this.updateQueryText}
-                searchGo={this.searchGo}
-            />
-        );
-    }
-}
+import { updateQueryTextActionCreator } from '../../redux/searchReducer';
 
 const mapStateToProps = (state) => {
     return {
         state: state.searchPage
    }
-};
+}
 
-export const SearchContainer = connect(mapStateToProps, { updateQueryText, searchClear })(SearchToStateContainer);
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onQueryTextChange(queryText) {
+            const updateQueryText = updateQueryTextActionCreator(queryText);
+            dispatch(updateQueryText);
+        }
+    }
+}
+
+export const SearchContainer = connect(mapStateToProps, mapDispatchToProps)(Search);

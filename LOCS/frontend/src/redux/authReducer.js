@@ -5,7 +5,6 @@ const UNSET_USER = 'UNSET_USER';
 const CHANGE_CURRENT_MAIL = 'CHANGE_CURRENT_MAIL';
 const CHANGE_CURRENT_PASS = 'CHANGE_CURRENT_PASS';
 const CHANGE_CURRENT_MESSAGE = 'CHANGE_CURRENT_MESSAGE';
-const CHANGE_IS_LOADING = 'CHANGE_IS_LOADING';
 
 const initialState = {
     user: {
@@ -16,7 +15,6 @@ const initialState = {
         urlPicture: null
     },
     isAuth: false,
-    isLoadingForStartApp: true,
     page: {
         currentMail: '',
         currentPass: '',
@@ -41,8 +39,6 @@ const auth = (state = initialState, action) => {
             return { ...state, page: { ...state.page, currentMessage: action.currentMessage } };
         case CHANGE_CURRENT_PASS:
             return { ...state, page: { ...state.page, currentPass: action.pass } };
-        case CHANGE_IS_LOADING:
-            return { ...state, isLoadingForStartApp: action.isLoadingForStartApp };
         default:
             return state;
     }
@@ -69,7 +65,7 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
                 };
 
                 dispatch(setUser(userAdd));
-                // alert('Вы успешно авторизированы!');
+                alert('Вы успешно авторизированы!');
             }
             else dispatch(changeCurrentMessage('Ошибка сессии.'));
         }
@@ -77,17 +73,6 @@ export const setUserThunk = (mail, pass) => async (dispatch) => {
     }
     catch (err) {
         dispatch(changeCurrentMessage('Ошибка при логинизации: ' + err));
-    }
-}
-
-export const logoutMeThunk = () => async (dispatch) => {
-    try {
-        const isLogout = await userAPI.logoutMe();
-        if (!isLogout.logout) throw new Error('Ошибка при выходе из аккаунта');
-        dispatch( unsetUser() );
-    }
-    catch(e) {
-        alert(e);
     }
 }
 
@@ -109,16 +94,12 @@ export const setMeThunk = () => async (dispatch) => {
 
         dispatch(setUser(userAdd));
     }
-
-    dispatch( changeIsLoadingForStartApp(false) );
 }
-
-export const changeIsLoadingForStartApp = (isLoadingForStartApp) => ({ type: CHANGE_IS_LOADING, isLoadingForStartApp: isLoadingForStartApp });
 
 export const setUser = (user) => {
     return { type: SET_USER, user: user };
 }
-export const unsetUser = () => {
+export const unsetUres = () => {
     return { type: UNSET_USER };
 }
 export const changeCurrentMail = (newMail) => {
