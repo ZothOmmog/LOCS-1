@@ -9,7 +9,8 @@ import {
   RegistrationContainer, 
   EventProfileContainer, 
   AuthContainer,
-  UserProfileContainer
+  UserProfileContainer,
+  Button
 } from './components/indexComponents.js';
 import { setMeThunk } from './redux/authReducer.js' 
 import style from './App.module.scss';
@@ -17,6 +18,7 @@ import style from './App.module.scss';
 function App(props) {
   return (
     <div className={style.App}>
+      <Button buttonText='Кнопочка' />
       <HeaderContainer />
       <Navbar />
       {/* <SearchContainer /> */}
@@ -43,7 +45,7 @@ function App(props) {
         />
         <Route
           path='/UserProfile/:userId'
-          render={(routeProps) => <div className={style.AppUserProfileOutherWrapper}> <UserProfileContainer route={routeProps.match.params} /> </div>}
+          render={(routeProps) => <div className={style.App__UserProfile}> <UserProfileContainer route={routeProps.match.params} /> </div>}
         />
         <Route
           path='/'

@@ -19,11 +19,14 @@ export const SearchUsers = (props) => {
                     Поиск пользователей по нику
                 </h2>
             </div>
-            <SearchContainer 
-                searchGo={props.searchUsersGo}
-                pageSize={props.countUsers}
-                currentPage={props.currentPage}
-            />
+            <div>
+                <SearchContainer
+                    searchGo={props.searchUsersGo}
+                    pageSize={props.countUsers}
+                    currentPage={props.currentPage}
+                />
+            </div>
+            {/* <div className={s.SearchUsers__resultTitle}>{props.resultText}</div> */}
             <div className={s.SearchUsers__result}>{props.users}</div>
         </div>
     );

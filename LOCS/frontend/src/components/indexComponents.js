@@ -1,3 +1,5 @@
+export { Button } from './Button-bem/Button.jsx';
+
 export { HeaderContainer } from './Header/HeaderContainer.jsx';
 export { Navbar } from './Navbar/Navbar.jsx';
 export { SearchContainer } from './Search/SearchContainer.jsx';
