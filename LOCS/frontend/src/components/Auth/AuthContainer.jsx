@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Auth from './Auth';
 import { setUser, changeCurrentMail, changeCurrentPass, setUserThunk, changeCurrentMessage } from '../../redux/authReducer';
-import { withAuthRedirect } from '../../hoc/indexHoc.js';
 
 class AuthToApiContainer extends React.Component {
     componentWillUnmount() {
@@ -12,8 +12,8 @@ class AuthToApiContainer extends React.Component {
     }
 
     setUser = () => {
-        const mail = this.props.auth.currentMail;
-        const pass = this.props.auth.currentPass;
+        const mail = this.props.auth.page.currentMail;
+        const pass = this.props.auth.page.currentPass;
 
         this.props.setUserThunk(mail, pass);
     }
@@ -34,11 +34,11 @@ class AuthToApiContainer extends React.Component {
     }
 
     render() {
-        return (
+        return this.props.auth.isAuth ? <Redirect to='/Lenta' /> : (
             <Auth
-                currentMail={this.props.auth.currentMail}
-                currentPass={this.props.auth.currentPass}
-                currentMessage={this.props.auth.currentMessage}
+                currentMail={this.props.auth.page.currentMail}
+                currentPass={this.props.auth.page.currentPass}
+                currentMessage={this.props.auth.page.currentMessage}
                 setUser={this.setUser}
                 changeCurrentMail={this.changeCurrentMail}
                 changeCurrentPass={this.changeCurrentPass}
@@ -49,9 +49,9 @@ class AuthToApiContainer extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-    auth: state.auth.page
+    auth: state.auth
 });
 
-export const AuthContainer = withAuthRedirect(connect(mapStateToProps, { 
+export const AuthContainer = connect(mapStateToProps, { 
     setUser, changeCurrentMail, changeCurrentPass, 
-    setUserThunk, changeCurrentMessage })(AuthToApiContainer), true);
+    setUserThunk, changeCurrentMessage })(AuthToApiContainer);

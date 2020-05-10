@@ -1,7 +1,6 @@
 .App {
-  &__UserProfile {
-      margin: 2vh auto 0;
+  &UserProfileOutherWrapper {
+      margin: 2vh 5vh 0vh;
       height: 60vh;
-      max-width: 750px;
   }
 }

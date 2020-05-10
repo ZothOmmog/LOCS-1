@@ -1,31 +1,31 @@
 import React from 'react';
 import "../CommonStyles/Button/Button.css";
 import s from "./Search.module.css";
-// import Tag from "./Tag/tag.jsx"
+import Tag from "./Tag/tag.jsx"
 
 const Search = (props) => {
-    // const tags = props.state.tags.map(tag => {
-    //     return <Tag state={tag} />
-    // });
+    const tags = props.state.tags.map(tag => {
+        return <Tag state={tag} />
+    });
+
+    const onQueryTextChange = (e) => {
+        const newQueryText = e.target.value;
+        props.onQueryTextChange(newQueryText);
+    }
     return (
-        <div className={s.Search}>
+        <div className={s.Search + ' ' + s.SearchOutherWrapper}>
             <div className={s.SearchArea}>
                 <input
                     className={s.SearchArea__Input}
                     type="text"
                     placeholder="Поиск..."
                     value={props.state.queryText}
-                    onChange={props.updateQueryText}
+                    onChange={onQueryTextChange}
                 />
-                <div 
-                    className={`button ${s.SearchArea__Button}`}
-                    onClick={props.searchGo}
-                >
-                    Найти
-                </div>
+                <div className={`button ${s.SearchArea__Button}`}>Найти</div>
             </div>
 
-            {/* <div className={s.TagsArea}>{tags}</div> */}
+            <div className={s.TagsArea}>{tags}</div>
         </div>
     );
 }

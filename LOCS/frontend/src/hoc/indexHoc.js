@@ -1,1 +1,0 @@
-export { withAuthRedirect } from "./withAuthRedirect"

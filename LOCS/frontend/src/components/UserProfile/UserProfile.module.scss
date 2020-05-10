@@ -9,29 +9,11 @@
         margin: 1vh 0 0;
     }
 
-    &ConntentWrapper {
-        
-        &Outher {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            width: 100%;
-        }
-
-        &Inner {
-            display: flex;
-            width: 100%;
-        }
-        
-    }
-
     &OutherWrapper {
         flex-grow: 1;
         display: flex;
         flex-direction: column;
         justify-content: center;
-
-        margin-left: 15px;
     }
 
     &InnerWrapper {
@@ -58,16 +40,12 @@
             justify-content: space-around;
             margin-left: 1vw;
         }
-    }
 
-    &FunctionsOutherWrapper {
-        flex-grow: 2;
-    }
-
-    &__ExitButton {
-        text-align: center;
-        margin-left: 15px;
-        margin-bottom: 15px;
-        align-self: flex-start;
+        &__ExitButton {
+            text-align: center;
+            margin-top: 2vh;
+            align-self: center;
+        }
     }
 }
+
