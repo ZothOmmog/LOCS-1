@@ -57,7 +57,6 @@ class RegistrationToApiContainer extends React.Component {
             onPassChange={this.onPassChange}
             onSubmitPassChange={this.onSubmitPassChange}
             onSubmitButtonClick={this.onSubmitButtonClick}
-            registration={this.props.registrationThunk}
         />
     }
 }

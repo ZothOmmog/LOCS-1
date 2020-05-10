@@ -7,6 +7,8 @@ import lentaReducer from './lentaReducer';
 import eventProfileReducer from './eventProfileReducer';
 import authReducer from './authReducer';
 import registrationReducer from './registrationReducer';
+import searchUsersReducer from './searchUsersReducer';
+import userProfileReducer from './userProfileReducer';
 
 const reducers = combineReducers({
     searchPage: searchReducer,
@@ -14,7 +16,9 @@ const reducers = combineReducers({
     lentaPage: lentaReducer,
     EventProfilePage: eventProfileReducer,
     auth: authReducer,
-    registrationPage: registrationReducer
+    registrationPage: registrationReducer,
+    searchUsersPage: searchUsersReducer,
+    userProfilePage: userProfileReducer
 });
 
 const store = createStore(reducers, applyMiddleware(thunkMiddleware));
