@@ -53,10 +53,12 @@ exports.event = async function(request, response) {
 //надо подумать о фильтре по тегам 
 exports.shortList = async function(request, response) {
 
-    let limit = request.params.limit;
-    let offset = (request.params.offset - 1) * limit;
+    let limit = Number(request.params.limit);
+    let offset = Number(request.params.offset);
     offset = offset <= 0 ? 1 : offset;
     limit = limit <= 0 ? 1 : limit;
+    offset = (offset - 1) * limit;
+
 
 
     var Events;
@@ -82,14 +84,20 @@ exports.shortList = async function(request, response) {
 };
 
 exports.search = async function(request, response) {
-    let limit = request.params.limit;
-    let offset = (request.params.offset - 1) * limit;
+    // let limit = Number(request.params.limit);
+    // let offset = (request.params.offset - 1) * limit;
+    // offset = offset < 0 ? 1 : offset;
+    // limit = limit < 0 ? 0 : limit;
+
+    let limit = Number(request.params.limit);
+    let offset = Number(request.params.offset);
     offset = offset <= 0 ? 1 : offset;
     limit = limit <= 0 ? 1 : limit;
+    offset = (offset - 1) * limit;
+
 
     var word = request.body.word;
     var Events;
-    console.log(word);
     await DataBase.searchEvent(word, limit, offset).then(function(val) {
         Events = val;
     });
@@ -127,10 +135,12 @@ exports.tags = async function(request, response) {
 };
 exports.tagsLim = async function(request, response) {
 
-    let limit = request.params.limit;
-    let offset = (request.params.offset - 1) * limit;
+    let limit = Number(request.params.limit);
+    let offset = Number(request.params.offset);
     offset = offset <= 0 ? 1 : offset;
     limit = limit <= 0 ? 1 : limit;
+    offset = (offset - 1) * limit;
+
 
     var count;
     var tags;
@@ -139,7 +149,7 @@ exports.tagsLim = async function(request, response) {
         count = val;
     });
 
-    await DataBase.tags(limit, offset).then(function(val) {
+    await DataBase.tagsLim(limit, offset).then(function(val) {
         tags = val;
     });
     response.json({ "count": count.counttags.count, tags });
