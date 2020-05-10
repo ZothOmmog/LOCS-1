@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import style from './App.module.scss';
+import { connect } from 'react-redux';
 import { 
   HeaderContainer, 
   Navbar, 
@@ -11,9 +11,10 @@ import {
   AuthContainer,
   UserProfileContainer
 } from './components/indexComponents.js';
+import { setMeThunk } from './redux/authReducer.js' 
+import style from './App.module.scss';
 
-
-function App() {
+function App(props) {
   return (
     <div className={style.App}>
       <HeaderContainer />
@@ -42,7 +43,7 @@ function App() {
         />
         <Route
           path='/UserProfile/:userId'
-          render={() => <div className={style.AppUserProfileOutherWrapper}> <UserProfileContainer /> </div>}
+          render={(routeProps) => <div className={style.AppUserProfileOutherWrapper}> <UserProfileContainer route={routeProps.match.params} /> </div>}
         />
         <Route
           path='/'
@@ -53,4 +54,14 @@ function App() {
   );
 }
 
-export default App;
+class AppWithAuth extends React.Component {
+  componentDidMount() {
+    this.props.setMeThunk();
+  }
+
+  render() {
+    return <App />;
+  }
+}
+
+export default connect(null, { setMeThunk })(AppWithAuth);

@@ -5,6 +5,7 @@ const UNSET_USER = 'UNSET_USER';
 const CHANGE_CURRENT_MAIL = 'CHANGE_CURRENT_MAIL';
 const CHANGE_CURRENT_PASS = 'CHANGE_CURRENT_PASS';
 const CHANGE_CURRENT_MESSAGE = 'CHANGE_CURRENT_MESSAGE';
+const CHANGE_IS_LOADING = 'CHANGE_IS_LOADING';
 
 const initialState = {
     user: {
@@ -15,6 +16,7 @@ const initialState = {
         urlPicture: null
     },
     isAuth: false,
+    isLoadingForStartApp: true,
     page: {
         currentMail: '',
         currentPass: '',
@@ -39,6 +41,8 @@ const auth = (state = initialState, action) => {
             return { ...state, page: { ...state.page, currentMessage: action.currentMessage } };
         case CHANGE_CURRENT_PASS:
             return { ...state, page: { ...state.page, currentPass: action.pass } };
+        case CHANGE_IS_LOADING:
+            return { ...state, isLoadingForStartApp: action.isLoadingForStartApp };
         default:
             return state;
     }
@@ -105,7 +109,11 @@ export const setMeThunk = () => async (dispatch) => {
 
         dispatch(setUser(userAdd));
     }
+
+    dispatch( changeIsLoadingForStartApp(false) );
 }
+
+export const changeIsLoadingForStartApp = (isLoadingForStartApp) => ({ type: CHANGE_IS_LOADING, isLoadingForStartApp: isLoadingForStartApp });
 
 export const setUser = (user) => {
     return { type: SET_USER, user: user };

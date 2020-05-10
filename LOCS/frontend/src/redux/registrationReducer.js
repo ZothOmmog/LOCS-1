@@ -54,7 +54,6 @@ export const registrationThunk = (nick, mail, pass, submitPass) => async (dispat
     const mailFlag = isReg.Login.MailFlag;
 
     let message = '';
-    debugger;
     if (nickFlag && mailFlag) {
         if (pass === submitPass) {
             message = 'Пользователь успешно загеристрирован, введите данные, чтобы войти.';

@@ -23,7 +23,6 @@ export function Header(props) {
 			</div>
 		);
 
-
 	return (
 		<div className={s.Header}>
 			{auth}
