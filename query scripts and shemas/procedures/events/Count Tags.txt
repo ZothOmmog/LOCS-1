@@ -1,0 +1,9 @@
+--Функция, которая возвращает кол тегов 
+
+CREATE OR REPLACE FUNCTION CountTags() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select count(*) from topic )a;
+END;
+$$ LANGUAGE plpgsql;
