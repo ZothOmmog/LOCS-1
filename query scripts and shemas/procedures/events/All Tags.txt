@@ -1,0 +1,9 @@
+--Функция, которая возвращает все теги  
+
+CREATE OR REPLACE FUNCTION Tags() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, title from topic)a;
+END;
+$$ LANGUAGE plpgsql;

@@ -486,6 +486,64 @@ let addEventTag = (id_ev, tag) => {
     })
 }
 
+
+// весь лист тегов
+let tags = () => {
+        return new Promise((resolve, reject) => {
+            db.manyOrNone('select Tags();')
+                .then(function(data) {
+                    resolve(data);
+                }).catch(function(e) {
+                    console.log(e);
+                    reject("ERROR BD: tags");
+                    return;
+                });
+        })
+
+    }
+    // кол. тегов
+let CountTags = () => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select CountTags();')
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: CountTags");
+                return;
+            });
+    })
+
+}
+
+// весь лист тегов странично
+let tagsLim = (limit, offset) => {
+        return new Promise((resolve, reject) => {
+            db.manyOrNone('select Tags($1,$2);', [limit, offset])
+                .then(function(data) {
+                    resolve(data);
+                }).catch(function(e) {
+                    console.log(e);
+                    reject("ERROR BD: tags");
+                    return;
+                });
+        })
+
+    }
+    // поиск евентов 
+let searchEvent = (word, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select searchEvent($1,$2,$3);', ["%" + word + "%", limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: searchEvent");
+                return;
+            });
+    })
+
+}
 module.exports = {
 
     //пользователь
@@ -530,11 +588,19 @@ module.exports = {
 
 
     //события 
-    'addEvent': addEvent,
     'EventTags': EventTags, //Теги по Id евента
     'eventShortList': eventShortList, //  данные для главной страницы 
-    'deleteEvent': deleteEvent, //удалить событие
     'event': event, //полные данные о событии
-    'addEventTag': addEventTag, //добавить тег евенту
 
+    'tags': tags, //весь лист тегов
+    'CountTags': CountTags, //кол тегов
+    'tagsLim': tagsLim, //весь лист тегов странично
+
+    'searchEvent': searchEvent, //поиск евентов (без тегов)
+
+
+    //организатор
+    'addEvent': addEvent,
+    'deleteEvent': deleteEvent, //удалить событие
+    'addEventTag': addEventTag, //добавить тег евенту
 };
