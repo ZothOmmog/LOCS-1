@@ -18,7 +18,6 @@ import style from './App.module.scss';
 function App(props) {
   return (
     <div className={style.App}>
-      <Button buttonText='Кнопочка' />
       <HeaderContainer />
       <Navbar />
       {/* <SearchContainer /> */}
