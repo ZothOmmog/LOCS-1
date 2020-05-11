@@ -1,7 +1,0 @@
-[
-	"event": {
-		"name": String
-		"tags": [ String ]
-		"info": String
-	}
-]
