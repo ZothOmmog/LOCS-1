@@ -1,10 +1,7 @@
 .Search {
 	display: flex;
 	flex-direction: column;
-}
-
-.SearchOutherWrapper {
-	margin: 1vh 5vw 0;
+	width: 100%;
 }
 
 .SearchArea {
