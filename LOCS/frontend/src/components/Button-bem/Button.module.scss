@@ -1,0 +1,60 @@
+.b {
+    height: 35px;
+    width: 100px;
+}
+
+.Button {
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    border: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+
+    &_Style {
+        &_Base {
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            transition: 0.2s;
+        }
+        &_Base:hover {
+            background-color: gray;
+            color: black;
+        }
+        &_Base:active {
+            background-color: white;
+            color: black;
+        }
+
+        &_Switch {
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            transition: 0.2s;
+        }
+        &_Switch:hover {
+            border-radius: 10px;
+            background-color: gray;
+            color: black;
+        }
+        &_SwitchActive {
+            border-radius: 10px;
+            background-color: green;
+            color: white;
+            transition: 0.2s;
+        }
+    }
+    
+    &_Size {
+        &_Base {
+            padding: 5px;
+        }
+
+        &_FullContainer {
+            height: 100%;
+            width: 100%;
+        }
+    }
+}
