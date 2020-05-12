@@ -9,8 +9,7 @@ import {
   RegistrationContainer, 
   EventProfileContainer, 
   AuthContainer,
-  UserProfileContainer,
-  Button
+  UserProfileContainer
 } from './components/indexComponents.js';
 import { setMeThunk } from './redux/authReducer.js' 
 import style from './App.module.scss';

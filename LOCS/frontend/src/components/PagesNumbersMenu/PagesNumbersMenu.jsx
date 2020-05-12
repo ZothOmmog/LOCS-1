@@ -4,9 +4,21 @@ import '../CommonStyles/Button/Button.css';
 import { Button } from '../indexComponents.js';
 
 export const PagesNumbersMenu = (props) => {
+    const styleButtonSwitch = {
+        type: 'Switch',
+        onClickHandler: props.changeCurrentPage
+    };
+    const styleButtonSwitchActive = {
+        type: 'SwitchActive'
+    };
+
     const pages = props.pages.map((page, index) => +page !== +props.currentPage ?
-        <Button buttonText={page} style='Switch' onClickHandler={props.changeCurrentPage} /> :
-        <Button buttonText={page} style='SwitchActive' />
+        <div className={s.PagesNumbersMenu__Item}>
+            <Button key={index} style={{ ...styleButtonSwitch, buttonText: page }} />
+        </div> :
+        <div className={s.PagesNumbersMenu__Item}>
+            <Button key={index} style={{ ...styleButtonSwitchActive, buttonText: page }} />
+        </div>
     );
 
     return (

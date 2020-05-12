@@ -38,7 +38,7 @@ export const UserProfile = (props) => {
                                 <Route path='/userProfile/me/FriendRequestIn' />
                                 <Route path='/userProfile/me' render={() => <ProfileFunctions />} />
                             </Switch>
-                        </div> : null
+                        </div> : <button>Добавить в друзья</button>
                     }
                 </div>
             </div>

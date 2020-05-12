@@ -5,20 +5,20 @@ export const Button = (props) => {
     let type = s.Button;
 
     type += (
-        props.style === 'Switch' ? (' ' + s.Button_Style_Switch) :
-        props.style === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) : (' ' + s.Button_Style_Base)
+        props.style.type === 'Switch' ? (' ' + s.Button_Style_Switch) :
+        props.style.type === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) : (' ' + s.Button_Style_Base)
     );
 
     type += (
-        props.size === 'FullContainer' ? (' ' + s.Button_Size_FullContainer) : (' ' + s.Button_Size_Base)
+        props.style.size === 'FullContainer' ? (' ' + s.Button_Size_FullContainer) : (' ' + s.Button_Size_Base)
     );
 
     return (
         <button
             className={type}
-            onClick={props.onClickHandler}
+            onClick={props.style.onClickHandler}
         >
-            {props.buttonText}
+            {props.style.buttonText}
         </button>
     )
 }

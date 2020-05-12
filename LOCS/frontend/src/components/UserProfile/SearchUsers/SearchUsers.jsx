@@ -2,12 +2,16 @@ import React from 'react';
 import { SearchContainer } from '../../indexComponents';
 import s from './SearchUsers.module.scss';
 import { NavLink } from 'react-router-dom';
+import { PagesNumbersMenu } from '../../PagesNumbersMenu/PagesNumbersMenu';
 
 export const SearchUsers = (props) => {
     return (
         <div className={s.SearchUsers}>
             <div className={s.SearchUsersTitleWrapper}>
-                <div className={s.SearchUsersTitleWrapperBack}>
+                <div 
+                    className={s.SearchUsersTitleWrapperBack}
+                    onClick={props.onClickBackHandler}
+                >
                     <NavLink 
                         className={s.SearchUsersTitleWrapperBack__Link} 
                         to='/userProfile/me'
@@ -26,8 +30,22 @@ export const SearchUsers = (props) => {
                     currentPage={props.currentPage}
                 />
             </div>
-            {/* <div className={s.SearchUsers__resultTitle}>{props.resultText}</div> */}
-            <div className={s.SearchUsers__result}>{props.users}</div>
+            <div className={s.SearchUsers__resultOutherWrapper}>
+            <div className={s.SearchUsers__resultTitle}>{props.searchResultTitle}</div>
+            {props.users ?
+                <div className={s.SearchUsers__resultInnerWrapper}>
+                    <div className={s.SearchUsers__result}>{props.users}</div>
+                    <div className={s.SearchUsers__pagesMenu}>
+                        <PagesNumbersMenu
+                            pages={props.pages}
+                            currentPage={props.currentPage}
+                            changeCurrentPage={props.changeCurrentPage}
+                        />
+                    </div>
+                </div> : ''
+            }
+            </div>
+
         </div>
     );
 }

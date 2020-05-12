@@ -17,10 +17,6 @@ class SearchToStateContainer extends React.Component {
         this.props.searchGo(pageSize, currentPage, queryText);
     }
 
-    componentWillUnmount() {
-        this.props.searchClear();
-    }
-
     render() {
         return (
             <Search
@@ -38,4 +34,4 @@ const mapStateToProps = (state) => {
    }
 };
 
-export const SearchContainer = connect(mapStateToProps, { updateQueryText, searchClear })(SearchToStateContainer);
+export const SearchContainer = connect(mapStateToProps, { updateQueryText })(SearchToStateContainer);

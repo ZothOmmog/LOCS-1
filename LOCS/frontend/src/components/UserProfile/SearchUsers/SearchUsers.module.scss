@@ -28,13 +28,28 @@
         }
     }
 
+    
+    &__resultOutherWrapper {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 280px;
+    }
+    
     &__resultTitle {
         color: #717171;
-        height: 50px;
+        margin: 5px 0 10px;
     }
 
-    &__result {
-        margin-top: 15px;
-        height: 210px;
+    &__resultInnerWrapper {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
     }
+
+    // &__result {
+    //     display: flex;
+    //     flex-direction: column;
+    // }
 }
