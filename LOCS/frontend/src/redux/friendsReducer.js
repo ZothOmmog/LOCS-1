@@ -42,8 +42,8 @@ export const friendsReducer = (state = initialState, action) => {
 
 export const addFriendThunk = (idUser) => async (dispatch) => {
     const isAdded = await friendsApi.addUserInFriends(idUser);
-
-    if(!isAdded) throw new Error('Добавление пользователя не удалось');
+    
+    if(isAdded.err) throw new Error(`Добавление пользователя в друзья не удалось: ${isAdded.err}`);
 
     const userAdded = await userAPI.getUser(idUser);
     const userForDispatch = {
@@ -56,7 +56,7 @@ export const addFriendThunk = (idUser) => async (dispatch) => {
 
 export const deleteFriendThunk = (idUser) => async (dispatch) => {
     const isDeleted = await friendsApi.deleteUserFromFriends(idUser);
-    if(!isDeleted) throw new Error('Не удалось удалить пользователя.');
+    if(isDeleted.err) throw new Error(`Не удалось удалить пользователя из друзей: ${isDeleted.err}`);
     dispatch( deleteFriend(idUser) );
 }
 
