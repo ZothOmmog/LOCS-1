@@ -2,11 +2,13 @@ import { userAPI } from "../api/api";
 
 const SET_PROFILE_DATA = 'SET_PROFILE_DATA';
 const SET_IS_FIND = 'SET_IS_FIND';
+const SET_FRIEND_STATUS = 'SET_FRIEND_STATUS';
 const CLEAN = 'CLEAN';
 
 const initialState = {
     isFind: false,
     friendStatus: null,
+    id: null,
     nick: null,
     mail: null,
     city: null,
@@ -19,6 +21,7 @@ const userProfileReducer = (state = initialState, action) => {
             return {
                 isFind: true,
                 friendStatus: action.friendStatus,
+                id: action.id,
                 nick: action.nick,
                 mail: action.mail,
                 city: action.city,
@@ -28,6 +31,8 @@ const userProfileReducer = (state = initialState, action) => {
             return { initialState };
         case SET_IS_FIND:
             return { ...state, isFind: action.isFind};
+        case SET_FRIEND_STATUS:
+            return { ...state, friendStatus: action.friendStatus};
         default:
             return state;
     }
@@ -35,6 +40,8 @@ const userProfileReducer = (state = initialState, action) => {
 
 export const setUserByIdThunk = (id) => async (dispatch, getState) => {
     try {
+        if(id === getState().userProfilePage.id) return;
+
         let user;
 
         if (id === 'me') {
@@ -62,7 +69,7 @@ export const setUserByIdThunk = (id) => async (dispatch, getState) => {
         dispatch(setUser(...user));
     }
     catch(err) {
-        console.log(err);
+        throw err;
     }
 }
 
@@ -76,5 +83,6 @@ export const setUser = (friendStatus, nick, mail, city, urlPicture) => ({
 
 export const clean = () => ({ type: CLEAN });
 export const setIsFind = (isFind) => ({ type: SET_IS_FIND, isFind: isFind });
+export const setFriendStatus = (friendStatus) => ({ type: SET_FRIEND_STATUS, friendStatus: friendStatus });
 
 export default userProfileReducer;

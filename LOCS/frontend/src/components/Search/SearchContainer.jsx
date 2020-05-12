@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Search from './Search';
-import { updateQueryText, searchClear } from '../../redux/searchReducer';
+import { updateQueryText } from '../../redux/searchReducer';
 
 class SearchToStateContainer extends React.Component {
     updateQueryText = (e) => {

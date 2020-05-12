@@ -11,14 +11,14 @@ const mapStateToProps = (state) => ({
     mail: state.userProfilePage.mail,
     city: state.userProfilePage.city,
     urlPicture: state.userProfilePage.urlPicture,
+    friendStatus: state.userProfilePage.friendStatus
 });
 
 class UserProfileAuthContainer extends React.Component {
-    componentDidMount() {
-        this.props.setUserByIdThunk(this.props.route.userId);
-    }
-
+    
     render() {
+        this.props.setUserByIdThunk(this.props.route.userId);
+
         if(!this.props.isFind) return <div>Пользователь не найден</div>;
         return <UserProfile {...this.props} />;
     }

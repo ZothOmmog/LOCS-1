@@ -4,6 +4,7 @@ import s from './UserProfile.module.scss';
 import { Route, Switch } from 'react-router-dom';
 import { SearchUsersContainer } from './SearchUsers/SearchUsersContainer.jsx';
 import { ProfileFunctions } from './ProfileFunctions/ProfileFunctions';
+import { AddFriendButtonContainer } from './AddFriendButton/AddFriendButton';
 
 export const UserProfile = (props) => {
     const imgUrl = 'https://im0-tub-ru.yandex.net/i?id=bc7f9021eae00edbac26dc53c0e013c4&n=13';
@@ -22,7 +23,7 @@ export const UserProfile = (props) => {
                                     </div> : null
                                 }
                             </div>
-
+                            
                             <div className={s.UserProfileInnerWrapperDescribtion}>
                                 <div className={s.UserProfileInnerWrapperDescribtion__Item}><b>Ник:</b> {props.nick}</div>
                                 <div className={s.UserProfileInnerWrapperDescribtion__Item}><b>Почта:</b> {props.mail}</div>
@@ -38,7 +39,7 @@ export const UserProfile = (props) => {
                                 <Route path='/userProfile/me/FriendRequestIn' />
                                 <Route path='/userProfile/me' render={() => <ProfileFunctions />} />
                             </Switch>
-                        </div> : <button>Добавить в друзья</button>
+                        </div> : ''
                     }
                 </div>
             </div>
@@ -48,7 +49,7 @@ export const UserProfile = (props) => {
                     onClick={props.logoutMeThunk}
                 >
                     Выход
-                </div> : null
+                </div> : <AddFriendButtonContainer userId={props.route.userId} />
             }
         </div>
     );

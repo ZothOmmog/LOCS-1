@@ -13,10 +13,10 @@ export const PagesNumbersMenu = (props) => {
     };
 
     const pages = props.pages.map((page, index) => +page !== +props.currentPage ?
-        <div className={s.PagesNumbersMenu__Item}>
+        <div key={index} className={s.PagesNumbersMenu__Item}>
             <Button key={index} style={{ ...styleButtonSwitch, buttonText: page }} />
         </div> :
-        <div className={s.PagesNumbersMenu__Item}>
+        <div key={index} className={s.PagesNumbersMenu__Item}>
             <Button key={index} style={{ ...styleButtonSwitchActive, buttonText: page }} />
         </div>
     );

@@ -15,6 +15,7 @@ import { setMeThunk } from './redux/authReducer.js'
 import style from './App.module.scss';
 
 function App(props) {
+
   return (
     <div className={style.App}>
       <HeaderContainer />
