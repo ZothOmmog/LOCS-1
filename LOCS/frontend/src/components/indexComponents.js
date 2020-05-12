@@ -1,5 +1,6 @@
-export { Button } from './Button-bem/Button.jsx';
 
+export { Button } from './Button-bem/Button.jsx';
+export { AddFriendButtonContainer } from './UserProfile/AddFriendButton/AddFriendButton.jsx';
 export { HeaderContainer } from './Header/HeaderContainer.jsx';
 export { Navbar } from './Navbar/Navbar.jsx';
 export { SearchContainer } from './Search/SearchContainer.jsx';
