@@ -1,3 +1,5 @@
+export { setFriendStatus } from "./userProfileReducer";
+
 export { 
     friendsReducer, 
     addFriendThunk, 
