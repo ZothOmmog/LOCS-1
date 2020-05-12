@@ -1,0 +1,10 @@
+drop  PROCEDURE userToOrganizer;
+-- создание организатора
+CREATE OR REPLACE PROCEDURE userToOrganizer(id_ bigint,	info_ text, organization_name_ text, organization_link_ text, logo_ text )
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    INSERT INTO organizer(id_user,info, organization_name, organization_link, logo, banned ) values (id_ ,info_ , organization_name_ , organization_link_ , logo_ , false);
+    update userlist set role = 'Organizer' where id = id_;
+END;
+$BODY$;
