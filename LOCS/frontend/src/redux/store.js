@@ -9,6 +9,7 @@ import authReducer from './authReducer';
 import registrationReducer from './registrationReducer';
 import searchUsersReducer from './searchUsersReducer';
 import userProfileReducer from './userProfileReducer';
+import { friendsReducer } from './indexReducers';
 
 const reducers = combineReducers({
     searchPage: searchReducer,
@@ -18,7 +19,8 @@ const reducers = combineReducers({
     auth: authReducer,
     registrationPage: registrationReducer,
     searchUsersPage: searchUsersReducer,
-    userProfilePage: userProfileReducer
+    userProfilePage: userProfileReducer,
+    friends: friendsReducer
 });
 
 const store = createStore(reducers, applyMiddleware(thunkMiddleware));
