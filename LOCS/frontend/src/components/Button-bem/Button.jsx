@@ -6,7 +6,9 @@ export const Button = (props) => {
 
     type += (
         props.style.type === 'Switch' ? (' ' + s.Button_Style_Switch) :
-        props.style.type === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) : (' ' + s.Button_Style_Base)
+        props.style.type === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) :
+        props.style.type === 'NotBorderRadius' ? (' ' + s.Button_Style_NotBorderRadius) :
+        props.style.type === 'ProfileExit' ? (' ' + s.Button_Style_ProfileExit) : (' ' + s.Button_Style_Base)
     );
 
     type += (

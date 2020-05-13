@@ -1,0 +1,47 @@
+.Profile {
+    width: auto;
+
+    &__ContentWrapper {
+        display: flex;
+    }
+
+    &Picture {
+        display: flex;
+        flex-direction: column;
+        max-width: 150px;
+        max-height: 150px;
+
+        &__Img {
+            max-width: 110px;
+        }
+    }
+
+    &DescribtionTitles {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin-left: 10px;
+
+        &__Item {
+            font-weight: bold;
+            color: #414141;
+        }
+    }
+    
+    &DescribtionItems {
+        margin-left: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+
+        &__Item {
+            color: #414141;
+        }
+    }
+
+    &Button {
+        margin-top: 10px;
+        height: 30px;
+        width: 150px;
+    }
+}

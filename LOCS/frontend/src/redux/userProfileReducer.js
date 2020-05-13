@@ -56,7 +56,10 @@ export const setUserByIdThunk = (id) => async (dispatch, getState) => {
         }
         else {
             const data = await userAPI.getUser(id);
-            if (data.err || data.User.Mail === '') throw new Error(data.err);
+            
+            if (data.err) throw new Error(data.err);
+            if (data.User.Nick === '') return;
+
             user = [
                 data.Status,
                 data.User.Nick,

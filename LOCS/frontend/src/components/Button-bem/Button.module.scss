@@ -5,15 +5,15 @@
 
 .Button {
     font-family: 'Segoe UI', sans-serif;
-    font-weight: 400;
-    font-size: 16px;
-    border: none;
     margin: 0;
     padding: 0;
     cursor: pointer;
 
     &_Style {
         &_Base {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
             border-radius: 10px;
             background-color: black;
             color: white;
@@ -29,6 +29,9 @@
         }
 
         &_Switch {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
             border-radius: 10px;
             background-color: black;
             color: white;
@@ -40,10 +43,40 @@
             color: black;
         }
         &_SwitchActive {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
             border-radius: 10px;
             background-color: green;
             color: white;
             transition: 0.2s;
+        }
+
+        &_NotBorderRadius {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
+            background-color: black;
+            color: white;
+            transition: 0.2s;
+        }
+        &_NotBorderRadius:hover {
+            background-color: gray;
+            color: black;
+        }
+
+        &_Profile {
+            &Exit {
+                height: 100%;
+                width: 100px;
+                font-weight: 300;
+                line-height: 21px;
+                border: none;
+                background-color: rgba(255, 0, 0, 0.25);
+            }
+            &Exit:hover {
+                box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.25);
+            }
         }
     }
     
