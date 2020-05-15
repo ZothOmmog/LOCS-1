@@ -12,7 +12,7 @@ export const UserProfileShort = (props) => {
                     <img src={imgUrl} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> 
                 }
             </div>
-            <div><NavLink to={`/userProfile/${props.userId}`}>{props.nick}</NavLink></div>
+            <NavLink className={s.UserProfileShort__nick} to={`/userProfile/${props.userId}`}>{props.nick}</NavLink>
         </div>
     );
 };

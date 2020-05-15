@@ -4,7 +4,7 @@ import { Button } from '../../Button-bem/Button';
 import { NavButton } from '../../NavButton/NavButton';
 
 export const Footer = (props) => {
-    return (
+    return (props.route.typeContent !== 'Organizer' ?
         <div className={s.UserProfileFooter}>
             <div className={s.UserProfileFooter__Item}>
                 <NavButton style={{
@@ -51,9 +51,12 @@ export const Footer = (props) => {
                     buttonText: 'Выход',
                     type: 'ProfileExit',
                     size: 'FullContainer',
-                    onClickHandler: props.logoutMe
+                    onClickHandler: props.logoutMeThunk
                 }} />
             </div>
+        </div> :
+        <div className={s.UserProfileFooter}>
+            
         </div>
     );
 }

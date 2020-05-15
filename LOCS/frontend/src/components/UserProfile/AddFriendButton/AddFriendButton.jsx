@@ -9,9 +9,8 @@ import {
 } from '../../../redux/indexReducers.js';
 
 const AddFriendButton = (props) => {
-    let style = {};
-    
-    switch(props.friendStatus) {
+    let style = { type: 'NotBorderRadius', size:'FullContainer' };
+    switch(+props.friendStatus) {
         case -1: //Нет в друзьях
             style.buttonText = 'Добавить в друзья';
             style.onClickHandler = () => {
@@ -41,22 +40,25 @@ const AddFriendButton = (props) => {
             }
             break;
         default:
-            throw new Error('Неизвестный статус пользователя');
+            // throw new Error('Неизвестный статус пользователя');
+            break;
     };
 
     return (
         <div className={s.AddFriendButton}>
+            
             <Button style={style}/>
-            {
+            
+            {/* {
                 props.friendStatus === 0 ? 
-                <div className={s.AddFriendButton__description}>
+                <div className={s.AddFriendButton__Description}>
                     (Вы отправили заявку в друзья этому пользователю)
                 </div> :
                 props.friendStatus === 1 ?
-                <div className={s.AddFriendButton__description}>
+                <div className={s.AddFriendButton__Description}>
                     (Пользователь отправил заявку в друзья)
                 </div> : ''
-            }
+            } */}
         </div>
 
     );

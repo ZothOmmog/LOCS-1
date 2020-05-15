@@ -2,13 +2,13 @@ import React from 'react';
 import s from './Header.module.scss';
 import { NavButton } from '../../NavButton/NavButton';
 
-export const Header = () => {
+export const Header = (props) => {
     return (
         <div className={s.UserProfileHeader}>
             <div className={s.UserProfileHeader__Item}>
                 <NavButton style={{
                     buttonText: 'Посетитель',
-                    type: 'ProfileHeaderActive',
+                    type: `ProfileHeader${props.route.typeContent !== 'Organizer' ? 'Active' : ''}`,
                     size: 'FullContainer',
                     path: '/UserProfile/me'
                 }} />
@@ -16,7 +16,7 @@ export const Header = () => {
             <div className={s.UserProfileHeader__Item}>
                 <NavButton style={{
                     buttonText: 'Организатор',
-                    type: 'ProfileHeader',
+                    type: `ProfileHeader${props.route.typeContent === 'Organizer' ? 'Active' : ''}`,
                     size: 'FullContainer',
                     path: '/UserProfile/me/Organizer'
                 }} />

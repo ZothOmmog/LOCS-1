@@ -1,7 +1,12 @@
 .UserProfileShort {
     display: flex;
     align-items: center;
-    margin-bottom: 15px;
+
+    &__nick {
+        flex-basis: 200px;
+        text-align: center;
+    }
+
     &Picture {
         &__Img {
             height: 50px;

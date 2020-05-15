@@ -6,9 +6,9 @@ const SET_FRIEND_STATUS = 'SET_FRIEND_STATUS';
 const CLEAN = 'CLEAN';
 
 const initialState = {
-    isFind: false,
+    isFind: null,
+    userId: null,
     friendStatus: null,
-    id: null,
     nick: null,
     mail: null,
     city: null,
@@ -20,15 +20,15 @@ const userProfileReducer = (state = initialState, action) => {
         case SET_PROFILE_DATA:
             return {
                 isFind: true,
+                userId: action.userId,
                 friendStatus: action.friendStatus,
-                id: action.id,
                 nick: action.nick,
                 mail: action.mail,
                 city: action.city,
                 urlPicture: action.urlPicture
              };
         case CLEAN:
-            return { initialState };
+            return { ...initialState };
         case SET_IS_FIND:
             return { ...state, isFind: action.isFind};
         case SET_FRIEND_STATUS:
@@ -47,6 +47,7 @@ export const setUserByIdThunk = (id) => async (dispatch, getState) => {
         if (id === 'me') {
             const data = getState().auth.user;
             user = [
+                id,
                 -1,
                 data.nick,
                 data.mail,
@@ -58,9 +59,13 @@ export const setUserByIdThunk = (id) => async (dispatch, getState) => {
             const data = await userAPI.getUser(id);
             
             if (data.err) throw new Error(data.err);
-            if (data.User.Nick === '') return;
+            if (data.User.Nick === '') {
+                dispatch( setIsFind(false) );
+                return;
+            }
 
             user = [
+                id,
                 data.Status,
                 data.User.Nick,
                 data.User.Mail,
@@ -76,12 +81,14 @@ export const setUserByIdThunk = (id) => async (dispatch, getState) => {
     }
 }
 
-export const setUser = (friendStatus, nick, mail, city, urlPicture) => ({
+export const setUser = (userId, friendStatus, nick, mail, city, urlPicture) => ({
     type: SET_PROFILE_DATA, 
+    userId: userId,
     friendStatus: friendStatus,
     nick: nick, 
-    mail: mail, city: 
-    city, urlPicture: urlPicture 
+    mail: mail, 
+    city: city, 
+    urlPicture: urlPicture 
 });
 
 export const clean = () => ({ type: CLEAN });

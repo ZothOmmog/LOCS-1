@@ -7,16 +7,20 @@ const SET_FRIENDS = 'SET_FRIENDS';
 const SET_FRIEND_REQUESTS_OUT = 'SET_FRIEND_REQUESTS_OUT';
 const SET_FRIEND_REQUESTS_IN = 'SET_FRIEND_REQUESTS_IN';
 const CLEAN_FRIENDS = 'CLEAN_FRIENDS';
+const CHANGE_CURRENT_PAGE_FRIENDS = 'CHANGE_CURRENT_PAGE_FRIENDS';
+const SET_FRIENDS_PAGES = 'SET_FRIENDS_PAGES';
 
 const initialState = {
     friends: null,
     friendRequestsIn: null,
     friendRequestsOut: null,
+    currentPage: 1,
+    pages: null,
 
-    page: {
-        countFriends: 5,
-        currentPage: 1
+    friendRequestsOutPage: {
+        pageSize: 4
     }
+
 }
 
 export const friendsReducer = (state = initialState, action) => {
@@ -35,6 +39,16 @@ export const friendsReducer = (state = initialState, action) => {
             return { ...state, friendRequestsOut: action.friendRequestsOut };
         case CLEAN_FRIENDS:
             return initialState;
+        case CHANGE_CURRENT_PAGE_FRIENDS:
+            return {...state, currentPage: action.currentPage};
+        case SET_FRIENDS_PAGES:
+            let pages = [];
+
+			for (let i = 1; i <= Math.ceil(action.resultSize / action.countUsers); i++) {
+				pages = [...pages, i];
+            }
+
+            return {...state, pages: pages};
         default:
             return state;
     }
@@ -76,8 +90,8 @@ export const acceptFriendThunk = (idUser) => async (dispatch) => {
 
 export const setFriendsThunk = () => async (dispatch, getState) => {
     const users = await friendsApi.getFriends(
-        getState.friends.page.countFriends, 
-        getState.friends.page.currentPage
+        getState().friends.friendsPage.countFriends, 
+        getState().friends.currentPage
     );
 
     if(users.err) throw new Error(users.err);
@@ -91,14 +105,16 @@ export const setFriendsThunk = () => async (dispatch, getState) => {
 }
 
 export const setFriendRequestsInThunk = () => async (dispatch, getState) => {
+    const countUsers = getState().friends.friendRequestsInPage.countFriends;
+
     const users = await friendsApi.getFriendRequestsIn(
-        getState.friends.page.countFriends, 
-        getState.friends.page.currentPage
+        countUsers,
+        getState().friends.currentPage
     );
 
     if(users.err) throw new Error(users.err);
 
-    const usersForDispatch = users.map(user => ({ 
+    const usersForDispatch = users.data.map(user => ({ 
         id: user.request.id_user, 
         nick: user.request.nickname
     }));
@@ -107,19 +123,45 @@ export const setFriendRequestsInThunk = () => async (dispatch, getState) => {
 }
 
 export const setFriendRequestsOutThunk = () => async (dispatch, getState) => {
+    const countUsers = getState().friends.friendRequestsOutPage.pageSize;
+
     const users = await friendsApi.getFriendRequestsOut(
-        getState.friends.page.countFriends, 
-        getState.friends.page.currentPage
+        countUsers, 
+        getState().friends.currentPage
     );
 
     if(users.err) throw new Error(users.err);
 
-    const usersForDispatch = users.map(user => ({ 
-        id: user.request.id_user, 
+    const usersForDispatch = users.data.map(user => ({ 
+        id: user.request.id_user,
+        friendStatus: 0,
         nick: user.request.nickname
     }));
 
-    dispatch( setFriends(usersForDispatch) );
+    dispatch( setFriendsPages(users.count, countUsers) );
+    dispatch( setFriendRequestsOut(usersForDispatch) );
+}
+
+export const changeCurrentPageFriendsThunk = (type) => (e) => async (dispatch, getState) => {
+    const countUsers = getState().friends.friendRequestsOutPage.pageSize;
+    const currentPage = e.target.innerText;
+    
+    const users = type === 'friendRequestsOut' ? await friendsApi.getFriendRequestsOut(
+        countUsers, 
+        currentPage,
+    ) : { err: 'Неправильный тип запроса для смены страницы' };
+
+    if(users.err) throw new Error(users.err);
+
+    const usersForDispatch = users.data.map(user => ({ 
+        id: user.request.id_user,
+        friendStatus: 0,
+        nick: user.request.nickname
+    }));
+
+    dispatch( setFriendsPages(users.count, countUsers) );
+    dispatch( setFriendRequestsOut(usersForDispatch) );
+    dispatch( changeCurrentPageFriends(currentPage) );
 }
 
 export const addFriend = (user) => ({ type: ADD_FRIEND, user: user });
@@ -128,4 +170,6 @@ export const acceptFriend = (user) => ({ type: ACCEPT_FRIEND, user: user });
 export const setFriends = (friends) => ({ type: SET_FRIENDS, friends: friends });
 export const setFriendRequestsIn = (friendRequestsIn) => ({ type: SET_FRIEND_REQUESTS_IN, friendRequestsIn: friendRequestsIn });
 export const setFriendRequestsOut = (friendRequestsOut) => ({ type: SET_FRIEND_REQUESTS_OUT, friendRequestsOut: friendRequestsOut });
-export const cleanFriends = (user) => ({ type: ADD_FRIEND, user: user });
+export const cleanFriends = () => ({ type: CLEAN_FRIENDS });
+export const changeCurrentPageFriends = (currentPage) => ({ type: CHANGE_CURRENT_PAGE_FRIENDS, currentPage: currentPage });
+export const setFriendsPages = (resultSize, countUsers) => ({ type: SET_FRIENDS_PAGES, resultSize: resultSize, countUsers: countUsers });

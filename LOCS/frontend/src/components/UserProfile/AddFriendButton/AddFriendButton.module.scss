@@ -1,10 +1,5 @@
 .AddFriendButton {
-    display: flex;
-
-    &__description {
-        margin-left: 15px;
-        color: #717171;
-        font-size: 16px;
-        font-weight: lighter;
-    }
+    flex-basis: 150px;
+    flex-shrink: 0;
+    height: 30px; 
 }

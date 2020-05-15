@@ -1,6 +1,7 @@
 import React from 'react';
 import s from './Profile.module.scss';
 import { Button } from '../../Button-bem/Button';
+import { AddFriendButtonContainer } from '../AddFriendButton/AddFriendButton';
 
 export const Profile = (props) => {
     const imgUrl = 'https://im0-tub-ru.yandex.net/i?id=bc7f9021eae00edbac26dc53c0e013c4&n=13';
@@ -25,14 +26,17 @@ export const Profile = (props) => {
                 </div>
             </div>
             
-            {props.route.userId === 'me' ?
-                <div className={s.ProfileButton}>
+            {props.userId === 'me' ?
+                <div className={s.Profile__Button}>
                     <Button style={{
                         buttonText: 'Загрузить фото',
                         type: 'NotBorderRadius',
                         size: 'FullContainer'
                     }} />
-                </div> : ''
+                </div> : 
+                <div className={s.Profile__AddUser}>
+                    <AddFriendButtonContainer userId={props.userId} />
+                </div>
             }
         </div>
     );
