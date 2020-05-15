@@ -542,8 +542,8 @@ let searchEvent = (word, limit, offset) => {
                 return;
             });
     })
-
 }
+
 module.exports = {
 
     //пользователь

@@ -1,0 +1,10 @@
+--удалить теги  мероприятия по id
+--drop PROCEDURE deleteEventTag;
+CREATE OR REPLACE PROCEDURE deleteEventTag(id_event_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+
+	delete from event_topic where id_event = id_event_;
+END;
+$BODY$;

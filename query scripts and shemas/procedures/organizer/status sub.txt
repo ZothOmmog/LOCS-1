@@ -1,0 +1,17 @@
+--Проверка, 0 не подписан, 1 - подписан
+CREATE OR REPLACE function subStatus(id_org_ bigint,id_user_ bigint)
+	RETURNS int
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+  	check_ int;
+BEGIN
+	select into check_ id_subscribe from subscribe where id_subscribe = id_org_ and sub_user_on_id = id_user_ ;
+								  
+	IF  check_ > 0 THEN
+        	RETURN 1;	
+    END IF;
+	RETURN 0;
+END;
+$BODY$;
+

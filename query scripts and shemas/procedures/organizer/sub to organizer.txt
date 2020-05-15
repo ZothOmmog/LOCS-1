@@ -1,0 +1,9 @@
+--Подписка на мероприятие
+CREATE OR REPLACE PROCEDURE subOrg(id_org bigint, id_user bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	insert into subscribe (id_subscribe, sub_user_on_id) values(id_org,id_user);
+END;
+$BODY$;
+
