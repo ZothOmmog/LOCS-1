@@ -491,7 +491,7 @@ exports.acceptfriend = async function(request, response) {
 
 exports.deletefriend = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-    const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+    const userid2 = request.body.friend ? request.body.friend : undefined;
     if (userId) {
         if (userid2 && userId != userid2) {
             let checkAdd = false;

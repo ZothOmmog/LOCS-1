@@ -1,0 +1,10 @@
+--данные об организаторе
+CREATE OR REPLACE FUNCTION organizerData(id_ bigint)
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (SELECT organizer.id_user, organizer.info , organizer.organization_name, 
+										  organizer.organization_link,  organizer.logo from organizer 
+										  where organizer.id_user = id_ and organizer.banned = false) a ;
+END;
+$$ LANGUAGE plpgsql;
