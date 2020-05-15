@@ -1,4 +1,4 @@
---Проверка, 0 не подписан, 1 - подписан
+--Статус подписки, Проверка, 0 не подписан, 1 - подписан
 CREATE OR REPLACE function subStatus(id_org_ bigint,id_user_ bigint)
 	RETURNS int
     LANGUAGE 'plpgsql'
