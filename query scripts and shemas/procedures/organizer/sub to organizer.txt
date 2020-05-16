@@ -1,4 +1,4 @@
---Подписка на мероприятие
+--Подписка на организатора
 CREATE OR REPLACE PROCEDURE subOrg(id_org bigint, id_user bigint)
     LANGUAGE 'plpgsql'
 AS $BODY$

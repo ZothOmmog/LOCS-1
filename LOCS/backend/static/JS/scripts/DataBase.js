@@ -404,18 +404,6 @@ let addAddress = (street, house, latitude, longitude, idDistrict) => {
 
 
 ///////////////////
-//Добавить событие (не учитывает теги, отдельная процедура)
-let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: AddEvent");
-                return;
-            });
-    })
-}
 
 //Теги по Id евента
 let EventTags = (id) => {
@@ -444,21 +432,6 @@ let eventShortList = (limit, offset) => {
     })
 }
 
-
-
-//Удалить событие
-let deleteEvent = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteEvent($1);', [id])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: deleteEvent");
-                return;
-            });
-    })
-}
-
 // полные данные о событии
 let event = (id) => {
     return new Promise((resolve, reject) => {
@@ -468,19 +441,6 @@ let event = (id) => {
             }).catch(function(e) {
                 console.log(e);
                 reject("ERROR BD: Event");
-                return;
-            });
-    })
-}
-
-//добавить тег евенту (tag - или название или id)
-let addEventTag = (id_ev, tag) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddEventTag($1,$2);', [id_ev, tag])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: AddEventTag");
                 return;
             });
     })
@@ -544,6 +504,181 @@ let searchEvent = (word, limit, offset) => {
     })
 }
 
+
+///organizer
+
+//Добавить событие (не учитывает теги, отдельная процедура)
+let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddEvent");
+                return;
+            });
+    })
+}
+
+//Удалить событие
+let deleteEvent = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call DeleteEvent($1);', [id])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: deleteEvent");
+                return;
+            });
+    })
+}
+
+//добавить тег евенту (tag - или название или id)
+let addEventTag = (id_ev, tag) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddEventTag($1,$2);', [id_ev, tag])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: AddEventTag");
+                return;
+            });
+    })
+}
+
+//Изменение мероприятия (без тегов)
+let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
+    idAddress, publish = false) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8);', [idev, name, info, link, ticketPrice, idOrg, idAddress, publish])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: changeEvent");
+                return;
+            });
+    })
+}
+
+//удаление тегов у события 
+let deleteEventTag = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call deleteEventTag($1);', [id])
+            .then(function() {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: deleteEventTag");
+                return;
+            });
+    })
+}
+
+//данные об организаторе
+let organizerData = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call organizerData($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: organizerData");
+                return;
+            });
+    })
+}
+
+//данные об мероприятиях для организатора
+let organizerEvents = (id) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call organizerEvents($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: organizerEvents");
+                return;
+            });
+    })
+}
+
+//Поиск организаторов странично
+let searchOrglimit = (word, limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call searchOrg($1,$2,$3);', ["%" + word + "%", limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: searchOrglimit");
+                return;
+            });
+    })
+}
+
+//Поиск организаторов 
+let searchOrg = (word) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call searchOrg($1);', ["%" + word + "%"])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: searchOrg");
+                return;
+            });
+    })
+}
+
+//Статус подписки, Проверка, 0 не подписан, 1 - подписан
+let subStatus = (idOrg, idUser) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('Call subStatus($1,$2);', [idOrg, idUser])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: subStatus");
+                return;
+            });
+    })
+}
+
+
+//Подписка на организатора
+let subOrg = (id_org, id_user) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call subOrg($1,$2);', [id_org, id_user])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: subOrg");
+                return;
+            });
+    })
+}
+
+//список подписчиков организатора странично
+let subscribersLimit = (idOrg, count, start) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call subscribers($1,$2,$3);', [idOrg, count, start])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: subscribersLimit");
+                return;
+            });
+    })
+}
+
+//список подписчиков организатора
+let subscribers = (idOrg) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('Call subscribers($1);', [idOrg])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: subscribers");
+                return;
+            });
+    })
+}
+
+
 module.exports = {
 
     //пользователь
@@ -603,4 +738,14 @@ module.exports = {
     'addEvent': addEvent,
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
+    'changeEvent': changeEvent, //изменить событие (без тегов)
+    'deleteEventTag': deleteEventTag, //удаление тегов у события
+    'organizerData': organizerData, //данные об организаторе
+    'organizerEvents': organizerEvents, //данные об мероприятиях для организатора
+    'searchOrglimit': searchOrglimit, //Поиск организаторов странично
+    'searchOrg': searchOrg, //Поиск организаторов 
+    'subStatus': subStatus, //Статус подписки, Проверка, 0 не подписан, 1 - подписан
+    'subOrg': subOrg, //Подписка на организатора
+    'subscribersLimit': subscribersLimit, //список подписчиков организатора странично
+    'subscribers': subscribers, //список подписчиков организатора
 };
