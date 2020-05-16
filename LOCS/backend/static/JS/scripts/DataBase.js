@@ -505,7 +505,19 @@ let searchEvent = (word, limit, offset) => {
 }
 
 
-///organizer
+///регистрация организатора 
+let registationOrganizer = (id, info, organizationName, organizationLink, logo) => {
+    return new Promise((resolve, reject) => {
+        db.result('call userToOrganizer($1,$2,$3,$4,$5);', [id, info, organizationName, organizationLink, logo])
+            .then(function (data) {
+                resolve(data);
+            }).catch(function (e) {
+                console.log(e);
+                reject("ERROR BD: searchEvent");
+                return;
+            });
+    })
+}
 
 //Добавить событие (не учитывает теги, отдельная процедура)
 let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
@@ -738,6 +750,7 @@ module.exports = {
     'addEvent': addEvent,
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
+    'registationOrganizer': registationOrganizer, ///регистрация организатора 
     'changeEvent': changeEvent, //изменить событие (без тегов)
     'deleteEventTag': deleteEventTag, //удаление тегов у события
     'organizerData': organizerData, //данные об организаторе
