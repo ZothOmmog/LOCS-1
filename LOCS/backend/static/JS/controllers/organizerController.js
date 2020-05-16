@@ -445,3 +445,47 @@ exports.eventsListLimit = async function(request, response) {
         response.json({ err: "user  in list sub list" });
     }
 };
+
+exports.registration = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == -1 || Role == 0) {
+            let checkName;
+
+            let info = request.body.info;
+            let organizationName = request.body.organizationName;
+            let organizationLink = request.body.organizationLink;
+            let logo = request.body.logo;
+
+            await DataBase.checkOrganizationName(organizationName).then(function(val) {
+                checkName = val;
+            });
+
+            if (val == 1) {
+                let data;
+                await DataBase.registationOrganizer(userId, info, organizationName, organizationLink, logo).then(function(val) {
+                    data = val;
+                }).catch(function(e) {
+                    console.log(e);
+                    data = false;
+                });
+                if (data) {
+                    await DataBase.changeTokenToOrg(request.cookies.userRole).then(function(val) {
+                        data = val;
+                    });
+                    response.json({ reg: true });
+                } else {
+                    response.json({ err: "error registationOrganizer" });
+                }
+            } else {
+                response.json({ err: "nickname is taken" });
+            }
+        } else {
+            response.json({ err: "the user is already an organizer" });
+        }
+    } else {
+        response.json({ err: "user dont sing in" });
+    }
+
+};
