@@ -21,6 +21,7 @@ export class ProfileToApiContainer extends React.Component {
     render() {
         return this.props.isFind !== null ? this.props.isFind ? (
             <Profile
+                friendStatus={this.props.friendStatus}
                 userId={this.props.userId}
                 nick={this.props.nick}
                 mail={this.props.mail}
@@ -33,7 +34,8 @@ export class ProfileToApiContainer extends React.Component {
 
 const mapStateToProps = (state) => ({
     userId: state.userProfilePage.userId,
-    isFind: state.userProfilePage.isFind, 
+    isFind: state.userProfilePage.isFind,
+    friendStatus: state.userProfilePage.friendStatus,
     nick: state.userProfilePage.nick,
     mail: state.userProfilePage.mail,
     city: state.userProfilePage.city,

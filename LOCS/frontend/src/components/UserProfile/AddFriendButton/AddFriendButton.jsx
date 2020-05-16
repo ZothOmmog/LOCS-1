@@ -5,34 +5,40 @@ import s from './AddFriendButton.module.scss';
 import { 
     addFriendThunk, 
     deleteFriendThunk, 
-    setFriendStatus 
+    setFriendStatus, 
+    acceptFriendThunk
 } from '../../../redux/indexReducers.js';
+
+const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
+const FRIEND_STATUS_REQUEST_OUT = 0;
+const FRIEND_STATUS_REQUEST_IN = 1;
+const FRIEND_STATUS_IN_FRIENDS = 2;
 
 const AddFriendButton = (props) => {
     let style = { type: 'NotBorderRadius', size:'FullContainer' };
     switch(+props.friendStatus) {
-        case -1: //Нет в друзьях
+        case FRIEND_STATUS_NOT_IN_FRIENDS:
             style.buttonText = 'Добавить в друзья';
             style.onClickHandler = () => {
                 props.setFriendStatus(0);
                 props.addFriendThunk(props.userId);
             }
             break;
-        case 0: //Отправлена заявка
+        case FRIEND_STATUS_REQUEST_OUT:
             style.buttonText = 'Отменить заявку';
             style.onClickHandler = () => {
                 props.setFriendStatus(-1);
                 props.deleteFriendThunk(props.userId);
             }
             break;
-        case 1: //Входящая заявка
+        case FRIEND_STATUS_REQUEST_IN:
             style.buttonText = 'Добавить в друзья';
             style.onClickHandler = () => {
                 props.setFriendStatus(2);
-                props.addFriendThunk(props.userId);
+                props.acceptFriendThunk(props.userId);
             }
             break;
-        case 2: //В друзьях
+        case FRIEND_STATUS_IN_FRIENDS:
             style.buttonText = 'Удалить из друзьей';
             style.onClickHandler = () => {
                 props.setFriendStatus(-1);
@@ -45,27 +51,11 @@ const AddFriendButton = (props) => {
     };
 
     return (
-        <div className={s.AddFriendButton}>
-            
+        <div className={s.AddFriendButton}> 
             <Button style={style}/>
-            
-            {/* {
-                props.friendStatus === 0 ? 
-                <div className={s.AddFriendButton__Description}>
-                    (Вы отправили заявку в друзья этому пользователю)
-                </div> :
-                props.friendStatus === 1 ?
-                <div className={s.AddFriendButton__Description}>
-                    (Пользователь отправил заявку в друзья)
-                </div> : ''
-            } */}
         </div>
 
     );
 }
 
-const mapStateToProps = (state) => ({
-    friendStatus: state.userProfilePage.friendStatus
-});
-
-export const AddFriendButtonContainer = connect(mapStateToProps, {addFriendThunk, deleteFriendThunk, setFriendStatus})(AddFriendButton);
+export const AddFriendButtonContainer = connect(null, {addFriendThunk, acceptFriendThunk, deleteFriendThunk, setFriendStatus})(AddFriendButton);

@@ -1,3 +1,8 @@
+export { 
+    backButtonReducer,
+    setPathBack 
+} from "./backButtonReducer";
+
 export { setFriendStatus } from "./userProfileReducer";
 
 export { 

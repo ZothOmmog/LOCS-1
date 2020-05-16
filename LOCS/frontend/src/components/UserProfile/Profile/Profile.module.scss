@@ -1,6 +1,11 @@
 .Profile {
     width: auto;
 
+    &__BackButton {
+        max-width: 100px;
+        margin-bottom: 130px;
+    }
+
     &__ContentWrapper {
         display: flex;
     }

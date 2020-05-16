@@ -5,7 +5,9 @@ import { Switch, Route } from 'react-router-dom';
 import { SearchUsersContainer } from './SearchUsers/SearchUsersContainer';
 import { Header } from './Header/Header';
 import { FriendRequestsOutContainer } from './FriendRequestsOut/FriendRequestsOutContainer';
+import { FriendRequestsInContainer } from './FriendRequestsIn/FriendRequestsInContainer';
 import { FooterContainer } from './Footer/FooterContainer';
+import { FriendsContainer } from './Friends/FriendsWithProps';
 
 export const UserProfile = (props) => {
     return (
@@ -25,8 +27,8 @@ export const UserProfile = (props) => {
 
             <div className={props.route.userId === 'me' ? s.UserProfile__ContentWrapper : s.UserProfile__OtherWrapper}>
                 <Switch>
-                    <Route path='/UserProfile/me/Friends' render={() => 'Будет доступно в ближайших патчах :3'} />
-                    <Route path='/UserProfile/me/FriendRequestsIn' render={() => 'Будет доступно в ближайших патчах :3'} />
+                    <Route path='/UserProfile/me/Friends' render={() => <FriendsContainer />} />
+                    <Route path='/UserProfile/me/FriendRequestsIn' render={() => <FriendRequestsInContainer />} />
                     <Route path='/UserProfile/me/FriendRequestsOut' render={() => <FriendRequestsOutContainer />} />
                     <Route path='/UserProfile/me/SearchUsers' render={() => <SearchUsersContainer {...props} />} />
                     <Route path='/UserProfile/me/Organizer' render={() => 'Будет доступно в ближайших патчах :3'} />

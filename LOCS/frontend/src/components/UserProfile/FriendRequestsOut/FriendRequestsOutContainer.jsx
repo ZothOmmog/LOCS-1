@@ -4,9 +4,10 @@ import { setFriendRequestsOutThunk, cleanFriends } from "../../../redux/indexRed
 import { compose } from 'redux';
 import { withSetDataAndCleanData } from '../../../hoc/withSetDataAndCleanData';
 import { changeCurrentPageFriendsThunk } from "../../../redux/friendsReducer";
+import { withBackPath } from "../../../hoc/indexHoc";
 
 const mapStateToProps = (state) => ({
-    friendRequestsOut: state.friends.friendRequestsOut,
+    friendRequestsOut: state.friends.friends,
     pages: state.friends.pages,
     currentPage: state.friends.currentPage
 });
@@ -15,5 +16,6 @@ const changeCurrentPageFriendRequestsOut = changeCurrentPageFriendsThunk('friend
 
 export const FriendRequestsOutContainer = compose(
     connect(mapStateToProps, { changeCurrentPageFriendRequestsOut }),
-    withSetDataAndCleanData(setFriendRequestsOutThunk, cleanFriends)
+    withSetDataAndCleanData(setFriendRequestsOutThunk, cleanFriends),
+    withBackPath('/UserProfile/me/FriendRequestsOut')
 )(FriendRequestsOut);

@@ -9,6 +9,7 @@ export const NavButton = (props) => {
     type += (
         props.style.type === 'ProfileHeader' ? (' ' + s.Button_Style_ProfileHeader) :
         props.style.type === 'ProfileHeaderActive' ? (' ' + s.Button_Style_ProfileHeaderActive) :
+        props.style.type === 'NotBorderRadius' ? (' ' + s.Button_Style_NotBorderRadius) :
         props.style.type === 'ProfileFooter' ? (' ' + s.Button_Style_ProfileFooter) :
         props.style.type === 'ProfileFooterActive' ? (' ' + s.Button_Style_ProfileFooterActive) : (' ' + s.Button_Style_Base)
     );

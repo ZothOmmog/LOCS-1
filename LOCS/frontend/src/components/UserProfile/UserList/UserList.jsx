@@ -17,7 +17,9 @@ export const UserList = (props) => {
     )) : '';
 
     return <div className={s.UserList}>
-        {users}
+        <div className={s.UserList__Users}>
+            {users}
+        </div>
         <div className={s.UserList__PagesNumbersMenu}>
             {props.pages ?
                 <PagesNumbersMenu

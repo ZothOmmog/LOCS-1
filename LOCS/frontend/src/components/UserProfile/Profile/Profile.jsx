@@ -2,12 +2,19 @@ import React from 'react';
 import s from './Profile.module.scss';
 import { Button } from '../../Button-bem/Button';
 import { AddFriendButtonContainer } from '../AddFriendButton/AddFriendButton';
+import { BackButtonWithProps } from '../../BackButton/BackButton';
 
 export const Profile = (props) => {
     const imgUrl = 'https://im0-tub-ru.yandex.net/i?id=bc7f9021eae00edbac26dc53c0e013c4&n=13';
 
     return (
-        <div className={s.Profile}> 
+        <div className={s.Profile}>
+            {
+                props.userId !== 'me' ?
+                    <div className={s.Profile__BackButton}>
+                        <BackButtonWithProps />
+                    </div> : ''
+            }
             <div className={s.Profile__ContentWrapper}>
                 <div className={s.ProfilePicture}>
                     <img className={s.Profile__Img} src={imgUrl} alt='' />
@@ -35,7 +42,7 @@ export const Profile = (props) => {
                     }} />
                 </div> : 
                 <div className={s.Profile__AddUser}>
-                    <AddFriendButtonContainer userId={props.userId} />
+                    <AddFriendButtonContainer userId={props.userId} friendStatus={props.friendStatus} />
                 </div>
             }
         </div>

@@ -4,8 +4,13 @@ import { SearchUsers } from './SearchUsers';
 import { SearchUsersByNickThunk, updateIsSearch, searchClear } from '../../../redux/searchReducer';
 import { UserProfileShort } from '../../UserProfileShort/UserProfileShort';
 import { changePage, clearSearchUsersPage } from '../../../redux/searchUsersReducer';
+import { setPathBack } from '../../../redux/indexReducers';
 
 class SearchUsersPreContainer extends React.Component {
+    componentDidMount = () => {
+        this.props.setPathBack('/UserProfile/me/SearchUsers');
+    }
+
     UsersForUI = () => {
         if(!this.props.isSearch) return null;
         if(!this.props.users || !this.props.users.length) return null;
@@ -38,11 +43,6 @@ class SearchUsersPreContainer extends React.Component {
         this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
     }
 
-    // componentWillUnmount() {
-    //     this.props.updateIsSearch(false);
-    //     this.props.clearSearchUsersPage();
-    // }
-
     onClickBackHandler = () => {
         this.props.updateIsSearch(false);
         this.props.clearSearchUsersPage();
@@ -73,7 +73,9 @@ const mapStateToProps = (state) => ({
     pages: state.searchUsersPage.pages,
     countUsers: state.searchUsersPage.countUsers,
     currentPage: state.searchUsersPage.currentPage,
-    currentQueryText: state.searchPage.currentQueryText
+    currentQueryText: state.searchPage.currentQueryText,
 });
 
-export const SearchUsersContainer = connect(mapStateToProps, { SearchUsersByNickThunk, updateIsSearch, changePage, clearSearchUsersPage, searchClear })(SearchUsersPreContainer);
+export const SearchUsersContainer = connect(mapStateToProps, { 
+    SearchUsersByNickThunk, updateIsSearch, changePage, 
+    clearSearchUsersPage, searchClear , setPathBack})(SearchUsersPreContainer);
