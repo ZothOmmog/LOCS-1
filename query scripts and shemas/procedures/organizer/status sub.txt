@@ -6,7 +6,7 @@ AS $BODY$
 DECLARE
   	check_ int;
 BEGIN
-	select into check_ id_subscribe from subscribe where id_subscribe = id_org_ and sub_user_on_id = id_user_ ;
+	select into check_ id_subscribe from subscribe where id_subscribe = id_org_ and sub_user_on_id = id_user_ and deleted=false ;
 								  
 	IF  check_ > 0 THEN
         	RETURN 1;	

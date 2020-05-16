@@ -6,7 +6,7 @@ $$
 BEGIN
     RETURN QUERY  SELECT to_json(a) FROM ( SELECT id_user,nickname FROM visitor WHERE
 										  id_user in
-										  (select sub_user_on_id from subscribe where id_subscribe=id_)) a ;
+										  (select sub_user_on_id from subscribe where id_subscribe=id_ and deleted=false)) a ;
 END;
 $$ LANGUAGE plpgsql;
 

@@ -133,3 +133,4 @@ create table Tokens(
 );
 alter table event add column image text;
 alter table event add column deleted bool default false;
+alter table subscribe add column deleted bool default false;

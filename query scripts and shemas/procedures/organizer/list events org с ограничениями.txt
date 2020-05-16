@@ -1,0 +1,9 @@
+--Функция, которая возвращает данные евентов без тегов, для аккаунта организатора
+
+CREATE OR REPLACE FUNCTION eventOrgListLimit(idOrg bigint, limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, name, image FROM event where published=true and deleted=false and id_organizer=idOrg  LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
