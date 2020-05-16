@@ -1,15 +1,7 @@
 .PagesNumbersMenu {
     display: flex;
 
-    &__item {
-        padding: 5px 15px;
-
-        &_active {
-            background-color: green;
-        }
-    }
-
-    &__item + &__item {
+    &__Item + &__Item {
         margin-left: 15px;
     }
 }

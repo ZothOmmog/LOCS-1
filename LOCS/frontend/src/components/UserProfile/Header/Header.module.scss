@@ -1,0 +1,8 @@
+.UserProfileHeader {
+    display: flex;
+    height: 50px;
+
+    &__Item {
+        flex-basis: 300px;
+    }
+}

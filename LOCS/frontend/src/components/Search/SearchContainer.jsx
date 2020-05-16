@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Search from './Search';
-import { updateQueryText, searchClear } from '../../redux/searchReducer';
+import { updateQueryText } from '../../redux/searchReducer';
 
 class SearchToStateContainer extends React.Component {
     updateQueryText = (e) => {
@@ -15,10 +15,6 @@ class SearchToStateContainer extends React.Component {
         const queryText = this.props.state.queryText;
 
         this.props.searchGo(pageSize, currentPage, queryText);
-    }
-
-    componentWillUnmount() {
-        this.props.searchClear();
     }
 
     render() {
@@ -38,4 +34,4 @@ const mapStateToProps = (state) => {
    }
 };
 
-export const SearchContainer = connect(mapStateToProps, { updateQueryText, searchClear })(SearchToStateContainer);
+export const SearchContainer = connect(mapStateToProps, { updateQueryText })(SearchToStateContainer);

@@ -7,6 +7,9 @@
     font-family: 'Segoe UI', sans-serif;
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     cursor: pointer;
 
     &_Style {
@@ -28,30 +31,6 @@
             color: black;
         }
 
-        &_Switch {
-            font-weight: 400;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            background-color: black;
-            color: white;
-            transition: 0.2s;
-        }
-        &_Switch:hover {
-            border-radius: 10px;
-            background-color: gray;
-            color: black;
-        }
-        &_SwitchActive {
-            font-weight: 400;
-            font-size: 16px;
-            border: none;
-            border-radius: 10px;
-            background-color: green;
-            color: white;
-            transition: 0.2s;
-        }
-
         &_NotBorderRadius {
             font-weight: 400;
             font-size: 16px;
@@ -67,16 +46,43 @@
         }
 
         &_Profile {
-            &Exit {
-                height: 100%;
-                width: 100px;
+            $colorActive: rgba(49, 64, 95, 0.9);
+
+            &Header {
+                font-weight: 700;
+                font-size: 16px;
+                text-align: center;
+                background-color: white;
+                border: none;
+                border-bottom: 1px solid #000;
+                transition: 0.2s;
+            }
+            &HeaderActive {
+                font-weight: 700;
+                font-size: 16px;
+                text-align: center;
+                background-color: white;
+                border: none;
+                border-bottom: 1px solid #000;
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            &Header:hover {
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            
+            &Footer {
+                text-align: center;
                 font-weight: 300;
                 line-height: 21px;
-                border: none;
-                background-color: rgba(255, 0, 0, 0.25);
+                transition: 0.2s;
             }
-            &Exit:hover {
-                box-shadow: inset 0px 0px 20px rgba(0, 0, 0, 0.25);
+            &Footer:hover {
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            &FooterActive {
+                font-weight: 300;
+                text-align: center;
+                box-shadow: inset 0px 0px 20px $colorActive;
             }
         }
     }

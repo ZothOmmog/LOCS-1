@@ -1,29 +1,17 @@
 import React from 'react';
 import { UserProfile } from "./UserProfile";
-import { connect } from "react-redux";
-import { logoutMeThunk } from "../../redux/authReducer";
 import { withAuthRedirect } from "../../hoc/indexHoc";
-import { setUserByIdThunk } from '../../redux/userProfileReducer';
+import { connect } from 'react-redux';
+import { searchClear } from '../../redux/searchReducer';
 
-const mapStateToProps = (state) => ({
-    isFind: state.userProfilePage.isFind,
-    nick: state.userProfilePage.nick,
-    mail: state.userProfilePage.mail,
-    city: state.userProfilePage.city,
-    urlPicture: state.userProfilePage.urlPicture,
-});
-
-class UserProfileAuthContainer extends React.Component {
-    componentDidMount() {
-        this.props.setUserByIdThunk(this.props.route.userId);
+class UserContainerWithClean extends React.Component {
+    componentWillUnmount() {
+        this.props.searchClear();
     }
-
+    
     render() {
-        if(!this.props.isFind) return <div>Пользователь не найден</div>;
-        return <UserProfile {...this.props} />;
+        return <UserProfile route={this.props.route} />;
     }
 }
 
-const UserProfileAuthContainerWithProps = connect(mapStateToProps, { setUserByIdThunk, logoutMeThunk })(UserProfileAuthContainer);
-
-export const UserProfileContainer = withAuthRedirect(UserProfileAuthContainerWithProps, false);
+export const UserProfileContainer = withAuthRedirect(connect(null, {searchClear})(UserContainerWithClean), false);

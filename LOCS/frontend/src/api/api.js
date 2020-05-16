@@ -2,9 +2,9 @@ const baseURL = 'http://localhost:4000/';
 const POST = 'POST';
 const GET = 'GET';
 
-class FetchInstance {
-    constructor(baseURL) {
-        this.baseURL = 'http://localhost:4000/';
+export class FetchInstance {
+    constructor() {
+        this.baseURL = baseURL;
     }
     
     __forOptionsGet() {
@@ -102,6 +102,6 @@ class SearchAPI extends FetchInstance {
     SearchUsersByNick = (nick, pageSize, pageNum) => this.go(POST, `user/SearchUser/${pageSize}/${pageNum}`,this.bodySearchUsersByNick(nick), true);
 }
 
-export const userAPI = new UserAPI(baseURL);
-export const eventAPI = new EventAPI(baseURL);
-export const searchAPI = new SearchAPI(baseURL);
+export const userAPI = new UserAPI();
+export const eventAPI = new EventAPI();
+export const searchAPI = new SearchAPI();
