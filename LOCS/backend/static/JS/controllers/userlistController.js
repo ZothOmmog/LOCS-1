@@ -1,4 +1,3 @@
-let User = require("../models/userlist.js");
 const path = require('path')
 let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');

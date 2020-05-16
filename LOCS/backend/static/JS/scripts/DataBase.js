@@ -362,6 +362,19 @@ let DeleteToken = (tok) => {
     })
 }
 
+//изменить роль на организатора в токене
+let changeTokenToOrg = (tok) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call changeTokenToOrg($1);', [tok])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: changeTokenToOrg");
+                return;
+            });
+    })
+}
+
 // вернуть токен 
 let TakeToken = (tok) => {
     return new Promise((resolve, reject) => {
@@ -509,9 +522,9 @@ let searchEvent = (word, limit, offset) => {
 let registationOrganizer = (id, info, organizationName, organizationLink, logo) => {
     return new Promise((resolve, reject) => {
         db.result('call userToOrganizer($1,$2,$3,$4,$5);', [id, info, organizationName, organizationLink, logo])
-            .then(function (data) {
-                resolve(data);
-            }).catch(function (e) {
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
                 console.log(e);
                 reject("ERROR BD: searchEvent");
                 return;
@@ -770,6 +783,18 @@ let eventOrgList = (id_user) => {
     })
 }
 
+//проверка имени организатора
+const checkOrganizationName = (nick) => {
+    return new Promise((resolve, reject) => {
+        db.one("select checkOrg($1);", nick)
+            .then(function(data) {
+                resolve(data.checkorg);
+            }).catch(function() {
+                reject("ERROR BD: checkOrganizationName");
+                return;
+            });
+    });
+};
 
 
 module.exports = {
@@ -810,6 +835,7 @@ module.exports = {
     'addToken': addToken, //добавить токен
     'TakeToken': TakeToken, //вернуть токен
     'deleteToken': DeleteToken, //удалить токен
+    'changeTokenToOrg': changeTokenToOrg, //изменить роль на организатора в токене
     //для админки 
     'addDistrict': addDistrict, //Добавить район
     'addAddress': addAddress, //Добавить адрес
@@ -831,7 +857,9 @@ module.exports = {
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
+
     'registationOrganizer': registationOrganizer, ///регистрация организатора 
+
     'changeEvent': changeEvent, //изменить событие (без тегов)
     'deleteEventTag': deleteEventTag, //удаление тегов у события
 
@@ -855,4 +883,6 @@ module.exports = {
 
     'eventOrgList': eventOrgList, //Список событий по id организатора
     'eventOrgListLimit': eventOrgListLimit, //Список событий странично по id организатора
+
+    'checkOrganizationName': checkOrganizationName, //проверка имени организатора
 };

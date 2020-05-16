@@ -22,6 +22,8 @@ organizerRouter.get("/myEvents$", organizerController.myEventsList); //спис�
 organizerRouter.get("/myEvents/:limit/:offset$", organizerController.myEventsListLimit); //список мероприятий (личный кабинет) странично
 
 
+organizerRouter.post("/registration", organizerController.registration); //регистрация организатора
+
 //
 
 
