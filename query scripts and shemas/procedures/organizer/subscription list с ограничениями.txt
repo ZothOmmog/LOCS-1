@@ -1,0 +1,12 @@
+--список подписок странично
+-- в таблице subscribe два столбца (организатор - id_subscribe ,юзер - sub_user_on_id)
+CREATE OR REPLACE FUNCTION subList(id_ bigint, count_ numeric, start_ numeric)
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM ( SELECT id_user,organization_name FROM organizer WHERE
+										  id_user in
+										  (select id_subscribe  from subscribe where sub_user_on_id=id_ and deleted=false)LIMIT count_ OFFSET start_) a ;
+END;
+$$ LANGUAGE plpgsql;
+

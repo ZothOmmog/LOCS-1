@@ -1,0 +1,8 @@
+--отписаться от организатора
+CREATE OR REPLACE PROCEDURE unSubOrg(id_org bigint, id_user bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update subscribe set deleted = true where id_subscribe = id_org and sub_user_on_id = id_user;
+END;
+$BODY$;

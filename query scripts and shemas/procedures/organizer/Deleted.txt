@@ -1,8 +1,8 @@
 --Удаление мероприятия
-CREATE OR REPLACE PROCEDURE DeleteEvent(idev_ bigint)
+CREATE OR REPLACE PROCEDURE DeleteEvent(idEvent bigint,idOrganizer bigint)
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN 
-	update event set deleted = true where id = idev_; 
+	update event set deleted = true where id = idEvent and id_organizer = idOrganizer and deleted = false; 
 END;
 $BODY$;
