@@ -535,10 +535,11 @@ let registationOrganizer = (id, info, organizationName, organizationLink, logo) 
 //Добавить событие (не учитывает теги, отдельная процедура)
 let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
     return new Promise((resolve, reject) => {
-        db.result('Call AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
+        db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
             .then(function(data) {
-                resolve(true);
-            }).catch(function() {
+                resolve(data.addevent);
+            }).catch(function(e) {
+                console.log(e);
                 reject("ERROR BD: AddEvent");
                 return;
             });
@@ -559,9 +560,9 @@ let deleteEvent = (idEvent, idOrganizer) => {
 }
 
 //добавить тег евенту (tag - или название или id)
-let addEventTag = (id_ev, tag) => {
+let addEventTag = (idEvent, tag) => {
     return new Promise((resolve, reject) => {
-        db.result('Call AddEventTag($1,$2);', [id_ev, tag])
+        db.result('Call AddEventTag($1,$2);', [idEvent, tag])
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
@@ -786,7 +787,7 @@ let eventOrgList = (id_user) => {
 //проверка имени организатора
 const checkOrganizationName = (nick) => {
     return new Promise((resolve, reject) => {
-        db.one("select checkOrg($1);", nick)
+        db.one("select checkOrg($1);", [nick])
             .then(function(data) {
                 resolve(data.checkorg);
             }).catch(function() {
@@ -796,6 +797,31 @@ const checkOrganizationName = (nick) => {
     });
 };
 
+//получение id адреса
+const getIdAddress = (street, house) => {
+    return new Promise((resolve, reject) => {
+        db.one("select getAddress($1,$2);", [street, house])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: getIdAddress");
+                return;
+            });
+    });
+};
+
+//получение id адреса, поиск
+const searchAddress = (word) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select searchAddress($1);", ["%" + word + "%"])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: searchAddress");
+                return;
+            });
+    });
+};
 
 module.exports = {
 
@@ -872,7 +898,8 @@ module.exports = {
     'subscribers': subscribers, //список подписчиков организатора
     'countSub': countSub, //кол. подписчиков организатора
 
-
+    'getIdAddress': getIdAddress, //получение id адреса
+    'searchAddress': searchAddress, //получение id адреса, поиск
 
     //работа с организаторами
     'subList': subList, //Список подписок
@@ -885,4 +912,5 @@ module.exports = {
     'eventOrgListLimit': eventOrgListLimit, //Список событий странично по id организатора
 
     'checkOrganizationName': checkOrganizationName, //проверка имени организатора
+
 };
