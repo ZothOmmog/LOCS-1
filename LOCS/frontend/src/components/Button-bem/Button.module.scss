@@ -66,6 +66,20 @@
             color: black;
         }
 
+        &_NotBorderRadiusRed {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
+            background-color: Red;
+            color: white;
+            padding: 5px;
+            transition: 0.2s;
+        }
+        &_NotBorderRadiusRed:hover {
+            background-color: gray;
+            color: black;
+        }
+
         &_Profile {
             &Exit {
                 height: 100%;

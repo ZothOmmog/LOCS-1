@@ -10,7 +10,7 @@ const CLEAN_FRIENDS = 'CLEAN_FRIENDS';
 const CHANGE_CURRENT_PAGE_FRIENDS = 'CHANGE_CURRENT_PAGE_FRIENDS';
 const SET_FRIENDS_PAGES = 'SET_FRIENDS_PAGES';
 
-const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
+// const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
 const FRIEND_STATUS_REQUEST_OUT = 0;
 const FRIEND_STATUS_REQUEST_IN = 1;
 const FRIEND_STATUS_IN_FRIENDS = 2;
@@ -83,11 +83,24 @@ export const addFriendThunk = (idUser) => async (dispatch) => {
     }
 }
 
-export const deleteFriendThunk = (idUser) => async (dispatch) => {
+export const deleteFriendThunk = (typeUsersList) => (idUser) => async (dispatch) => {
     const isDeleted = await friendsApi.deleteUserFromFriends(idUser);
     if(isDeleted.err) throw new Error(`Не удалось удалить пользователя из друзей: ${isDeleted.err}`);
     dispatch( changeCurrentPageFriends(1) );
-    dispatch( setFriendRequestsOutThunk() );
+    switch(typeUsersList) {
+        case 'FriendRequestsOut':
+            dispatch( setFriendRequestsOutThunk() );
+            break;
+        case 'FriendRequestsIn':
+            dispatch( setFriendRequestsInThunk() );
+            break;
+        case 'Friends':
+            dispatch( setFriendsThunk() );
+            break;
+        default:
+            console.error('Выбранн неправильный тип списка пользователей при удалении друга');
+            break;
+    };
 }
 
 export const acceptFriendThunk = (idUser) => async (dispatch) => {
