@@ -1,0 +1,8 @@
+--меняет роль при создании аккаунта организатора
+CREATE OR REPLACE PROCEDURE changeTokenToOrg(tok_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update Tokens set obj=2  where token =tok_ ;
+END;
+$BODY$;

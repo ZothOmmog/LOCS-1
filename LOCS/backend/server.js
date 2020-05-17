@@ -3,8 +3,8 @@ const express = require("express");
 const app = express();
 const session = require('express-session');
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
-const mainRouter = require("./static/JS/routes/mainRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
+const organizerRouter = require("./static/JS/routes/organizerRouter.js");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
@@ -40,9 +40,11 @@ app.use(session({
     secret: 'xiaomitopzasvoidengi1488'
 }))
 
+
 app.use("/event", eventRouter);
+app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
-app.use("/$", mainRouter);
+
 
 
 

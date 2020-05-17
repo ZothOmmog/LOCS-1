@@ -1,0 +1,17 @@
+--Функция, которая возвращает данные евентов без тегов, для аккаунта организатора
+
+CREATE OR REPLACE FUNCTION checkOrg(organization_name_  text) 
+RETURNS int
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    logs bigint;
+BEGIN
+	select into logs count(*) from organizer where organization_name = organization_name_;
+	    IF    logs = 0 THEN
+        RETURN 1;
+    	ELSE 
+        RETURN 0;
+    END IF;
+END;
+$BODY$;
