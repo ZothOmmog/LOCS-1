@@ -640,12 +640,24 @@ let searchOrglimit = (word, limit, offset) => {
 
 //Поиск организаторов 
 let searchOrg = (word) => {
+        return new Promise((resolve, reject) => {
+            db.manyOrNone('select   searchOrg($1);', ["%" + word + "%"])
+                .then(function(data) {
+                    resolve(data);
+                }).catch(function() {
+                    reject("ERROR BD: searchOrg");
+                    return;
+                });
+        })
+    }
+    //кол Поиск организаторов 
+let countSearchOrg = (word) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select   searchOrg($1);', ["%" + word + "%"])
+        db.oneOrNone('select count(*) from  searchOrg($1);', ["%" + word + "%"])
             .then(function(data) {
-                resolve(data);
+                resolve(data.count);
             }).catch(function() {
-                reject("ERROR BD: searchOrg");
+                reject("ERROR BD: countSearchOrg");
                 return;
             });
     })
@@ -704,6 +716,20 @@ let subscribers = (idOrg) => {
     })
 }
 
+
+//кол подп организатора
+let countSubscribers = (idOrg) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select count(*) from subscribers($1);', [idOrg])
+            .then(function(data) {
+                resolve(data.count);
+            }).catch(function() {
+                reject("ERROR BD: countSubscribers");
+                return;
+            });
+    })
+}
+
 //кол. подписчиков организатора
 let countSub = (idOrg) => {
     return new Promise((resolve, reject) => {
@@ -739,6 +765,19 @@ let subList = (id_user) => {
                 resolve(data);
             }).catch(function() {
                 reject("ERROR BD: subList");
+                return;
+            });
+    })
+}
+
+//кол записей Список подписок
+let countSubList = (id_user) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select count(*) from subList($1);', [id_user])
+            .then(function(data) {
+                resolve(data.count);
+            }).catch(function() {
+                reject("ERROR BD: countSubList");
                 return;
             });
     })
@@ -783,6 +822,21 @@ let eventOrgList = (id_user) => {
             });
     })
 }
+
+
+//кол Список событий по id организатора
+let countEventOrgList = (id_user) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select count(*) from eventOrgList($1);', [id_user])
+            .then(function(data) {
+                resolve(data.count);
+            }).catch(function() {
+                reject("ERROR BD: countEventOrgList");
+                return;
+            });
+    })
+}
+
 
 //проверка имени организатора
 const checkOrganizationName = (nick) => {
@@ -894,7 +948,14 @@ module.exports = {
     'organizerEvents': organizerEvents, //данные об мероприятиях для организатора
     'searchOrglimit': searchOrglimit, //Поиск организаторов странично
     'subStatus': subStatus, //Статус подписки, Проверка, 0 не подписан, 1 - подписан
+
     'subscribersLimit': subscribersLimit, //список подписчиков организатора странично
+    'countSubscribers': countSubscribers, //кол подп организатора
+    'countEventOrgList': countEventOrgList, //кол Список событий по id организатора
+    'countSearchOrg': countSearchOrg, // кол Поиск организаторов 
+
+    'countSubList': countSubList, //rол записей Список подписок
+
     'subscribers': subscribers, //список подписчиков организатора
     'countSub': countSub, //кол. подписчиков организатора
 

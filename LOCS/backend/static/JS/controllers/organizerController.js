@@ -84,6 +84,7 @@ exports.search = async function(request, response) {
 
 exports.searchLimit = async function(request, response) {
     let word = request.body.word;
+    let count;
 
     let limit = Number(request.params.limit);
     let offset = Number(request.params.offset);
@@ -92,12 +93,16 @@ exports.searchLimit = async function(request, response) {
     offset = (offset - 1) * limit;
 
     let data;
+
+    await DataBase.countSearchOrg(word).then(function(val) {
+        count = val;
+    });
     await DataBase.searchOrglimit(word, limit, offset).then(function(val) {
         data = val;
     }).catch(function() {
         data = { "err": "search error" }
     });
-    response.json(data);
+    response.json({ "count": count, data });
 };
 
 exports.mySubscribers = async function(request, response) {
@@ -127,6 +132,11 @@ exports.mySubscribersLimit = async function(request, response) {
     if (userId) {
         const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
         if (Role == 2 || Role == 0) {
+            let count;
+            await DataBase.countSubscribers(userId).then(function(val) {
+                count = val;
+            });
+
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
             offset = offset <= 0 ? 1 : offset;
@@ -138,7 +148,9 @@ exports.mySubscribersLimit = async function(request, response) {
             }).catch(function() {
                 data = { "err": "sub org error" }
             });
-            response.json(data);
+
+            response.json({ "count": count, data });
+
         } else {
             response.json({ err: "do not have permissions" });
         }
@@ -175,14 +187,19 @@ exports.subscribersLimit = async function(request, response) {
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
-
+        let count;
         let data;
+
+        await DataBase.countSubscribers(orgId).then(function(val) {
+            count = val;
+        });
+
         await DataBase.subscribersLimit(orgId, limit, offset).then(function(val) {
             data = val;
         }).catch(function() {
             data = { "err": "sub org error" }
         });
-        response.json(data);
+        response.json({ "count": count, data });
     } else {
         response.json({ err: "user dont sing in" });
     }
@@ -285,7 +302,7 @@ exports.mySubscribeList = async function(request, response) {
 exports.mySubscribeListLimit = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
-
+        let count;
         let data;
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
@@ -293,11 +310,15 @@ exports.mySubscribeListLimit = async function(request, response) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
+        await DataBase.countSubList(userId).then(function(val) {
+            count = val;
+        });
+
         await DataBase.subListLimit(userId, limit, offset).then(function(val) {
             data = val;
         });
         if (data) {
-            response.json(data);
+            response.json({ "count": count, data });
         } else {
             response.json({ err: "user  in list sub list" });
         }
@@ -333,7 +354,7 @@ exports.subscribeUserList = async function(request, response) {
 exports.subscribeUserListLimit = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
-
+        let count;
         let data;
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
@@ -342,11 +363,14 @@ exports.subscribeUserListLimit = async function(request, response) {
         offset = (offset - 1) * limit;
 
         let user = request.body.user;
+        await DataBase.countSubList(user).then(function(val) {
+            count = val;
+        });
         await DataBase.subListLimit(user, limit, offset).then(function(val) {
             data = val;
         });
         if (data) {
-            response.json(data);
+            response.json({ "count": count, data });
         } else {
             response.json({ err: "user  in list sub list" });
         }
@@ -363,6 +387,9 @@ exports.myEventsList = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         let data;
+
+
+
 
         await DataBase.eventOrgList(userId).then(function(val) {
             data = val;
@@ -390,14 +417,17 @@ exports.myEventsListLimit = async function(request, response) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
+        let count;
         let data;
-
+        await DataBase.countEventOrgList(userId).then(function(val) {
+            count = val;
+        });
         await DataBase.eventOrgListLimit(userId, limit, offset).then(function(val) {
             data = val;
         });
 
         if (data) {
-            response.json(data);
+            response.json({ "count": count, data });
         } else {
             response.json({ err: "user  in list sub list" });
         }
@@ -435,12 +465,17 @@ exports.eventsListLimit = async function(request, response) {
     offset = (offset - 1) * limit;
     let orgId = request.body.org;
     let data;
+    let count;
+    await DataBase.countEventOrgList(orgId).then(function(val) {
+        count = val;
+    });
+
     await DataBase.eventOrgListLimit(orgId, limit, offset).then(function(val) {
         data = val;
     });
 
     if (data) {
-        response.json(data);
+        response.json({ "count": count, data });
     } else {
         response.json({ err: "user  in list sub list" });
     }
