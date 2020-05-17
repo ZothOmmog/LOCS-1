@@ -1,5 +1,5 @@
 const express = require("express");
-
+const config = require('./static/JS/configs/config.json');
 const app = express();
 const session = require('express-session');
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
@@ -36,10 +36,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(session({
-    key: 'whatisname',
-    secret: 'xiaomitopzasvoidengi1488'
-}))
-
+        key: 'whatisname',
+        secret: 'xiaomitopzasvoidengi1488'
+    }))
+    //, { maxAge: config.cookieLive }
 
 app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
