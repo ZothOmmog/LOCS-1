@@ -8,6 +8,7 @@ export const Button = (props) => {
         props.style.type === 'Switch' ? (' ' + s.Button_Style_Switch) :
         props.style.type === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) :
         props.style.type === 'NotBorderRadius' ? (' ' + s.Button_Style_NotBorderRadius) :
+        props.style.type === 'NotBorderRadiusRed' ? (' ' + s.Button_Style_NotBorderRadiusRed) :
         props.style.type === 'ProfileExit' ? (' ' + s.Button_Style_ProfileExit) : (' ' + s.Button_Style_Base)
     );
 

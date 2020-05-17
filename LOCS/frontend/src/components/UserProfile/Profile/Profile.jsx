@@ -4,6 +4,11 @@ import { Button } from '../../Button-bem/Button';
 import { AddFriendButtonContainer } from '../AddFriendButton/AddFriendButton';
 import { BackButtonWithProps } from '../../BackButton/BackButton';
 
+// const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
+const FRIEND_STATUS_REQUEST_OUT = 0;
+const FRIEND_STATUS_REQUEST_IN = 1;
+const FRIEND_STATUS_IN_FRIENDS = 2;
+
 export const Profile = (props) => {
     const imgUrl = 'https://im0-tub-ru.yandex.net/i?id=bc7f9021eae00edbac26dc53c0e013c4&n=13';
 
@@ -32,7 +37,7 @@ export const Profile = (props) => {
                     <div className={s.ProfileDescribtionItems__Item}>{props.city}</div>
                 </div>
             </div>
-            
+
             {props.userId === 'me' ?
                 <div className={s.Profile__Button}>
                     <Button style={{
@@ -43,6 +48,14 @@ export const Profile = (props) => {
                 </div> : 
                 <div className={s.Profile__AddUser}>
                     <AddFriendButtonContainer userId={props.userId} friendStatus={props.friendStatus} />
+                    {
+                        props.friendStatus === FRIEND_STATUS_IN_FRIENDS ?
+                        <div>(Этот пользователь у вас в друзьях)</div> :
+                        props.friendStatus === FRIEND_STATUS_REQUEST_IN ?
+                        <div>(Этот пользователь отправил вам заявку в друзья)</div> :
+                        props.friendStatus === FRIEND_STATUS_REQUEST_OUT ?
+                        <div>(Вы отправили этому пользователю заявку в друзья)</div> : ''
+                    }
                 </div>
             }
         </div>
