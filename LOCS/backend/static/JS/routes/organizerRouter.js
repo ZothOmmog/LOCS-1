@@ -52,4 +52,11 @@ organizerRouter.post("/subUser/:limit/:offset", organizerController.subscribeUse
 organizerRouter.post("/events$", organizerController.eventsList); //список мероприятий
 organizerRouter.post("/events/:limit/:offset", organizerController.eventsListLimit); //список мероприятий странично
 
+
+organizerRouter.post("/createEvent$", organizerController.createEvent); //создание события
+
+organizerRouter.post("/chaneEvent$", organizerController.changeEvent); //создание события
+
+organizerRouter.post("/searchAddress$", organizerController.searchAddress); //поиск id адреса 
+
 module.exports = organizerRouter;

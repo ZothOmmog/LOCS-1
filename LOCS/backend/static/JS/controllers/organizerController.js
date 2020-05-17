@@ -489,3 +489,124 @@ exports.registration = async function(request, response) {
     }
 
 };
+
+
+
+exports.createEvent = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == 2 || Role == 0) {
+            let idAddress = request.body.idAddress;
+            let name = request.body.name;
+            let info = request.body.info;
+            let link = request.body.link;
+            let price = request.body.price;
+
+            let idEvent;
+            await DataBase.addEvent(name, info, link, price, userId, idAddress).then(function(val) {
+                idEvent = val;
+            }).catch(function(e) {
+                console.log(e);
+                idEvent = false;
+            });
+
+            if (idEvent) {
+                let tags = request.body.tags;
+                let check;
+                for (i in tags) {
+                    await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
+                        check = val;
+                    }).catch(function(e) {
+                        console.log(e);
+                        check = false;
+                        break;
+                    });
+                }
+
+                if (check) {
+                    response.json({ create: true });
+                } else {
+                    response.json({ err: "create failed" });
+                }
+
+            } else {
+                response.json({ err: "create failed" });
+            }
+
+
+        } else {
+            response.json({ err: "do not have permissions" });
+        }
+    } else {
+        response.json({ err: "user dont sing in" });
+    };
+};
+
+
+exports.searchAddress = async function(request, response) {
+    let word = request.body.word;
+    let data;
+    await DataBase.searchAddress(word).then(function(val) {
+        data = val;
+    });
+    response.json(data);
+};
+
+
+exports.changeEvent = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == 2 || Role == 0) {
+            let idAddress = request.body.idAddress;
+            let name = request.body.name;
+            let info = request.body.info;
+            let link = request.body.link;
+            let price = request.body.price;
+            let idEvent = request.body.idEvent;
+            let tags = request.body.tags;
+
+            let check;
+            await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress).then(function(val) {
+                check = val;
+            }).catch(function(val) {
+                check = false;
+                console.log(val);
+            });
+
+
+
+            if (check) {
+                await DataBase.deleteEventTag(idEvent).then(function(val) {
+                    check = val;
+                }).catch(function(val) {
+                    check = false;
+                    console.log(val);
+                });
+                for (i in tags) {
+                    await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
+                        check = val;
+                    }).catch(function(e) {
+                        console.log(e);
+                        check = false;
+                        break;
+                    });
+                }
+                if (check) {
+                    response.json({ change: true });
+                } else {
+                    response.json({ err: "error to change" });
+                }
+
+            } else {
+                response.json({ err: "error to change" });
+            }
+
+        } else {
+            response.json({ err: "do not have permissions" });
+        }
+    } else {
+        response.json({ err: "user dont sing in" });
+    };
+};
