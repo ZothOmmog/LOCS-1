@@ -497,7 +497,7 @@ exports.registration = async function(request, response) {
                 checkName = val;
             });
 
-            if (val == 1) {
+            if (checkName == 1) {
                 let data;
                 await DataBase.registationOrganizer(userId, info, organizationName, organizationLink, logo).then(function(val) {
                     data = val;
