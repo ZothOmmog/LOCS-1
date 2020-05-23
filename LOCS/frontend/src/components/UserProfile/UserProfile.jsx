@@ -8,6 +8,7 @@ import { FriendRequestsOutContainer } from './FriendRequestsOut/FriendRequestsOu
 import { FriendRequestsInContainer } from './FriendRequestsIn/FriendRequestsInContainer';
 import { FooterContainer } from './Footer/FooterContainer';
 import { FriendsContainer } from './Friends/FriendsWithProps';
+import { Organizer } from './Organizer/Organizer';
 
 export const UserProfile = (props) => {
     return (
@@ -31,23 +32,17 @@ export const UserProfile = (props) => {
                     <Route path='/UserProfile/me/FriendRequestsIn' render={() => <FriendRequestsInContainer />} />
                     <Route path='/UserProfile/me/FriendRequestsOut' render={() => <FriendRequestsOutContainer />} />
                     <Route path='/UserProfile/me/SearchUsers' render={() => <SearchUsersContainer {...props} />} />
-                    <Route path='/UserProfile/me/Organizer' render={() => 'Будет доступно в ближайших патчах :3'} />
+                    <Route path='/UserProfile/me/Organizer/Subscribers' render={() => 'Будет в следующих патчах :3'} />
+                    <Route path='/UserProfile/me/Organizer/Events' render={() => 'Будет в следующих патчах :3'} />
+                    <Route path='/UserProfile/me/Organizer/AddEvent' render={() => 'Будет в следующих патчах :3'} />
+                    <Route path='/UserProfile/me/Organizer' render={() => <Organizer />} />
                     <Route path='/UserProfile/:userId' render={(routeProps) => <ProfileContainer route={routeProps.match.params} />} />
                 </Switch>
             </div>
             
             <footer>
                 {props.route.userId === 'me' ?
-                    <Switch>
-                        <Route path='/UserProfile/me/:typeContent' render={(routeProps) => <FooterContainer
-                            logoutMe={props.logoutMe}
-                            route={routeProps.match.params}
-                        />} />
-                        <Route path='/UserProfile/:typeContent' render={(routeProps) => <FooterContainer
-                            logoutMe={props.logoutMe}
-                            route={routeProps.match.params}
-                        />} />
-                    </Switch> : ''
+                    <FooterContainer /> : ''
                 }
             </footer>
         </div>
