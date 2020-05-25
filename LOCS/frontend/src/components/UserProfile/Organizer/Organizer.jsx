@@ -1,21 +1,15 @@
 import React from 'react';
 import s from './Organizer.module.scss';
 import { Button } from '../../Button-bem/Button';
-// import { AddFriendButtonContainer } from '../AddFriendButton/AddFriendButton';
-// import { BackButtonWithProps } from '../../BackButton/BackButton';
+import { Redirect } from 'react-router-dom';
 
-// const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
-// const FRIEND_STATUS_REQUEST_OUT = 0;
-// const FRIEND_STATUS_REQUEST_IN = 1;
-// const FRIEND_STATUS_IN_FRIENDS = 2;
-
-export const Organizer = (props) => {
+const Organizer = (props) => {
     const imgUrl = 'https://bit.ly/2AVRWfX';
     const name = 'CreateEvent Inc.';
     const link = 'https://www.ownsite.com';
     const description = 'Съешь ещё этих сладких французских булок, да выпей чаю. Съешь ещё этих сладких французских булок, да выпей чаю. Съешь ещё этих сладких французских булок, да выпей чаю.';
 
-    return (
+    return(
         <div className={s.Profile}>                                                                                                                                                                                                     
             <div className={s.Profile__ContentWrapper}>
                 <div className={s.ProfilePicture}>
@@ -48,4 +42,12 @@ export const Organizer = (props) => {
             </div>
         </div>
     );
+}
+
+export const OrganizerWithSignUpRedirect = (props) => {
+    const isOrg = false;
+
+    return isOrg ? 
+        <Organizer {...props} /> :
+        <Redirect to='/UserProfile/me/Organizer/Registration' />
 }

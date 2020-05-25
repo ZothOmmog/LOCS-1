@@ -8,7 +8,8 @@ import { FriendRequestsOutContainer } from './FriendRequestsOut/FriendRequestsOu
 import { FriendRequestsInContainer } from './FriendRequestsIn/FriendRequestsInContainer';
 import { FooterContainer } from './Footer/FooterContainer';
 import { FriendsContainer } from './Friends/FriendsWithProps';
-import { Organizer } from './Organizer/Organizer';
+import { OrganizerWithSignUpRedirect } from './Organizer/Organizer';
+import { RegistrationContainer as RegistrationOrganizer } from './Organizer/Registration/RegistrationContainer';
 
 export const UserProfile = (props) => {
     return (
@@ -35,7 +36,8 @@ export const UserProfile = (props) => {
                     <Route path='/UserProfile/me/Organizer/Subscribers' render={() => 'Будет в следующих патчах :3'} />
                     <Route path='/UserProfile/me/Organizer/Events' render={() => 'Будет в следующих патчах :3'} />
                     <Route path='/UserProfile/me/Organizer/AddEvent' render={() => 'Будет в следующих патчах :3'} />
-                    <Route path='/UserProfile/me/Organizer' render={() => <Organizer />} />
+                    <Route path='/UserProfile/me/Organizer/Registration' render={() => <RegistrationOrganizer />} />
+                    <Route path='/UserProfile/me/Organizer' render={() => <OrganizerWithSignUpRedirect />} />
                     <Route path='/UserProfile/:userId' render={(routeProps) => <ProfileContainer route={routeProps.match.params} />} />
                 </Switch>
             </div>
