@@ -1,6 +1,7 @@
+const config = require('../../../DBsetings.json');
 let pgp = require("pg-promise")( /*options*/ );
-let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
-
+let db = pgp(config);
+//let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
 //проверка, что такое мыло есть
 const CheckUser = (mail) => {
