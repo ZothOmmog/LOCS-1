@@ -485,7 +485,7 @@ exports.registration = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-        if (Role == -1 || Role == 0) {
+        if (Role == 1 || Role == 0) {
             let checkName;
 
             let info = request.body.info;
