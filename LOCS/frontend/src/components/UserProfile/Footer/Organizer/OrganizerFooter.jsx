@@ -25,7 +25,7 @@ export const OrganizerFooter = (props) => {
             <div className={s.UserProfileFooter__Item}>
                 <NavButton style={{
                     buttonText: 'Организуемые мероприятия',
-                    type: `ProfileFooter${props.route.typeContent === 'Events' ? 'Active' : ''}`,
+                    type: `ProfileFooter${props.route.typeContent === 'Events' || props.route.typeContent === 'EditEvent' ? 'Active' : ''}`,
                     size: 'FullContainer',
                     path: '/UserProfile/me/Organizer/Events'
                 }} />

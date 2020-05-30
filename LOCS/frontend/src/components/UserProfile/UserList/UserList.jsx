@@ -10,9 +10,10 @@ export const UserList = (props) => {
             <div className={s.UserList__UserProfileShort}>
                 <UserProfileShort key={user.id} userId={user.id} nick={user.nick} />
             </div>
-            <div className={s.UserList__AddFriendButtonContainer}>
-                <AddFriendButtonContainer key={user.id} userId={user.id} friendStatus={user.friendStatus} />
-            </div>
+            
+                <div className={s.UserList__AddFriendButtonContainer}>
+                    <AddFriendButtonContainer key={user.id} userId={user.id} friendStatus={user.friendStatus} />
+                </div>
         </div>
     )) : '';
 

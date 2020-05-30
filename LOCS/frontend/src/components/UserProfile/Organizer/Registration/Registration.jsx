@@ -48,12 +48,15 @@ const CustomTextArea = (props) => {
     );
 }
 
-export const Registration = () => {
+export const Registration = (props) => {
 
     return (
         <div className={s.Registration__OutherWrapper}>
             <Form className={s.Registration}>
                 <h2>Регистрация организатора</h2>
+                {props.isSignUpErr ? (
+                    <div>Организация с таким названием уже зарегистрирована</div>
+                ) : null}
                 <CustomInput 
                     name='name'
                     type='text'

@@ -27,19 +27,23 @@ export class ProfileToApiContainer extends React.Component {
                 mail={this.props.mail}
                 city={this.props.city}
                 urlPicture={this.props.urlPicture}
+                myNick={this.props.myNick}
             />
         ) : 'Сожалеем, пользователь с таким ID не найден :(' : 'Загрузка...';
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state) => {
+    return ({
     userId: state.userProfilePage.userId,
     isFind: state.userProfilePage.isFind,
     friendStatus: state.userProfilePage.friendStatus,
     nick: state.userProfilePage.nick,
     mail: state.userProfilePage.mail,
     city: state.userProfilePage.city,
-    urlPicture: state.userProfilePage.urlPicture
+    urlPicture: state.userProfilePage.urlPicture,
+    myNick: state.auth.user.nick
 });
+}
 
 export const ProfileContainer = connect(mapStateToProps, { setUserByIdThunk, clean })(ProfileToApiContainer);

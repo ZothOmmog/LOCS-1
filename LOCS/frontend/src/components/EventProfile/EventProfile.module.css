@@ -1,5 +1,5 @@
 .Event {
-	height: 250px;
+	height: 400px;
 	width: 800px;
 	background-color: gray;
 	text-align: center;
@@ -22,4 +22,12 @@
 .info {
     text-align: start;
     padding: 10px;
+}
+
+.TicketPrice {
+    margin-top: 30px;
+}
+
+.Organizer {
+    margin-top: 30px;
 }

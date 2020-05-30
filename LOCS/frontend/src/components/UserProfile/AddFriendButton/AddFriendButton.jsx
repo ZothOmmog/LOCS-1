@@ -57,6 +57,9 @@ const AddFriendButton = (props) => {
                 props.deleteFriendThunkForFriends(props.userId);
             }
             break;
+        case 3:
+            style.buttonText = 'Удалить мероприятие';
+            break;
         default:
             // throw new Error('Неизвестный статус пользователя');
             break;

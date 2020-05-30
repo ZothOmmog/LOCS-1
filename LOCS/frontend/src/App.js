@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 import { 
   HeaderContainer, 
   Navbar, 
-  LentaContainer, 
-  AddEventContainer, 
+  LentaContainer,
   RegistrationContainer, 
   EventProfileContainer, 
   AuthContainer,
-  UserProfileContainer
+  UserProfileContainer,
+  SearchEventsContainer,
+  SearchOrganizersContainer
 } from './components/indexComponents.js';
 import { setMeThunk } from './redux/authReducer.js' 
 import style from './App.module.scss';
@@ -23,12 +24,16 @@ function App(props) {
       {/* <SearchContainer /> */}
       <Switch>
         <Route
-          path='/Lenta'
-          render={() => <LentaContainer />}
+          path='/SearchEvents'
+          render={() => <SearchEventsContainer />}
         />
         <Route
-          path='/AddEvent'
-          render={() => <AddEventContainer />}
+          path='/SearchOrganizers'
+          render={() => <SearchOrganizersContainer />}
+        />
+        <Route
+          path='/Lenta'
+          render={() => <LentaContainer />}
         />
         <Route
           path='/Registration'

@@ -88,12 +88,37 @@ class UserAPI extends FetchInstance {
     login = (mail, pass) => this.go(POST, this.__loginRoute,  this.__bodyLogin(mail, pass), true);
     setMe = () => this.go(GET, this.__setMeRoute, null, true);
     logoutMe = () => this.go(GET, this.__logoutMeRoute, null, true);
-    registration = (nick, mail, pass) => this.go(POST, this.__registrationRoute, this.__bodyRegistration(nick, mail, pass), false);
+    registration = (nick, mail, pass) => this.go(POST, this.__registrationRoute, this.__bodyRegistration(mail, nick, pass), false);
     getUser = (id) => this.go(POST, this.__getUserRoute, this.__bodyGetUser(id), true);
 }
 
 class EventAPI extends FetchInstance {
-    getEvents = (currentPage, countEvents) => this.go(GET, `event?page=${currentPage}&count=${countEvents}`, null, false);
+    getEvents = (currentPage, countEvents) => {
+        return [
+            {
+                id: 1,
+                name: 'Dance Walking 2020',
+                type: '#Танцы',
+                info: 'Мы приглашаем ВСЕХ-ВСЕХ на необычную прогулку по городу. Мы будем перемещаться все вместе по заранее выбранному маршруту, ТАНЦУЯ! Музыка будет звучать у каждого из плеера с общим плейлистом. Dance Walking - это простое и вдохновляющее танцевальное действие, в котором может участвовать каждый. Это возможность провести время легко и с удовольствием под открытым небом, наполняясь энергией полного вдоха. Возможность почувствовать свободу и сопричастность с другими в этом неординарном действе, встряхнуться от обыденности жизни и поделиться своим настроением с окружающими.'
+            },
+            {
+                id: 2,
+                name: 'Stand-Up On Tour',
+                type: '#Концерты',
+                info: `
+                Концерт Алексея Квашонкина и Александра Малого, резидентов Stand-Up Club #1, в рамках большого тура.
+
+4 июня в 19.00 ПЕРЕНОС КОНЦЕРТА (дата уточняется)
+Театр КТО (ул. Тургенева, 9А)
+18+
+
+----------------------------------------------------------------------------
+Кирилл Селегей отправляется в тур! Крутой молодой комик из московского Stand-up Club #1 приезжает в ваш город с интеллигентным и ироничным юмором про актуальные, но понятные всем вещи.
+                `
+            }
+        ]
+        // this.go(GET, `event?page=${currentPage}&count=${countEvents}`, null, false);
+    };
 }
 
 class SearchAPI extends FetchInstance {

@@ -2,6 +2,7 @@ import React from "react";
 import { connect } from "react-redux"
 import Lenta from "./Lenta";
 import { setEvents, changePage } from "../../redux/lentaReducer";
+import { eventAPI } from "../../api/api";
 
 class LentaToApiContainer extends React.Component {
 	componentDidMount() {
@@ -9,8 +10,11 @@ class LentaToApiContainer extends React.Component {
 	}
 
 	setEvents = () => {
-		// const currentPage = this.props.state.currentPage;
-		// const countEvents = this.props.state.countEvents;
+		const currentPage = this.props.state.currentPage;
+		const countEvents = this.props.state.countEvents;
+
+		this.props.setEvents(eventAPI.getEvents(currentPage, countEvents), 2);
+		
 		// fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
 		// 	.then(response => response.json())
 		// 	.then(response => {
@@ -21,15 +25,15 @@ class LentaToApiContainer extends React.Component {
 	}
 
 	changePage = (page) => {
-		// const newPage = page;
-		// const currentPage = newPage;
-		// const countEvents = this.props.state.countEvents;
+		const newPage = page;
+		const currentPage = newPage;
+		const countEvents = this.props.state.countEvents;
 
-		// fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
-		// 	.then(response => response.json())
-		// 	.then(response => this.props.changePage(newPage, response.events))
-		// 	.catch(error => alert(error)
-		// 	);
+		fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
+			.then(response => response.json())
+			.then(response => this.props.changePage(newPage, response.events))
+			.catch(error => alert(error)
+			);
 	}
 
 	render() {

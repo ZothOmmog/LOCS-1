@@ -3,11 +3,18 @@ import '../../../CommonStyles/Button/Button.css';
 import {  Formik } from 'formik';
 import * as yup from 'yup';
 import { Registration } from './Registration';
+import { organizerApi } from '../../../../api/indexApi';
+import { useState } from 'react';
+import { Redirect } from 'react-router-dom';
 
 export const RegistrationContainer = (props) => {
+    const [isSignUpErr, setIsSignUpErr] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
+
     return (
+        isSignUp ? <Redirect to='/UserProfile/me/Organizer' /> :
         <Formik
-            initialValues={{ name: '', info: '', orgLink: '', logoLink: '' }}
+            initialValues={{ name: '', info: '', orgLink: '', logoLink: '', signUpErr: '' }}
             validationSchema={yup.object({
                 name: yup.string()
                     .max(20, '*Должно быть 20 символов или меньше')
@@ -20,11 +27,24 @@ export const RegistrationContainer = (props) => {
                     .max(40, '*Должно быть 40 символов или меньше')
             })}
             onSubmit={(values, { setSubmitting }) => {
-                alert('Тут должен вызываться метод регистрации из АПИ');
+                const signUp = async (...args) => {
+                    const isSignUp = await organizerApi.signUp(...args);
+
+                    if(isSignUp) setIsSignUp(isSignUp);
+                    else setIsSignUpErr(true);
+                }
+
+                signUp(
+                    values.info, 
+                    values.name, 
+                    values.orgLink, 
+                    values.logoLink
+                );
+
                 setSubmitting(false);
             }}
         >
-            <Registration />
+            <Registration isSignUpErr={isSignUpErr} />
         </Formik>
     );
 }

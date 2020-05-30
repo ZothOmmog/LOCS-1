@@ -1,59 +1,99 @@
 import React from 'react';
-import s from './AddEvent.module.css';
-import '../CommonStyles/Button/Button.css';
+import { Formik, Form, useField } from 'formik';
+import * as yup from 'yup';
+import s from './AddEvent.module.scss';
+import { Button } from '../Button-bem/Button';
 
+const CustomInput = (props) => {
+    const [field, meta] = useField(props);
 
-const AddEvent = (props) => {
-    const onNameNewEventChange = (e) => {
-        props.updateNameNewEvent(e.target.value);
-    }
-    const onTagsNewEventChange = (e) => {
-        props.updateTagsNewEvent(e.target.value);
-    }
-    const onInfoNewEventChange = (e) => {
-        props.updateInfoNewEvent(e.target.value);
-    }
-    const onSubmitButtonClick = () => {
-        props.addNewEvent(
-            props.state.nameNewEvent, 
-            props.state.tagNewEvent, 
-            props.state.infoNewEvent
-        );
-        alert("Мероприятие успешно добавлено!");
-    }
-
+    const className = (
+        s.Registration__Field +
+        (meta.touched && meta.error ? (
+            ' ' + s.Registration__Field_Error
+        ) : '')
+    );
+    
     return (
-        <div className={s.AddEvent + ' ' + s.AddEventOutherWrapper}>
-            <div className={s.AddEventInnerWrapper}>
-                <input
-                    className={s.AddEvent__Input}
-                    type="text"
-                    placeholder="Название мероприятия"
-                    value={props.state.nameNewEvent}
-                    onChange={onNameNewEventChange}
-                />
-                <input
-                    className={s.AddEvent__Input}
-                    type="text"
-                    placeholder="Тэги мероприятия"
-                    value={props.state.tagNewEvent}
-                    onChange={onTagsNewEventChange}
-                />
-                <textarea
-                    className={s.AddEvent__TextArea}
-                    placeholder="Информация о мероприятии"
-                    value={props.state.infoNewEvent}
-                    onChange={onInfoNewEventChange}
-                />
-                <div
-                    className={s.AddEvent__Button + " button"}
-                    onClick={onSubmitButtonClick}
-                >
-                    Добавить Мероприятие
+        <>
+            <input className={className} {...field} {...props} />
+            {meta.touched && meta.error ? (
+                <div className={s.Registration__Error}>
+                    {meta.error}
                 </div>
-            </div>
-        </div>
+            ) : null}
+        </>
+    );
+}
+const CustomTextArea = (props) => {
+    const [field, meta] = useField(props);
+
+    const className = (
+        s.Registration__Field +
+        ' ' + s.Registration__Field_TextArea +
+        (meta.touched && meta.error ? (
+            ' ' + s.Registration__Field_Error
+        ) : '')
+    );
+    
+    return (
+        <>
+            <textarea className={className} {...field} {...props} />
+            {meta.touched && meta.error ? (
+                <div className={s.Registration__Error}>
+                    {meta.error}
+                </div>
+            ) : null}
+        </>
     );
 }
 
-export default AddEvent;
+export const AddEvent = ({ eventId }) => {
+    return (
+        <Formik
+            enableReinitialize
+            initialValues={{ name: '', tags: '', info: '', price: '' }}
+            validationSchema={yup.object({
+                name: yup.string()
+                    .required('*Обязательно'),
+                tags: yup.string()
+                    .required('*Обязательно'),
+                info: yup.string()
+                    .required('*Обязательно'),
+                price: yup.string()
+                    .required('*Обязательно')
+            })}
+            onSubmit={(values, { setSubmitting }) => {
+                alert('Тут отправка события на сервер');
+                setSubmitting(false);
+            }}
+        >
+            <Form className={s.Form}>
+                <CustomInput
+                    name='name'
+                    type='text'
+                    placeholder='Название мероприятия'
+                />
+                <CustomInput
+                    name='tags'
+                    type='text'
+                    placeholder='Название мероприятия'
+                />
+                <CustomTextArea
+                    name='info'
+                    placeholder='Информация о мероприятии'
+                />
+                <CustomInput
+                    name='price'
+                    type='text'
+                    placeholder='Название мероприятия'
+                />
+                <Button
+                    style={{
+                        buttonText: 'Создать'
+                    }}
+                />
+            </Form>
+        </Formik>
+    );
+}

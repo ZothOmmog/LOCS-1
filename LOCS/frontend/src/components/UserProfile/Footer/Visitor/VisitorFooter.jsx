@@ -16,6 +16,14 @@ export const VisitorFooter = (props) => {
             </div>
             <div className={s.UserProfileFooter__Item}>
                 <NavButton style={{
+                    buttonText: 'Подписки',
+                    type: `ProfileFooter${props.route.typeContent === 'Subscribes' ? 'Active' : ''}`,
+                    size: 'FullContainer',
+                    path: '/UserProfile/me/Subscribes'
+                }} />
+            </div>
+            <div className={s.UserProfileFooter__Item}>
+                <NavButton style={{
                     buttonText: 'Друзья',
                     type: `ProfileFooter${props.route.typeContent === 'Friends' ? 'Active' : ''}`,
                     size: 'FullContainer',

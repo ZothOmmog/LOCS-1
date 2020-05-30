@@ -3,6 +3,7 @@ import s from './Profile.module.scss';
 import { Button } from '../../Button-bem/Button';
 import { AddFriendButtonContainer } from '../AddFriendButton/AddFriendButton';
 import { BackButtonWithProps } from '../../BackButton/BackButton';
+import { Redirect } from 'react-router-dom';
 
 // const FRIEND_STATUS_NOT_IN_FRIENDS = -1;
 const FRIEND_STATUS_REQUEST_OUT = 0;
@@ -45,7 +46,7 @@ export const Profile = (props) => {
                         type: 'NotBorderRadius',
                         size: 'FullContainer'
                     }} />
-                </div> : 
+                </div> : props.nick === props.myNick ? <Redirect to='/UserProfile/me' /> :
                 <div className={s.Profile__AddUser}>
                     <AddFriendButtonContainer userId={props.userId} friendStatus={props.friendStatus} />
                     {

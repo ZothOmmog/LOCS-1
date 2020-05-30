@@ -1,3 +1,5 @@
+export { SearchEventsContainer } from './SearchEvents/SearchEventsContainer.jsx';
+export { SearchOrganizersContainer } from './SearchOrganizers/SearchOrganizersContainer.jsx';
 export { Button } from './Button-bem/Button.jsx';
 export { NavButton } from './NavButton/NavButton.jsx';
 export { AddFriendButtonContainer } from './UserProfile/AddFriendButton/AddFriendButton.jsx';
