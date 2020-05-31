@@ -120,7 +120,7 @@ export const AddEvent = ({ eventId }) => {
                     else alert('Подобное мероприятие уже существует');
                 }
 
-                submitNewEvent(values.name, values.tags, values.info, values.price);
+                submitNewEvent(values.name, +values.tags, values.info, values.price);
                 setSubmitting(false);
             }}
         >

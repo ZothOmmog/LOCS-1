@@ -154,7 +154,7 @@ export const EditEvent = ({ eventId }) => {
                     else alert('Ошибка');
                 }
                 
-                submitNewEvent(event.id, values.name, values.tags, values.info, values.price);
+                submitNewEvent(event.id, values.name, +values.tags, values.info, values.price);
                 
                 setIsEdited(true);
                 setSubmitting(false);
