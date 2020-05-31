@@ -181,7 +181,8 @@
                     "organization_name": string,
                     "organization_link": string,
                     "logo": "string
-                }
+                },
+				 "Status": int // 0 - не подписан, 1 подписан (при условии авторизации )
             }
         }
 
