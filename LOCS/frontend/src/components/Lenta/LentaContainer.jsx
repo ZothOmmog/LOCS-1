@@ -12,16 +12,15 @@ class LentaToApiContainer extends React.Component {
 	setEvents = () => {
 		const currentPage = this.props.state.currentPage;
 		const countEvents = this.props.state.countEvents;
-
-		this.props.setEvents(eventAPI.getEvents(currentPage, countEvents), 2);
 		
-		// fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
-		// 	.then(response => response.json())
-		// 	.then(response => {
-		// 		this.props.setEvents(response.events, response.countEvents);
-		// 	})
-		// 	.catch(error => alert(error)
-		// 	);
+		eventAPI.getEvents(currentPage, countEvents).then(events => {
+			this.props.setEvents(events.map(event => ({
+				id: event.eventshortlist.id,
+				name: event.eventshortlist.name,
+				type: event.tags[0] || 'Нет данных',
+				info: event.eventshortlist.info
+			})), events.length);
+		});
 	}
 
 	changePage = (page) => {
@@ -29,11 +28,11 @@ class LentaToApiContainer extends React.Component {
 		const currentPage = newPage;
 		const countEvents = this.props.state.countEvents;
 
-		fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
-			.then(response => response.json())
-			.then(response => this.props.changePage(newPage, response.events))
-			.catch(error => alert(error)
-			);
+		// fetch(`http://localhost:4000/event?page=${currentPage}&count=${countEvents}`)
+		// 	.then(response => response.json())
+		// 	.then(response => this.props.changePage(newPage, response.events))
+		// 	.catch(error => alert(error)
+		// 	);
 	}
 
 	render() {

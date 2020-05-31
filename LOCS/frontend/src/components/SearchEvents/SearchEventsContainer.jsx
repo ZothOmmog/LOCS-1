@@ -1,29 +1,34 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchEvents } from './SearchEvents';
-import { SearchUsersByNickThunk, updateIsSearch, searchClear } from '../../redux/searchReducer';
+import { updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
 import { UserProfileShort } from '../UserProfileShort/UserProfileShort';
 import { changePage, clearSearchUsersPage } from '../../redux/searchUsersReducer';
 import { setPathBack } from '../../redux/indexReducers';
+import { eventAPI } from '../../api/api';
+import Event from '../Lenta/Event/Event';
 
 class SearchEventsPreContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { events: this.props.resultSearch || [], eventsForUI: this.props.resultSearch ? this.UsersForUI(this.props.resultSearch) : [] };
+    }
+
     componentDidMount = () => {
         this.props.setPathBack('/UserProfile/me/SearchUsers');
     }
 
-    UsersForUI = () => {
-        if(!this.props.isSearch) return null;
-        if(!this.props.users || !this.props.users.length) return null;
-
+    UsersForUI = (events) => {
         let Users  = [];
 
-
-        for(let i = 0; i < this.props.users.length; i++) {
+        for(let i = 0; i < events.length; i++) {
             Users.push(
-                <UserProfileShort 
-                    key={this.props.users[i].user.id_user} 
-                    nick={this.props.users[i].user.nickname}
-                    userId={this.props.users[i].user.id_user} 
+                <Event 
+                    key={events[i].searchevent.id} 
+                    id={events[i].searchevent.id}
+                    name={events[i].searchevent.name}
+                    type={events[i].tags[0] || 'Нет данных'}
+                    info={events[i].searchevent.info}
                 />
             );
         }
@@ -40,7 +45,15 @@ class SearchEventsPreContainer extends React.Component {
 
     changeCurrentPage = (e) => {
         this.props.changePage(e.target.innerText);
-        this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
+        // this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
+        eventAPI.searchEvents(this.props.countUsers, e.target.innerText, this.props.queryText).then(events => {
+            this.setState({
+                events: events,
+                eventsForUI: this.UsersForUI(events)
+            });
+            
+            this.props.updatePages(10);
+        });
     }
 
     onClickBackHandler = () => {
@@ -55,8 +68,17 @@ class SearchEventsPreContainer extends React.Component {
                 isSearch={this.props.isSearch}
                 pages={this.props.pages}
                 searchResultTitle={this.searchResultTitleForUI()}
-                users={this.UsersForUI()}
-                searchUsersGo={this.props.SearchUsersByNickThunk}
+                users={this.state.eventsForUI}
+                searchUsersGo={(pageSize, currentPage, queryText) => {
+                    eventAPI.searchEvents(pageSize, currentPage, this.props.queryText || queryText).then(events => {
+                        this.setState({
+                            events: events,
+                            eventsForUI: this.UsersForUI(events)
+                        });
+                        this.props.updateResultSearch(events);
+                        this.props.updatePages(10);
+                    });
+                }}
                 countUsers={this.props.countUsers}
                 currentPage={this.props.currentPage}
                 changeCurrentPage={this.changeCurrentPage}
@@ -70,12 +92,14 @@ const mapStateToProps = (state) => ({
     resultSize: state.searchPage.resultSize,
     isSearch: state.searchPage.isSearch,
     users: state.searchPage.resultSearch,
-    pages: state.searchUsersPage.pages,
+    pages: state.searchPage.pages,
     countUsers: state.searchUsersPage.countUsers,
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
+    queryText: state.searchPage.queryText,
+    resultSearch: state.searchPage.resultSearch
 });
 
 export const SearchEventsContainer = connect(mapStateToProps, { 
-    SearchUsersByNickThunk, updateIsSearch, changePage, 
-    clearSearchUsersPage, searchClear , setPathBack})(SearchEventsPreContainer);
+    updateResultSearch, updateIsSearch, changePage, 
+    clearSearchUsersPage, searchClear , setPathBack, updatePages})(SearchEventsPreContainer);

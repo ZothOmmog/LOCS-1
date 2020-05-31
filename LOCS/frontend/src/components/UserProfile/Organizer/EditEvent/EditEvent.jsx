@@ -5,6 +5,9 @@ import s from './EditEvent.module.scss';
 import { Button } from '../../../Button-bem/Button';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { eventAPI } from '../../../../api/api';
+import { Redirect } from 'react-router-dom';
+import { organizerApi } from '../../../../api/indexApi';
 
 const CustomInput = (props) => {
     const [field, meta] = useField(props);
@@ -50,41 +53,85 @@ const CustomTextArea = (props) => {
     );
 }
 
+const CustomSelect = (props) => {
+    const [field, meta] = useField(props);
+
+    const className = (
+        s.Registration__Field +
+        (meta.touched && meta.error ? (
+            ' ' + s.Registration__Field_Error
+        ) : '')
+    );
+
+    const options = props.options.map( option => (
+    <option key={option.value} value={option.value}>{option.text}</option>) );
+    
+    return (
+        <>
+            <select className={className} {...field} {...props}>
+            
+            {options}
+            </select>
+            {meta.touched && meta.error ? (
+                <div className={s.Registration__Error}>
+                    {meta.error}
+                </div>
+            ) : null}
+        </>
+    );
+}
+
 export const EditEvent = ({ eventId }) => {
     const [event, setEvent] = useState({
         id: eventId,
         name: '',
-        tags: '',
+        tags: [{ id: '', title: '' }],
         info: '',
         ticketPrice: ''
     });
+    const [isLoading, setIsLoading] = useState(true);
+    const [isEdited, setIsEdited] = useState(false);
+    const [tags, setTags] = useState(null);
     
     useEffect(function ininialGetEventFromServer() {
+        
         const getEvent = async () => {
-            const eventsFromServer = [
-                {
-                    id: '1',
-                    name: 'Dance Walking 2020',
-                    tags: '#Танцы',
-                    info: 'Мы приглашаем ВСЕХ-ВСЕХ на необычную прогулку по городу. Мы будем перемещаться все вместе по заранее выбранному маршруту, ТАНЦУЯ! Музыка будет звучать у каждого из плеера с общим плейлистом. Dance Walking - это простое и вдохновляющее танцевальное действие, в котором может участвовать каждый. Это возможность провести время легко и с удовольствием под открытым небом, наполняясь энергией полного вдоха. Возможность почувствовать свободу и сопричастность с другими в этом неординарном действе, встряхнуться от обыденности жизни и поделиться своим настроением с окружающими.',
-                    ticketPrice: 'бесплатно'
-                },
-                {
-                    id: '2',
-                    name: 'Stand-Up On Tour',
-                    tags: '#Концерты',
-                    info: 'Концерт Алексея Квашонкина и Александра Малого, резидентов Stand-Up Club #1, в рамках большого тура. 4 июня в 19.00 ПЕРЕНОС КОНЦЕРТА (дата уточняется) Театр КТО (ул. Тургенева, 9А) 18+ ---------------------------------------------------------------------------- Кирилл Селегей отправляется в тур! Крутой молодой комик из московского Stand-up Club #1 приезжает в ваш город с интеллигентным и ироничным юмором про актуальные, но понятные всем вещи. ',
-                    ticketPrice: '200 рублей'
-                }
-            ];
+            const eventFromServer = await eventAPI.getEvent(event.id);
+            const tagsFromServer = await eventAPI.getTags();
+            let newTags = [];
 
-            setEvent( eventsFromServer.find( eventFromServer => eventFromServer.id === event.id ) );
+            setEvent({
+                id: event.id,
+                name: eventFromServer.event.name,
+                tags: eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : [{ id: '', title: 'Нет данных' }],
+                info: eventFromServer.event.info,
+                ticketPrice: eventFromServer.event.ticket_price
+            });
+
+            newTags = tagsFromServer.filter(
+                tag => tag.tags.title === (eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : 'Нет данных')
+            ).map(tag => ({
+                value: tag.tags.id,
+                text: tag.tags.title
+            }));
+
+            if(newTags.length === 0) newTags = [{ value: '', text: 'Нет данных' }];
+
+            //Добавляем все остальные теги с правильной сигнатурой
+            setTags(newTags.concat(tagsFromServer.filter(
+                tag => tag.tags.title !== (eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : 'Нет данных')
+            ).map(tag => ({
+                value: tag.tags.id,
+                text: tag.tags.title
+            }))));
         }
-
+        
         getEvent();
+        
+        setIsLoading(false);
     }, [event.id]);
 
-    return (
+    return isEdited ? <Redirect to='/UserProfile/me/Organizer/Events' /> : isLoading ? 'Загрузка...' : (
         <Formik
             enableReinitialize
             initialValues={{ name: event.name, tags: event.tags, info: event.info, price: event.ticketPrice }}
@@ -95,11 +142,21 @@ export const EditEvent = ({ eventId }) => {
                     .required('*Обязательно'),
                 info: yup.string()
                     .required('*Обязательно'),
-                price: yup.string()
+                price: yup.number()
+                    .typeError('*Только числа больше 0')
                     .required('*Обязательно')
+                    .min(0, '*Только числа больше 0')
             })}
             onSubmit={(values, { setSubmitting }) => {
-                alert('Тут отправка изменений на сервер');
+                const submitNewEvent = async (eventId, name, tags, info, prise) => {
+                    const isAdded = await organizerApi.editEvent(eventId, 1, name, info, prise, 'expample', [{ id: tags }]);
+                    if(!isAdded.err) alert('Мероприятие успешно изменено!');
+                    else alert('Ошибка');
+                }
+                
+                submitNewEvent(event.id, values.name, values.tags, values.info, values.price);
+                
+                setIsEdited(true);
                 setSubmitting(false);
             }}
         >
@@ -109,10 +166,10 @@ export const EditEvent = ({ eventId }) => {
                     type='text'
                     placeholder='Название мероприятия'
                 />
-                <CustomInput
+                <CustomSelect
                     name='tags'
-                    type='text'
-                    placeholder='Название мероприятия'
+                    options={tags || [{ value: '', text: '' }]}
+                    placeholder='Тематика мероприятия'
                 />
                 <CustomTextArea
                     name='info'

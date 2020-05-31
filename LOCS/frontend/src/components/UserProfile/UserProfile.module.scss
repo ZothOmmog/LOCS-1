@@ -6,7 +6,9 @@
     height: 100%;
 
     &__ContentWrapper {
-        align-self: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     &__OtherWrapper {

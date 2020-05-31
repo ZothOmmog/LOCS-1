@@ -8,7 +8,7 @@ import { FriendRequestsOutContainer } from './FriendRequestsOut/FriendRequestsOu
 import { FriendRequestsInContainer } from './FriendRequestsIn/FriendRequestsInContainer';
 import { FooterContainer } from './Footer/FooterContainer';
 import { FriendsContainer } from './Friends/FriendsWithProps';
-import { OrganizerWithSignUpRedirect } from './Organizer/Organizer';
+import { OrganizerWithSignUpRedirect, OrganizerOuther } from './Organizer/Organizer';
 import { RegistrationContainer as RegistrationOrganizer } from './Organizer/Registration/RegistrationContainer';
 import { Subscribers } from './Organizer/Subscribers/Subscribers';
 import { AddEvent } from '../AddEvent/AddEvent';
@@ -43,7 +43,8 @@ export const UserProfile = (props) => {
                     <Route path='/UserProfile/me/Organizer/EditEvent/:eventId' render={({ match: { params: { eventId } } }) => <EditEvent eventId={eventId} />} />
                     <Route path='/UserProfile/me/Organizer/AddEvent' render={() => <AddEvent/>} />
                     <Route path='/UserProfile/me/Organizer/Registration' render={() => <RegistrationOrganizer />} />
-                    <Route path='/UserProfile/me/Organizer' render={() => <OrganizerWithSignUpRedirect />} />
+                    <Route path='/UserProfile/me/Organizer' render={() => <OrganizerWithSignUpRedirect userId='me' />} />
+                    <Route path='/UserProfile/:userId/Organizer' render={({ match: { params: { userId } } }) => <OrganizerOuther userId={userId} />} />
                     <Route path='/UserProfile/:userId' render={(routeProps) => <ProfileContainer route={routeProps.match.params} />} />
                 </Switch>
             </div>

@@ -14,6 +14,7 @@ import {
 } from './components/indexComponents.js';
 import { setMeThunk } from './redux/authReducer.js' 
 import style from './App.module.scss';
+import { EventProfile } from './components/EventProfile/EventProfile.jsx';
 
 function App(props) {
 
@@ -45,7 +46,7 @@ function App(props) {
         />
         <Route
           path='/EventProfile/:eventId'
-          render={() => <EventProfileContainer />}
+          render={({ match: { params: { eventId } } }) => <EventProfile eventId={eventId} />}
         />
         <Route
           path='/UserProfile/:userId'

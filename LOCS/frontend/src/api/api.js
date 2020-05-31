@@ -93,32 +93,26 @@ class UserAPI extends FetchInstance {
 }
 
 class EventAPI extends FetchInstance {
-    getEvents = (currentPage, countEvents) => {
-        return [
-            {
-                id: 1,
-                name: 'Dance Walking 2020',
-                type: '#Танцы',
-                info: 'Мы приглашаем ВСЕХ-ВСЕХ на необычную прогулку по городу. Мы будем перемещаться все вместе по заранее выбранному маршруту, ТАНЦУЯ! Музыка будет звучать у каждого из плеера с общим плейлистом. Dance Walking - это простое и вдохновляющее танцевальное действие, в котором может участвовать каждый. Это возможность провести время легко и с удовольствием под открытым небом, наполняясь энергией полного вдоха. Возможность почувствовать свободу и сопричастность с другими в этом неординарном действе, встряхнуться от обыденности жизни и поделиться своим настроением с окружающими.'
-            },
-            {
-                id: 2,
-                name: 'Stand-Up On Tour',
-                type: '#Концерты',
-                info: `
-                Концерт Алексея Квашонкина и Александра Малого, резидентов Stand-Up Club #1, в рамках большого тура.
+    __getTagsRoute = 'event/tags';
+    __getEventRoute = 'event/info';
+    __searchEventsRoute = (pageSize, currentPage) => `event/search/${pageSize}/${currentPage}`;
 
-4 июня в 19.00 ПЕРЕНОС КОНЦЕРТА (дата уточняется)
-Театр КТО (ул. Тургенева, 9А)
-18+
+    __createEventBody = (idAddres, name, info, price, link, tags) => ({
+        idAddres: idAddres, 
+        name: name, 
+        info: info, 
+        price: price, 
+        link: link, 
+        tags: tags
+    });
+    __getEventBody = (eventId) => ({ idEvent: eventId });
+    __searchEventsBody = (query) => ({ word: query });
 
-----------------------------------------------------------------------------
-Кирилл Селегей отправляется в тур! Крутой молодой комик из московского Stand-up Club #1 приезжает в ваш город с интеллигентным и ироничным юмором про актуальные, но понятные всем вещи.
-                `
-            }
-        ]
-        // this.go(GET, `event?page=${currentPage}&count=${countEvents}`, null, false);
-    };
+    getTags = () => this.go(GET, this.__getTagsRoute, null, false);
+    getEvents = (currentPage, countEvents) => this.go(GET, `event/list/${countEvents}/${currentPage}`, null, false);
+    getEvent = (eventId) => this.go(POST, this.__getEventRoute, this.__getEventBody(eventId), true );
+    searchEvents = (pageSize, currentPage, query) => this.go(POST, this.__searchEventsRoute(pageSize, currentPage), this.__searchEventsBody(query));
+    
 }
 
 class SearchAPI extends FetchInstance {

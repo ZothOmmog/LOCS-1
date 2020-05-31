@@ -1,30 +1,39 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchOrganizers } from './SearchOrganizers';
-import { SearchUsersByNickThunk, updateIsSearch, searchClear } from '../../redux/searchReducer';
-import { UserProfileShort } from '../UserProfileShort/UserProfileShort';
+import { updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
 import { changePage, clearSearchUsersPage } from '../../redux/searchUsersReducer';
 import { setPathBack } from '../../redux/indexReducers';
+import { organizerApi } from '../../api/indexApi';
+import { OrganizerProfileShort } from './OrganizerProfileShort/OrganizerProfileShort';
+import s from './SearchOrganizers.module.scss';
 
 class SearchOrganizersPreContainer extends React.Component {
-    componentDidMount = () => {
-        this.props.setPathBack('/UserProfile/me/SearchUsers');
+    constructor(props) {
+        super(props);
+        this.state = { events: this.props.resultSearch || [], eventsForUI: this.props.resultSearch ? this.UsersForUI(this.props.resultSearch) : [] };
     }
 
-    UsersForUI = () => {
-        if(!this.props.isSearch) return null;
-        if(!this.props.users || !this.props.users.length) return null;
+    componentDidMount = () => {
+        this.props.setPathBack('/UserProfile/me/SearchUsers');
+        if(this.props.resultSearch && this.props.resultSearch[0] && this.props.resultSearch[0].searchevent) {
+            this.setState({ events: [], eventsForUI: [] });
+            this.props.searchClear();
+        }
+    }
 
+    UsersForUI = (events) => {
         let Users  = [];
-
-
-        for(let i = 0; i < this.props.users.length; i++) {
+        for(let i = 0; i < events.length; i++) {
             Users.push(
-                <UserProfileShort 
-                    key={this.props.users[i].user.id_user} 
-                    nick={this.props.users[i].user.nickname}
-                    userId={this.props.users[i].user.id_user} 
+                <div className={s.OrgShort}>
+                <OrganizerProfileShort
+                    key={events[i].searchorg.id} 
+                    userId={events[i].searchorg.id_user}
+                    img={events[i].searchorg.logo}
+                    nick={events[i].searchorg.organization_name}
                 />
+                </div>
             );
         }
         
@@ -40,7 +49,15 @@ class SearchOrganizersPreContainer extends React.Component {
 
     changeCurrentPage = (e) => {
         this.props.changePage(e.target.innerText);
-        this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
+        // this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
+        organizerApi.searchOrg(this.props.countUsers, e.target.innerText, this.props.queryText).then(events => {
+            this.setState({
+                events: events,
+                eventsForUI: this.UsersForUI(events.data)
+            });
+            
+            this.props.updatePages(events.count);
+        });
     }
 
     onClickBackHandler = () => {
@@ -55,8 +72,17 @@ class SearchOrganizersPreContainer extends React.Component {
                 isSearch={this.props.isSearch}
                 pages={this.props.pages}
                 searchResultTitle={this.searchResultTitleForUI()}
-                users={this.UsersForUI()}
-                searchUsersGo={this.props.SearchUsersByNickThunk}
+                users={this.state.eventsForUI}
+                searchUsersGo={(pageSize, currentPage, queryText) => {
+                    organizerApi.searchOrg(pageSize, currentPage, this.props.queryText || queryText).then(events => {
+                        this.setState({
+                            events: events,
+                            eventsForUI: this.UsersForUI(events.data)
+                        });
+                        this.props.updateResultSearch(events);
+                        this.props.updatePages(events.count);
+                    });
+                }}
                 countUsers={this.props.countUsers}
                 currentPage={this.props.currentPage}
                 changeCurrentPage={this.changeCurrentPage}
@@ -70,12 +96,14 @@ const mapStateToProps = (state) => ({
     resultSize: state.searchPage.resultSize,
     isSearch: state.searchPage.isSearch,
     users: state.searchPage.resultSearch,
-    pages: state.searchUsersPage.pages,
+    pages: state.searchPage.pages,
     countUsers: state.searchUsersPage.countUsers,
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
+    queryText: state.searchPage.queryText,
+    resultSearch: state.searchPage.resultSearch
 });
 
 export const SearchOrganizersContainer = connect(mapStateToProps, { 
-    SearchUsersByNickThunk, updateIsSearch, changePage, 
-    clearSearchUsersPage, searchClear , setPathBack})(SearchOrganizersPreContainer);
+    updateResultSearch, updateIsSearch, changePage, 
+    clearSearchUsersPage, searchClear , setPathBack, updatePages})(SearchOrganizersPreContainer);

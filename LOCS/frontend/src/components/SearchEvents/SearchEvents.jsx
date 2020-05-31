@@ -18,7 +18,7 @@ export const SearchEvents = (props) => {
                 currentPage={props.currentPage}
             />
             <div className={s.SearchUsers__resultOutherWrapper}>
-            <div className={s.SearchUsers__resultTitle}>{props.searchResultTitle}</div>
+            {/* <div className={s.SearchUsers__resultTitle}>{props.searchResultTitle}</div> */}
             {props.users ?
                 <div className={s.SearchUsers__resultInnerWrapper}>
                     <div className={s.SearchUsers__result}>{props.users}</div>
