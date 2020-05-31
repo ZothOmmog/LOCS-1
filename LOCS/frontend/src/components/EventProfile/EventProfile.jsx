@@ -19,11 +19,10 @@ export const EventProfile = ({ eventId }) => {
         
         const getEvent = async () => {
             const eventFromServer = await eventAPI.getEvent(event.id);
-
             setEvent({
                 id: event.id,
                 name: eventFromServer.event.name,
-                tags: eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : [{ id: '', title: 'Нет данных' }],
+                tags: [eventFromServer.tags[0].eventtags],
                 info: eventFromServer.event.info,
 				ticketPrice: eventFromServer.event.ticket_price,
                 orgName: eventFromServer.event.organization_name,

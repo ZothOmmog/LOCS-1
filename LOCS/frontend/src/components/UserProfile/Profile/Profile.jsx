@@ -23,7 +23,7 @@ export const Profile = (props) => {
             }
             <div className={s.Profile__ContentWrapper}>
                 <div className={s.ProfilePicture}>
-                    <img className={s.Profile__Img} src={imgUrl} alt='' />
+                    <img className={s.Profile__Img} src={imgUrl} alt='Аватарка пользователя' />
                 </div>
 
                 <div className={s.ProfileDescribtionTitles}>

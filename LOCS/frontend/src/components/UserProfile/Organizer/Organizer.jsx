@@ -28,7 +28,7 @@ export const Organizer = ({logoLink, name, orgLink, info, id}) => {
         <div className={s.Profile}>                                                                                                                                                                                                     
             <div className={s.Profile__ContentWrapper}>
                 <div className={s.ProfilePicture}>
-                    <img className={s.Profile__Img} src={logoLink || logoLinkBase} alt='' />
+                    <img className={s.Profile__Img} src={logoLink && logoLink !== '1' || logoLinkBase} alt='' />
                     <div className={s.Profile__Button}>
                     {id === 'me' ? (
                         <Button style={{

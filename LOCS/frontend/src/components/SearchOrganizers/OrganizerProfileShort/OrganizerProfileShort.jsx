@@ -7,7 +7,7 @@ export const OrganizerProfileShort = (props) => {
     return (
         <div className={s.UserProfileShort}>
             <div className={s.UserProfileShortPicture}>
-                { props.img ? 
+                { props.img && props.img !== '1' ? 
                     <img src={props.img} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> : 
                     <img src={imgUrl} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> 
                 }

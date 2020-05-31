@@ -109,7 +109,7 @@ export const EditEvent = ({ eventId }) => {
             });
 
             newTags = tagsFromServer.filter(
-                tag => tag.tags.title === (eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : 'Нет данных')
+                tag => tag.tags.title === eventFromServer.tags[0].eventtags.title
             ).map(tag => ({
                 value: tag.tags.id,
                 text: tag.tags.title
@@ -119,7 +119,7 @@ export const EditEvent = ({ eventId }) => {
 
             //Добавляем все остальные теги с правильной сигнатурой
             setTags(newTags.concat(tagsFromServer.filter(
-                tag => tag.tags.title !== (eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : 'Нет данных')
+                tag => tag.tags.title !== eventFromServer.tags[0].eventtags.title
             ).map(tag => ({
                 value: tag.tags.id,
                 text: tag.tags.title

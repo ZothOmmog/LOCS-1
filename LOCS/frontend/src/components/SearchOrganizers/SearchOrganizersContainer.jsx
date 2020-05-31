@@ -24,6 +24,9 @@ class SearchOrganizersPreContainer extends React.Component {
 
     UsersForUI = (events) => {
         let Users  = [];
+        
+        if(this.props.resultSearch && this.props.resultSearch[0] && this.props.resultSearch[0].searchevent) return [];
+
         for(let i = 0; i < events.length; i++) {
             Users.push(
                 <div className={s.OrgShort}>

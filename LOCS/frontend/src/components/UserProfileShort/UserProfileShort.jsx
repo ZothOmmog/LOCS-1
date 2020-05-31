@@ -7,10 +7,10 @@ export const UserProfileShort = (props) => {
     return (
         <div className={s.UserProfileShort}>
             <div className={s.UserProfileShortPicture}>
-                { props.img ? 
-                    <img src={props.img} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> : 
+                {/* { props.img && props.img !== '1' ?  */}
+                    {/* <img src={props.img} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> :  */}
                     <img src={imgUrl} alt="Аватарка пользователя" className={s.UserProfileShortPicture__Img} /> 
-                }
+                {/* } */}
             </div>
             <NavLink className={s.UserProfileShort__nick} to={`/userProfile/${props.userId}`}>{props.nick}</NavLink>
         </div>
