@@ -602,7 +602,7 @@ let addEventTag = (idEvent, tag) => {
 
 //Изменение мероприятия (без тегов)
 let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
-    idAddress, publish = false) => {
+    idAddress, publish = true) => {
     return new Promise((resolve, reject) => {
         db.result('Call ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8);', [idev, name, info, link, ticketPrice, idOrg, idAddress, publish])
             .then(function(data) {
