@@ -5,19 +5,22 @@
 Формат JSON ***сервер->React***
  список событий:
  
-		 [
-			{
-				"eventshortlist": {
-					"id": int,
-					"name": string,
-					"info": string,
-					"image": string
+		{
+			"count": int,
+			"Events": [
+				{
+					"eventshortlist": {
+						"id": int,
+						"name": string,
+						"info": string,
+						"image": string
+					},
+					"tags": [
+						string
+					]
 				},
-				"tags": [
-					string,
-				]
-			},
-		]
+			]
+		}
 
 
 ----------
@@ -107,18 +110,21 @@
  Формат JSON ***сервер->React***
  Данные аккаунта:
 
-		[
-			{
-				"searchevent": {
-					"id": int,
-					"name":string,
-					"info": string,
-					"image": string
-				},
-				"tags": [
-					string,
-				]
-			},
-		]
+		{
+			"count": int,
+			"Events": [
+				{
+					"searchevent": {
+						"id": int,
+						"name": string,
+						"info": string,
+						"image": string
+					},
+					"tags": [
+						string
+					]
+				},				
+			]
+		}
 
 ---

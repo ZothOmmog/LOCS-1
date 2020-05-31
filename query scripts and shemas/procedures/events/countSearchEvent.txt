@@ -1,0 +1,8 @@
+CREATE OR REPLACE FUNCTION countSearchEvent(word_ text) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select count(*) FROM event where published=true and deleted=false and 
+										  (name ILIKE word_ or info ILIKE word_ ))a;
+END;
+$$ LANGUAGE plpgsql;
