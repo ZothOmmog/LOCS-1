@@ -88,12 +88,31 @@ class UserAPI extends FetchInstance {
     login = (mail, pass) => this.go(POST, this.__loginRoute,  this.__bodyLogin(mail, pass), true);
     setMe = () => this.go(GET, this.__setMeRoute, null, true);
     logoutMe = () => this.go(GET, this.__logoutMeRoute, null, true);
-    registration = (nick, mail, pass) => this.go(POST, this.__registrationRoute, this.__bodyRegistration(nick, mail, pass), false);
+    registration = (nick, mail, pass) => this.go(POST, this.__registrationRoute, this.__bodyRegistration(mail, nick, pass), false);
     getUser = (id) => this.go(POST, this.__getUserRoute, this.__bodyGetUser(id), true);
 }
 
 class EventAPI extends FetchInstance {
-    getEvents = (currentPage, countEvents) => this.go(GET, `event?page=${currentPage}&count=${countEvents}`, null, false);
+    __getTagsRoute = 'event/tags';
+    __getEventRoute = 'event/info';
+    __searchEventsRoute = (pageSize, currentPage) => `event/search/${pageSize}/${currentPage}`;
+
+    __createEventBody = (idAddres, name, info, price, link, tags) => ({
+        idAddres: idAddres, 
+        name: name, 
+        info: info, 
+        price: price, 
+        link: link, 
+        tags: tags
+    });
+    __getEventBody = (eventId) => ({ idEvent: eventId });
+    __searchEventsBody = (query) => ({ word: query });
+
+    getTags = () => this.go(GET, this.__getTagsRoute, null, false);
+    getEvents = (currentPage, countEvents) => this.go(GET, `event/list/${countEvents}/${currentPage}`, null, false);
+    getEvent = (eventId) => this.go(POST, this.__getEventRoute, this.__getEventBody(eventId), true );
+    searchEvents = (pageSize, currentPage, query) => this.go(POST, this.__searchEventsRoute(pageSize, currentPage), this.__searchEventsBody(query));
+    
 }
 
 class SearchAPI extends FetchInstance {

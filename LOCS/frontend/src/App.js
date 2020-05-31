@@ -4,15 +4,17 @@ import { connect } from 'react-redux';
 import { 
   HeaderContainer, 
   Navbar, 
-  LentaContainer, 
-  AddEventContainer, 
+  LentaContainer,
   RegistrationContainer, 
   EventProfileContainer, 
   AuthContainer,
-  UserProfileContainer
+  UserProfileContainer,
+  SearchEventsContainer,
+  SearchOrganizersContainer
 } from './components/indexComponents.js';
 import { setMeThunk } from './redux/authReducer.js' 
 import style from './App.module.scss';
+import { EventProfile } from './components/EventProfile/EventProfile.jsx';
 
 function App(props) {
 
@@ -23,12 +25,16 @@ function App(props) {
       {/* <SearchContainer /> */}
       <Switch>
         <Route
-          path='/Lenta'
-          render={() => <LentaContainer />}
+          path='/SearchEvents'
+          render={() => <SearchEventsContainer />}
         />
         <Route
-          path='/AddEvent'
-          render={() => <AddEventContainer />}
+          path='/SearchOrganizers'
+          render={() => <SearchOrganizersContainer />}
+        />
+        <Route
+          path='/Lenta'
+          render={() => <LentaContainer />}
         />
         <Route
           path='/Registration'
@@ -40,7 +46,7 @@ function App(props) {
         />
         <Route
           path='/EventProfile/:eventId'
-          render={() => <EventProfileContainer />}
+          render={({ match: { params: { eventId } } }) => <EventProfile eventId={eventId} />}
         />
         <Route
           path='/UserProfile/:userId'

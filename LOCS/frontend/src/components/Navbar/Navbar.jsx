@@ -11,8 +11,12 @@ export function Navbar() {
 				Лента Мероприятий
 			</NavLink>
 
-			<NavLink to="/AddEvent" className={s.Navbar__item + ' button'}>
-				Новое Мероприятие
+			<NavLink to="/SearchEvents" className={s.Navbar__item + ' button'}>
+				Поиск мероприятий
+			</NavLink>
+
+			<NavLink to="/SearchOrganizers" className={s.Navbar__item + ' button'}>
+				Поиск организаторов
 			</NavLink>
 		</div>
 	);

@@ -1,0 +1,66 @@
+.Profile {
+    width: auto;
+
+    &__BackButton {
+        max-width: 100px;
+        margin-bottom: 130px;
+    }
+
+    &__ContentWrapper {
+        display: flex;
+    }
+
+    &Picture {
+        display: flex;
+        flex-direction: column;
+        max-width: 150px;
+        max-height: 150px;
+
+        &__Img {
+            max-width: 110px;
+        }
+    }
+
+    &Describtion {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        margin-left: 10px;
+        max-width: 350px;
+        
+        &__Item {
+            display: flex;
+            color: #414141;                                                                                                             
+
+            &_Block {
+                flex-direction: column;
+            }
+        }
+        &__Item + &__Item {
+            margin-top: 15px;
+        }
+
+        &__Title {
+            font-weight: bold;
+            min-width: 150px;
+        }
+
+
+        &__Link {
+            color: #414141;  
+        }
+        &__Link:hover {
+            text-decoration: underline; 
+        }
+    }
+
+    &__Button {
+        margin-top: 10px;
+        height: 30px;
+        width: 150px;
+    }
+
+    &__AddUser {
+        margin-top: 10px;
+    }
+}

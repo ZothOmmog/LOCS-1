@@ -3,7 +3,7 @@ const CHANGE_PAGE = "CHANGE-PAGE";
 
 const initialState = {
 	events: [],
-	countEvents: 3,
+	countEvents: 4,
 	currentPage: 1,
 	pages: []
 };
