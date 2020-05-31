@@ -1,8 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchEvents } from './SearchEvents';
-import { updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
-import { UserProfileShort } from '../UserProfileShort/UserProfileShort';
+import { updateResultEventsSearch as updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
 import { changePage, clearSearchUsersPage } from '../../redux/searchUsersReducer';
 import { setPathBack } from '../../redux/indexReducers';
 import { eventAPI } from '../../api/api';
@@ -45,14 +44,13 @@ class SearchEventsPreContainer extends React.Component {
 
     changeCurrentPage = (e) => {
         this.props.changePage(e.target.innerText);
-        // this.props.SearchUsersByNickThunk(this.props.countUsers, e.target.innerText, this.props.currentQueryText);
         eventAPI.searchEvents(this.props.countUsers, e.target.innerText, this.props.queryText).then(events => {
             this.setState({
-                events: events,
-                eventsForUI: this.UsersForUI(events)
+                events: events.Events,
+                eventsForUI: this.UsersForUI(events.Events)
             });
             
-            this.props.updatePages(10);
+            this.props.updatePages(events.count);
         });
     }
 
@@ -72,11 +70,11 @@ class SearchEventsPreContainer extends React.Component {
                 searchUsersGo={(pageSize, currentPage, queryText) => {
                     eventAPI.searchEvents(pageSize, currentPage, this.props.queryText || queryText).then(events => {
                         this.setState({
-                            events: events,
-                            eventsForUI: this.UsersForUI(events)
+                            events: events.Events,
+                            eventsForUI: this.UsersForUI(events.Events)
                         });
-                        this.props.updateResultSearch(events);
-                        this.props.updatePages(10);
+                        this.props.updateResultSearch(events.Events);
+                        this.props.updatePages(events.count);
                     });
                 }}
                 countUsers={this.props.countUsers}
@@ -93,11 +91,11 @@ const mapStateToProps = (state) => ({
     isSearch: state.searchPage.isSearch,
     users: state.searchPage.resultSearch,
     pages: state.searchPage.pages,
-    countUsers: state.searchUsersPage.countUsers,
+    countUsers: 3,
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
     queryText: state.searchPage.queryText,
-    resultSearch: state.searchPage.resultSearch
+    resultSearch: state.searchPage.resultEventsSearch
 });
 
 export const SearchEventsContainer = connect(mapStateToProps, { 

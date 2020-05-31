@@ -3,6 +3,8 @@ import { searchAPI } from '../api/api';
 const UPDATE_QUERY_TEXT = 'UPDATE_QUERY_TEXT';
 const UPDATE_CURRENT_QUERY_TEXT = 'UPDATE_CURRENT_QUERY_TEXT';
 const UPDATE_RESULT_SEARCH = 'UPDATE_RESULT_SEARCH';
+const UPDATE_RESULT_EVENTS_SEARCH = 'UPDATE_RESULT_EVENTS_SEARCH';
+const UPDATE_RESULT_ORG_SEARCH = 'UPDATE_RESULT_ORG_SEARCH';
 const UPDATE_IS_SEARCH = 'UPDATE_IS_SEARCH';
 const SEARCH_CLEAR = 'SEARCH_CLEAR';
 const UPDATE_PAGES = 'UPDATE_PAGES';
@@ -11,6 +13,8 @@ const initialState = {
     queryText: '',
     currentQueryText: '',
     resultSearch: null,
+    resultEventsSearch: null,
+    resultOrgSearch: null,
     resultSize: null,
     isSearch: false,
     pages: []
@@ -37,6 +41,20 @@ const searchReducer = (state = initialState, action) => {
                 resultSize: action.resultSize,
                 isSearch: true
             };
+        case UPDATE_RESULT_EVENTS_SEARCH:
+            return {
+                ...state,
+                resultEventsSearch: action.resultSearch,
+                resultSize: action.resultSize,
+                isSearch: true
+            };
+        case UPDATE_RESULT_ORG_SEARCH:
+            return {
+                ...state,
+                resultOrgSearch: action.resultSearch,
+                resultSize: action.resultSize,
+                isSearch: true
+            };
         case UPDATE_IS_SEARCH:
             return {
                 ...state,
@@ -44,7 +62,7 @@ const searchReducer = (state = initialState, action) => {
             }
         case UPDATE_PAGES:
             let newPages = [];
-            for (let i = 1; i <= Math.ceil(action.count / 4); i++) {
+            for (let i = 1; i <= Math.ceil(action.count / 3); i++) {
 				newPages = [...newPages, i];
             }
             return {
@@ -64,6 +82,16 @@ export const SearchUsersByNickThunk = (pageSize, pageNum, nick) => async (dispat
 
 export const updateResultSearch = (resultSearch, resultSize) => ({
     type: UPDATE_RESULT_SEARCH,
+    resultSearch: resultSearch,
+    resultSize: resultSize
+});
+export const updateResultEventsSearch = (resultSearch, resultSize) => ({
+    type: UPDATE_RESULT_EVENTS_SEARCH,
+    resultSearch: resultSearch,
+    resultSize: resultSize
+});
+export const updateResultOrgSearch = (resultSearch, resultSize) => ({
+    type: UPDATE_RESULT_ORG_SEARCH,
     resultSearch: resultSearch,
     resultSize: resultSize
 });

@@ -4,7 +4,6 @@ import s from './SearchEvents.module.scss';
 import { PagesNumbersMenu } from '../PagesNumbersMenu/PagesNumbersMenu';
 
 export const SearchEvents = (props) => {
-    
     return (
         <div className={s.SearchUsers}>
             <div className={s.SearchUsersTitleWrapper}>

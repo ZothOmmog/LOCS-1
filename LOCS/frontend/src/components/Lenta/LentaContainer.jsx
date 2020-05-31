@@ -14,12 +14,12 @@ class LentaToApiContainer extends React.Component {
 		const countEvents = this.props.state.countEvents;
 		
 		eventAPI.getEvents(currentPage, countEvents).then(events => {
-			this.props.setEvents(events.map(event => ({
+			this.props.setEvents(events.Events.map(event => ({
 				id: event.eventshortlist.id,
 				name: event.eventshortlist.name,
 				type: event.tags[0] || 'Нет данных',
 				info: event.eventshortlist.info
-			})), events.length);
+			})), events.count);
 		});
 	}
 
@@ -33,6 +33,14 @@ class LentaToApiContainer extends React.Component {
 		// 	.then(response => this.props.changePage(newPage, response.events))
 		// 	.catch(error => alert(error)
 		// 	);
+		eventAPI.getEvents(currentPage, countEvents).then(events => {
+			this.props.changePage(newPage, events.Events.map(event => ({
+				id: event.eventshortlist.id,
+				name: event.eventshortlist.name,
+				type: event.tags[0] || 'Нет данных',
+				info: event.eventshortlist.info
+			})), events.length);
+		});
 	}
 
 	render() {

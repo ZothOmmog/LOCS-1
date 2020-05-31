@@ -14,6 +14,7 @@ import { Subscribers } from './Organizer/Subscribers/Subscribers';
 import { AddEvent } from '../AddEvent/AddEvent';
 import { Events } from './Organizer/Events/Events';
 import { EditEvent } from './Organizer/EditEvent/EditEvent';
+import { Subscribes } from './Subscribes/Subscribes.jsx';
 
 export const UserProfile = (props) => {
     return (
@@ -34,7 +35,7 @@ export const UserProfile = (props) => {
             <div className={props.route.userId === 'me' ? s.UserProfile__ContentWrapper : s.UserProfile__OtherWrapper}>
                 <Switch>
                     <Route path='/UserProfile/me/Friends' render={() => <FriendsContainer />} />
-                    <Route path='/UserProfile/me/Subscribes' render={() => <Subscribers />} />
+                    <Route path='/UserProfile/me/Subscribes' render={() => <Subscribes />} />
                     <Route path='/UserProfile/me/FriendRequestsIn' render={() => <FriendRequestsInContainer />} />
                     <Route path='/UserProfile/me/FriendRequestsOut' render={() => <FriendRequestsOutContainer />} />
                     <Route path='/UserProfile/me/SearchUsers' render={() => <SearchUsersContainer {...props} />} />

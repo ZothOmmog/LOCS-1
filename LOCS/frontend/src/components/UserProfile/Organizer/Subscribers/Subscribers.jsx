@@ -1,59 +1,47 @@
 import React from 'react';
-// import { UserProfileShort } from '../../../UserProfileShort/UserProfileShort';
-// import { PagesNumbersMenu } from '../../../PagesNumbersMenu/PagesNumbersMenu';
-import { UserList } from '../../UserList/UserList';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import s from './Subscribers.module.scss';
+import { UserProfileShort } from '../../../UserProfileShort/UserProfileShort';
+import { organizerApi } from '../../../../api/indexApi';
+import { PagesNumbersMenu } from '../../../PagesNumbersMenu/PagesNumbersMenu';
 
 export const Subscribers = (props) => {
     const [users, setUsers] = useState(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [pages, setPages] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(function initialSetUsers() {
-        const getSubscribers = async () => {
-            alert('Тут запрос к серверу');
+    useEffect(function SetSubscribes() {
+        const SetSubscribesFromServer = async () => {
+            const result = await organizerApi.getMeOrg();
+            const organizersFromServer = await organizerApi.subscribersPages(4, currentPage, result.data.organizerdata.id_user);
+            setUsers(!organizersFromServer.data.length ? null : organizersFromServer.data.map(organizer => ({
+                friendStatus: 3,
+                id: organizer.subscribers.id_user,
+                nick: organizer.subscribers.nickname
+            })));
+            
+            const newPages = [];
 
-            setPages([1, 2]);
+            for(let i = 1; i <= Math.ceil(organizersFromServer.count / 4); i++) {
+                newPages.push(i);
+            }
 
-            setUsers([
-                {friendStatus: 3, id: 46, nick: "John"}, 
-                {friendStatus: 3, id: 47, nick: "Soe"},
-                {friendStatus: 3, id: 48, nick: "Vlad"},
-                {friendStatus: 3, id: 49, nick: "Alex"}
-            ]);
-        }
-        
-        getSubscribers();
-    }, []); 
-    
-    useEffect(function setNewPageUsers() {
-        const getNewPageUsers = async () => {
-            alert('Тут получение новой страницы подписчиков с сервера');
-
-            if(currentPage === '1') setUsers([
-                {friendStatus: 3, id: 46, nick: "John"}, 
-                {friendStatus: 3, id: 47, nick: "Soe"},
-                {friendStatus: 3, id: 48, nick: "Vlad"},
-                {friendStatus: 3, id: 49, nick: "Alex"}
-            ]);
-
-            if(currentPage === '2') setUsers([
-                {friendStatus: 3, id: 66, nick: "Ivan"}, 
-                {friendStatus: 3, id: 75, nick: "Petr"}
-            ]);
+            setPages(newPages);
         }
 
-        getNewPageUsers();
+        SetSubscribesFromServer();
+        setIsLoading(false);
     }, [currentPage]);
 
     const changeCurrentPage = (e) => {
         setCurrentPage(e.target.innerHTML);
     }
 
-    return (
+    return isLoading ? 'Загрузка...' : !users ? 'У вас пока что нет подписчиков :(' : (
         <div>
-            <UserList
+            <SubscribesList
                 users={users}
                 pages={pages}
                 changeCurrentPage={changeCurrentPage}
@@ -61,4 +49,29 @@ export const Subscribers = (props) => {
             />
         </div>
     );
+}
+
+const SubscribesList = (props) => {
+    const users = props.users ? props.users.map(user => (
+        <div key={user.id} className={s.UserList__item}>
+            <div className={s.UserList__UserProfileShort}>
+                <UserProfileShort key={user.id} userId={user.id} nick={user.nick} />
+            </div>
+        </div>
+    )) : '';
+
+    return <div className={s.UserList}>
+        <div className={s.UserList__Users}>
+            {users}
+        </div>
+        <div className={s.UserList__PagesNumbersMenu}>
+            {props.pages ?
+                <PagesNumbersMenu
+                    pages={props.pages}
+                    changeCurrentPage={props.changeCurrentPage}
+                    currentPage={props.currentPage}
+                /> : ''
+            }
+        </div>
+    </div>;
 }
