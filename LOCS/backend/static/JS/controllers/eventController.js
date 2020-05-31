@@ -14,28 +14,6 @@ var DataBase = require('../scripts/DataBase.js');
 // }
 
 
-
-// exports.delete = async function(request, response) {
-//     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-//     if (userId) {
-//         const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-//         //организатор или админ
-//         if (Role == 2 || Role == 0) {
-//             let idEvent = request.params.idEvent;
-//             var Check;
-//             await DataBase.deleteEvent(idEvent).then(function(val) {
-//                 Check = val;
-//             });
-//             response.json({ "Deleted": true });
-//         } else {
-//             response.json({ err: "do not have permissions" });
-//         }
-//     } else {
-//         response.json({ err: "user dont sing in" });
-//     }
-// };
-
-
 exports.event = async function(request, response) {
     var idEvent = request.body.idEvent;
     var tags;
@@ -59,11 +37,15 @@ exports.shortList = async function(request, response) {
     limit = limit <= 0 ? 1 : limit;
     offset = (offset - 1) * limit;
 
-
-
     var Events;
+    var count;
+
     await DataBase.eventShortList(limit, offset).then(function(val) {
         Events = val;
+    });
+
+    await DataBase.countEventShortList().then(function(val) {
+        count = val;
     });
 
     for (i in Events) {
@@ -80,14 +62,10 @@ exports.shortList = async function(request, response) {
         Events[i].tags = masTags;
     };
 
-    response.json(Events);
+    response.json({ "count": count, Events });
 };
 
 exports.search = async function(request, response) {
-    // let limit = Number(request.params.limit);
-    // let offset = (request.params.offset - 1) * limit;
-    // offset = offset < 0 ? 1 : offset;
-    // limit = limit < 0 ? 0 : limit;
 
     let limit = Number(request.params.limit);
     let offset = Number(request.params.offset);
@@ -98,11 +76,16 @@ exports.search = async function(request, response) {
 
     var word = request.body.word;
     var Events;
+    var count;
+
     await DataBase.searchEvent(word, limit, offset).then(function(val) {
         Events = val;
     });
 
-    console.log(Events);
+    await DataBase.countSearchEvent(word).then(function(val) {
+        count = val;
+    });
+
 
     for (i in Events) {
         var tags;
@@ -118,7 +101,7 @@ exports.search = async function(request, response) {
         Events[i].tags = masTags;
     };
 
-    response.json(Events);
+    response.json({ "count": count, Events });
 };
 
 

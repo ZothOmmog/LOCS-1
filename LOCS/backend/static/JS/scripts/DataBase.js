@@ -446,6 +446,21 @@ let eventShortList = (limit, offset) => {
     })
 }
 
+//  колличество данных event для главной страницы 
+let countEventShortList = () => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select * from  countEventShortList(); ', [])
+            .then(function(data) {
+                resolve(data[0].j.count);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: countEventShortList");
+                return;
+            });
+    })
+}
+
+
 // полные данные о событии
 let event = (id) => {
     return new Promise((resolve, reject) => {
@@ -506,10 +521,23 @@ let tagsLim = (limit, offset) => {
     }
     // поиск евентов 
 let searchEvent = (word, limit, offset) => {
+        return new Promise((resolve, reject) => {
+            db.manyOrNone('select searchEvent($1,$2,$3);', ["%" + word + "%", limit, offset])
+                .then(function(data) {
+                    resolve(data);
+                }).catch(function(e) {
+                    console.log(e);
+                    reject("ERROR BD: searchEvent");
+                    return;
+                });
+        })
+    }
+    //кол поиск евентов 
+let countSearchEvent = (word) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select searchEvent($1,$2,$3);', ["%" + word + "%", limit, offset])
+        db.oneOrNone('select countSearchEvent($1);', ["%" + word + "%"])
             .then(function(data) {
-                resolve(data);
+                resolve(data.countsearchevent.count);
             }).catch(function(e) {
                 console.log(e);
                 reject("ERROR BD: searchEvent");
@@ -517,7 +545,6 @@ let searchEvent = (word, limit, offset) => {
             });
     })
 }
-
 
 ///регистрация организатора 
 let registationOrganizer = (id, info, organizationName, organizationLink, logo) => {
@@ -534,7 +561,7 @@ let registationOrganizer = (id, info, organizationName, organizationLink, logo) 
 }
 
 //Добавить событие (не учитывает теги, отдельная процедура)
-let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = false) => {
+let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = true) => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
             .then(function(data) {
@@ -926,12 +953,14 @@ module.exports = {
     'EventTags': EventTags, //Теги по Id евента
     'eventShortList': eventShortList, //  данные для главной страницы 
     'event': event, //полные данные о событии
+    'countEventShortList': countEventShortList, //  колличество данных event для главной страницы 
 
     'tags': tags, //весь лист тегов
     'CountTags': CountTags, //кол тегов
     'tagsLim': tagsLim, //весь лист тегов странично
 
     'searchEvent': searchEvent, //поиск евентов (без тегов)
+    'countSearchEvent': countSearchEvent, //кол поиск евентов 
 
 
     //организатор

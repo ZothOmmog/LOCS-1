@@ -1,0 +1,8 @@
+//кол евентов 
+CREATE OR REPLACE FUNCTION countEventShortList() 
+RETURNS table (j json) AS
+$$
+BEGIN
+     RETURN QUERY SELECT to_json(a) from (select count(*) FROM event where published=true and deleted=false)a;
+END;
+$$ LANGUAGE plpgsql;
