@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchOrganizers } from './SearchOrganizers';
-import { updateResultOrgSearch as updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
+import { updateResultOrgSearch as updateResultSearch, updateIsSearch, searchClear, updatePages, updateTypeSearch } from '../../redux/searchReducer';
 import { changePage, clearSearchUsersPage } from '../../redux/searchUsersReducer';
 import { setPathBack } from '../../redux/indexReducers';
 import { organizerApi } from '../../api/indexApi';
@@ -18,9 +18,12 @@ class SearchOrganizersPreContainer extends React.Component {
         this.props.setPathBack('/UserProfile/me/SearchUsers');
         if(this.props.resultSearch && this.props.resultSearch[0] && this.props.resultSearch[0].searchevent) {
             this.setState({ events: [], eventsForUI: [] });
-            this.props.searchClear();
         }
-        this.props.clearSearchUsersPage();
+        if (this.props.typeSearch !=='Organizer') {
+            this.props.searchClear();
+            this.props.clearSearchUsersPage();
+            this.props.updateTypeSearch('Organizer');
+        }
     }
 
     UsersForUI = (events) => {
@@ -105,9 +108,10 @@ const mapStateToProps = (state) => ({
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
     queryText: state.searchPage.queryText,
-    resultSearch: state.searchPage.resultOrgSearch
+    resultSearch: state.searchPage.resultOrgSearch,
+    typeSearch: state.searchPage.typeSearch
 });
 
 export const SearchOrganizersContainer = connect(mapStateToProps, { 
     updateResultSearch, updateIsSearch, changePage, 
-    clearSearchUsersPage, searchClear , setPathBack, updatePages})(SearchOrganizersPreContainer);
+    clearSearchUsersPage, searchClear , setPathBack, updatePages, updateTypeSearch})(SearchOrganizersPreContainer);

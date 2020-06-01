@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchUsers } from './SearchUsers';
-import { SearchUsersByNickThunk, updateIsSearch, searchClear } from '../../../redux/searchReducer';
+import { SearchUsersByNickThunk, updateIsSearch, searchClear, updateTypeSearch } from '../../../redux/searchReducer';
 import { UserProfileShort } from '../../UserProfileShort/UserProfileShort';
 import { changePage, clearSearchUsersPage } from '../../../redux/searchUsersReducer';
 import { setPathBack } from '../../../redux/indexReducers';
@@ -9,6 +9,12 @@ import { setPathBack } from '../../../redux/indexReducers';
 class SearchUsersPreContainer extends React.Component {
     componentDidMount = () => {
         this.props.setPathBack('/UserProfile/me/SearchUsers');
+
+        if (this.props.typeSearch !=='Users') {
+            this.props.searchClear();
+            this.props.clearSearchUsersPage();
+            this.props.updateTypeSearch('Users');
+        }
     }
 
     UsersForUI = () => {
@@ -74,8 +80,9 @@ const mapStateToProps = (state) => ({
     countUsers: state.searchUsersPage.countUsers,
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
+    typeSearch: state.searchPage.typeSearch
 });
 
 export const SearchUsersContainer = connect(mapStateToProps, { 
     SearchUsersByNickThunk, updateIsSearch, changePage, 
-    clearSearchUsersPage, searchClear , setPathBack})(SearchUsersPreContainer);
+    clearSearchUsersPage, searchClear , setPathBack, updateTypeSearch})(SearchUsersPreContainer);

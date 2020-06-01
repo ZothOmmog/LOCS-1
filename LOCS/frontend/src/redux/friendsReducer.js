@@ -76,7 +76,7 @@ export const addFriendThunk = (idUser) => async (dispatch) => {
             nick: userAdded.User.nick
         };
         
-        dispatch( addFriend(userForDispatch) );
+        //dispatch( addFriend(userForDispatch) );
     }
     catch(err) {
         console.log(err);
