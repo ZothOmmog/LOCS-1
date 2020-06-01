@@ -334,10 +334,17 @@ exports.subscribeUserList = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
         let data;
-        let user = request.body.user;
-        await DataBase.subList(user).then(function(val) {
-            data = val;
-        });
+        let user = request.body.user ? request.body.user : undefined;
+        if (user) {
+            await DataBase.subList(user).then(function(val) {
+                data = val;
+            });
+        } else {
+            await DataBase.subList(userId).then(function(val) {
+                data = val;
+            });
+        }
+
         if (data) {
             response.json(data);
         } else {
@@ -356,19 +363,32 @@ exports.subscribeUserListLimit = async function(request, response) {
     if (userId) {
         let count;
         let data;
+
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
-        let user = request.body.user;
-        await DataBase.countSubList(user).then(function(val) {
-            count = val;
-        });
-        await DataBase.subListLimit(user, limit, offset).then(function(val) {
-            data = val;
-        });
+        let user = request.body.user ? request.body.user : undefined;
+
+        if (user) {
+
+            await DataBase.countSubList(user).then(function(val) {
+                count = val;
+            });
+            await DataBase.subListLimit(user, limit, offset).then(function(val) {
+                data = val;
+            });
+        } else {
+            await DataBase.countSubList(userId).then(function(val) {
+                count = val;
+            });
+            await DataBase.subListLimit(userId, limit, offset).then(function(val) {
+                data = val;
+            });
+        }
+
         if (data) {
             response.json({ "count": count, data });
         } else {
