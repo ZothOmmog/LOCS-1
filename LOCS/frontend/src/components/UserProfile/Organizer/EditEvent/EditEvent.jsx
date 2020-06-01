@@ -100,16 +100,21 @@ export const EditEvent = ({ eventId }) => {
             const tagsFromServer = await eventAPI.getTags();
             let newTags = [];
 
-            setEvent({
-                id: event.id,
-                name: eventFromServer.event.name,
-                tags: eventFromServer.tags.eventtags ? eventFromServer.tags.eventtags.title : [{ id: '', title: 'Нет данных' }],
-                info: eventFromServer.event.info,
-                ticketPrice: eventFromServer.event.ticket_price
-            });
+            
 
-            newTags = tagsFromServer.filter(
-                tag => tag.tags.title === eventFromServer.tags[0].eventtags.title
+            newTags = tagsFromServer.filter(tag => {
+                    if(tag.tags.title === eventFromServer.tags[0].eventtags.title) {
+                        setEvent({
+                            id: event.id,
+                            name: eventFromServer.event.name,
+                            tags: tag.tags.id,
+                            info: eventFromServer.event.info,
+                            ticketPrice: eventFromServer.event.ticket_price
+                        });
+                        return true;
+                    }
+                    return false;
+                }
             ).map(tag => ({
                 value: tag.tags.id,
                 text: tag.tags.title
@@ -153,7 +158,7 @@ export const EditEvent = ({ eventId }) => {
                     if(!isAdded.err) alert('Мероприятие успешно изменено!');
                     else alert('Ошибка');
                 }
-                
+
                 submitNewEvent(event.id, values.name, +values.tags, values.info, values.price);
                 
                 setIsEdited(true);

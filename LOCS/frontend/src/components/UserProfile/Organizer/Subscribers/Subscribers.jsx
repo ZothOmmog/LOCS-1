@@ -16,6 +16,7 @@ export const Subscribers = (props) => {
         const SetSubscribesFromServer = async () => {
             const result = await organizerApi.getMeOrg();
             const organizersFromServer = await organizerApi.subscribersPages(4, currentPage, result.data.organizerdata.id_user);
+
             setUsers(!organizersFromServer.data.length ? null : organizersFromServer.data.map(organizer => ({
                 friendStatus: 3,
                 id: organizer.subscribers.id_user,

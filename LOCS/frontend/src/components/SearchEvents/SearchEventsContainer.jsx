@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { SearchEvents } from './SearchEvents';
-import { updateResultEventsSearch as updateResultSearch, updateIsSearch, searchClear, updatePages } from '../../redux/searchReducer';
+import { updateResultEventsSearch as updateResultSearch, updateIsSearch, searchClear, updatePages, updateTypeSearch } from '../../redux/searchReducer';
 import { changePage, clearSearchUsersPage } from '../../redux/searchUsersReducer';
 import { setPathBack } from '../../redux/indexReducers';
 import { eventAPI } from '../../api/api';
@@ -15,6 +15,12 @@ class SearchEventsPreContainer extends React.Component {
 
     componentDidMount = () => {
         this.props.setPathBack('/UserProfile/me/SearchUsers');
+
+        if (this.props.typeSearch !=='Events') {
+            this.props.searchClear();
+            this.props.clearSearchUsersPage();
+            this.props.updateTypeSearch('Events');
+        }
     }
 
     UsersForUI = (events) => {
@@ -95,9 +101,10 @@ const mapStateToProps = (state) => ({
     currentPage: state.searchUsersPage.currentPage,
     currentQueryText: state.searchPage.currentQueryText,
     queryText: state.searchPage.queryText,
-    resultSearch: state.searchPage.resultEventsSearch
+    resultSearch: state.searchPage.resultEventsSearch,
+    typeSearch: state.searchPage.typeSearch
 });
 
 export const SearchEventsContainer = connect(mapStateToProps, { 
     updateResultSearch, updateIsSearch, changePage, 
-    clearSearchUsersPage, searchClear , setPathBack, updatePages})(SearchEventsPreContainer);
+    clearSearchUsersPage, searchClear , setPathBack, updatePages, updateTypeSearch})(SearchEventsPreContainer);

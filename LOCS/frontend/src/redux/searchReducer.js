@@ -1,6 +1,7 @@
 import { searchAPI } from '../api/api';
 
 const UPDATE_QUERY_TEXT = 'UPDATE_QUERY_TEXT';
+const UPDATE_QUERY_TEXT_FOR_USERS = 'UPDATE_QUERY_TEXT_FOR_USERS';
 const UPDATE_CURRENT_QUERY_TEXT = 'UPDATE_CURRENT_QUERY_TEXT';
 const UPDATE_RESULT_SEARCH = 'UPDATE_RESULT_SEARCH';
 const UPDATE_RESULT_EVENTS_SEARCH = 'UPDATE_RESULT_EVENTS_SEARCH';
@@ -8,15 +9,18 @@ const UPDATE_RESULT_ORG_SEARCH = 'UPDATE_RESULT_ORG_SEARCH';
 const UPDATE_IS_SEARCH = 'UPDATE_IS_SEARCH';
 const SEARCH_CLEAR = 'SEARCH_CLEAR';
 const UPDATE_PAGES = 'UPDATE_PAGES';
+const UPDATE_TYPE_SEARCH = 'UPDATE_TYPE_SEARCH';
 
 const initialState = {
     queryText: '',
     currentQueryText: '',
+    queryTextForUsers: '',
     resultSearch: null,
     resultEventsSearch: null,
     resultOrgSearch: null,
     resultSize: null,
     isSearch: false,
+    typeSearch: null,
     pages: []
 }
 
@@ -26,6 +30,16 @@ const searchReducer = (state = initialState, action) => {
             return {
                 ...state,
                 queryText: action.queryText
+            };
+        case UPDATE_TYPE_SEARCH:
+            return {
+                ...state,
+                typeSearch: action.typeSearch
+            };
+        case UPDATE_QUERY_TEXT_FOR_USERS:
+            return {
+                ...state,
+                queryTextForUsers: action.queryText
             };
         case SEARCH_CLEAR:
             return initialState;
@@ -100,6 +114,10 @@ export const updateCurrentQueryText = (currentQueryText) => ({
     type: UPDATE_CURRENT_QUERY_TEXT,
     currentQueryText: currentQueryText
 });
+// export const updateQueryTextForUsers = (currentQueryText) => ({
+//     type: UPDATE_CURRENT_QUERY_TEXT_FOR_USERS,
+//     currentQueryText: currentQueryText
+// });
 
 export const updateQueryText = (queryText) => ({
     type: UPDATE_QUERY_TEXT,
@@ -117,5 +135,11 @@ export const updatePages = (count) => ({
     type: UPDATE_PAGES,
     count: count
 });
+export const updateTypeSearch = (typeSearch) => ({
+    type: UPDATE_TYPE_SEARCH,
+    typeSearch: typeSearch
+});
+
+
 
 export default searchReducer;
