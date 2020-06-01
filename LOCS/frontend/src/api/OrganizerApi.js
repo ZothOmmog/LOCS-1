@@ -30,7 +30,7 @@ class OrganizerApi extends FetchInstance {
     __subscribeBody = (orgId) => ({ org: orgId });
     __unSubscribeBody = (orgId) => ({ org: orgId });
     __subscribersBody = (orgId) => ({ org: orgId });
-    __subscribesBody = (userId) => ({ user: userId });
+    __subscribesBody = () => ({});
     __subscribersPagesBody = (orgId) => ({ org: orgId });
 
     getMeOrg = () => this.go(GET, this.__getMeOrgRoute, null, true);
@@ -45,7 +45,7 @@ class OrganizerApi extends FetchInstance {
     subscribe = (orgId) => this.go(POST, this.__subscribeRoute, this.__subscribeBody(orgId), true);
     unSubscribe = (orgId) => this.go(POST, this.__unSubscribeRoute, this.__unSubscribeBody(orgId), true);
     subscribers = (orgId) => this.go(POST, this.__subscribersRoute, this.__subscribersBody(orgId), true);
-    subscribes = (pageSize, pageNumber, userId) => this.go(POST, this.__subscribesRoute(pageSize, pageNumber), this.__subscribesBody(userId), true);
+    subscribes = (pageSize, pageNumber) => this.go(POST, this.__subscribesRoute(pageSize, pageNumber), this.__subscribesBody(), true);
     subscribersPages = (pageSize, pageNumber, orgId) => this.go(POST, this.__subscribersPagesRoute(pageSize, pageNumber), this.__subscribersPagesBody(orgId), true);
 }
 

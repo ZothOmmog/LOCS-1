@@ -17,8 +17,8 @@ export const Subscribes = (props) => {
 
     useEffect(function SetSubscribes() {
         const SetSubscribesFromServer = async () => {
-            const result = await organizerApi.getMeOrg();
-            const organizersFromServer = await organizerApi.subscribes(4, currentPage, result.data.organizerdata.id_user);
+            //const result = await organizerApi.getMeOrg();
+            const organizersFromServer = await organizerApi.subscribes(4, currentPage);
             
             setUsers(organizersFromServer.data.map(organizer => ({
                 friendStatus: 3,
