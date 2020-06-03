@@ -2,7 +2,6 @@ import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { organizerApi } from '../../../api/indexApi';
-import { UserList } from '../UserList/UserList';
 import { OrganizerProfileShort } from '../../SearchOrganizers/OrganizerProfileShort/OrganizerProfileShort';
 import { Button } from '../../Button-bem/Button';
 import { PagesNumbersMenu } from '../../PagesNumbersMenu/PagesNumbersMenu';
