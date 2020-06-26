@@ -498,9 +498,36 @@
        [
             {
                 "searchaddress": {
-                    "id": 1,
-                    "street": "улица",
-                    "house": "123АБ"
+                    "id": int,
+                    "street": string,
+                    "house": string
                 }
             },
         ]
+ ---
+# url/org/changeAccount
+- ***изменение данных аккаунта (никнейм уникален)***
+ Пользователь авторизован
+ Формат POST ***React->Сервер***
+ Данные входа:
+
+		{
+			"orgName": string,
+			"info": string,
+			"link": string
+		}
+ 
+- ***Ответ на корректность данных***
+ Формат JSON ***Сервер->React***
+ Данные входа(успешное выполнение):
+	
+		{
+			"change": true
+		}
+		
+ Данные входа(такой ник уже есть):
+	
+		{
+			"errName": "org name is already use"
+		}
+		
