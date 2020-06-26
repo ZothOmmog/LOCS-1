@@ -17,6 +17,7 @@ organizerRouter.get("/mySubs/:limit/:offset", organizerController.mySubscribersL
 //organizerRouter.get("/mySub$", organizerController.mySubscribeList); //список подписок  (личный кабинет пользователя) 
 //organizerRouter.get("/mySub/:limit/:offset", organizerController.mySubscribeListLimit); //список подписок странично (личный кабинет пользователя) 
 
+organizerRouter.post("/changeAccount$", organizerController.changeOrgAcc); //изменение даных в личном кабинете
 
 organizerRouter.get("/myEvents$", organizerController.myEventsList); //список мероприятий (личный кабинет)
 organizerRouter.get("/myEvents/:limit/:offset$", organizerController.myEventsListLimit); //список мероприятий (личный кабинет) странично 

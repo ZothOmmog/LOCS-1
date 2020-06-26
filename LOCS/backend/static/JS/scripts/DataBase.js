@@ -560,6 +560,24 @@ let registationOrganizer = (id, info, organizationName, organizationLink, logo) 
     })
 }
 
+//изменние профиля организатора
+let changeDataAboutOrg = (id, name, info, organizationLink) => {
+    return new Promise((resolve, reject) => {
+        db.result('call changedataaboutorg($1,$2,$3,$4);', [id, name, info, organizationLink])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                // console.log(e);
+                //console.log("ERROR BD: changeDataAboutOrg");
+                reject(e);
+                return;
+            });
+    });
+}
+
+
+
+
 //Добавить событие (не учитывает теги, отдельная процедура)
 let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = true) => {
     return new Promise((resolve, reject) => {
@@ -969,6 +987,8 @@ module.exports = {
     'addEventTag': addEventTag, //добавить тег евенту
 
     'registationOrganizer': registationOrganizer, ///регистрация организатора 
+
+    'changeDataAboutOrg': changeDataAboutOrg, //изменние профиля организатора
 
     'changeEvent': changeEvent, //изменить событие (без тегов)
     'deleteEventTag': deleteEventTag, //удаление тегов у события

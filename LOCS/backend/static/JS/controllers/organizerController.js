@@ -665,3 +665,39 @@ exports.changeEvent = async function(request, response) {
         response.json({ err: "user dont sing in" });
     };
 };
+
+
+exports.changeOrgAcc = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == 2) {
+            let orgName = request.body.orgName;
+            let info = request.body.info;
+            let link = request.body.link;
+            let check;
+
+            await DataBase.changeDataAboutOrg(userId, orgName, info, link).then(function(val) {
+                check = val;
+            }).catch(function(val) {
+                check = val;
+            });
+
+            if (check == true) {
+                response.json({ change: true });
+            } else if (check.constraint.includes("org_name_unique")) {
+                response.json({ errName: "org name is already use" });
+            } else {
+                console.log(check);
+                console.log("ERROR BD: changeDataAboutOrg");
+                response.json({ err: "db changeDataAboutOrg error" });
+            }
+
+        } else {
+            response.json({ err: "do not have permissions" });
+        }
+    } else {
+        response.json({ err: "user dont sing in" });
+    };
+
+};

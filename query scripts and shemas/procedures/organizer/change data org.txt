@@ -1,0 +1,8 @@
+--изменение инфы организатора (название каждой организации уникально)
+CREATE OR REPLACE PROCEDURE ChangeDataAboutOrg(id_ bigint, name_ text, info_ text, org_link text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update organizer set info = info_ , organization_link = org_link, organization_name = name_ where id_user = id_;
+END;
+$BODY$;
