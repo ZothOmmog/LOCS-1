@@ -2,9 +2,12 @@ const express = require("express");
 const config = require('./static/JS/configs/config.json');
 const app = express();
 const session = require('express-session');
+
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 const organizerRouter = require("./static/JS/routes/organizerRouter.js");
+const sysRouter = require("./static/JS/routes/sysRouter.js");
+
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
@@ -44,7 +47,7 @@ app.use(session({
 app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
-
+app.use("/sys", sysRouter);
 
 
 
