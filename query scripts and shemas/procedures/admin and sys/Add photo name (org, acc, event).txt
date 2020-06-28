@@ -1,0 +1,26 @@
+///изменяют имя картинки в профилях и ивенте
+CREATE OR REPLACE PROCEDURE AddPhotoAcc(id_ bigint, obj_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update visitor set profile_picture = obj_ where id_ = id_user;
+END;
+$BODY$;
+////
+CREATE OR REPLACE PROCEDURE AddPhotoOrg(id_ bigint, obj_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update organizer set logo = obj_ where id_ = id_user;
+END;
+$BODY$;
+
+
+////
+CREATE OR REPLACE PROCEDURE AddPhotoEvent(idOrg_ bigint, idEvent_ bigint, obj_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update event set image = obj_ where idEvent_ = id and id_organizer = idOrg_;
+END;
+$BODY$;
