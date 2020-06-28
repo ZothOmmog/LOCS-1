@@ -3,20 +3,28 @@ const express = require("express");
 const sysController = require("../controllers/sysController.js");
 const sysRouter = express.Router();
 const multer = require("multer");
+const DataBase = require('../scripts/DataBase.js');
+const { json } = require('body-parser');
+
+
 
 const upload = multer({
-    dest: "../uploads/profile",
     fileFilter: function(req, file, callback) {
         var ext = path.extname(file.originalname);
         var size = file.size;
         if ((ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg') || size > 6300000) {
-            return callback(new Error('Only images are allowed'))
+            file.mimetype = -1;
+            callback(null, false);
         }
-        callback(null, true)
+        callback(null, true);
     }
 });
-sysRouter.post("/uploadPhoto/:type", upload.single("file"), sysController.uploadPhoto); // для загрузки фото (type - для определения типа загрузки фото), имя файла file
 
+sysRouter.post("/PhotoAcc", upload.single("file"), sysController.uploadPhotoAcc); // для загрузки фото личного профиля, имя файла в запросе - file
+
+sysRouter.post("/PhotoOrg", upload.single("file"), sysController.uploadPhotoOrg); // для загрузки фото профиля организатора, имя файла в запросе - file
+
+sysRouter.post("/PhotoEvent/:event", upload.single("file"), sysController.uploadPhotoEvent); // для загрузки фото события, имя файла в запросе - file
 
 
 module.exports = sysRouter;

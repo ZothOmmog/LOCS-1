@@ -1,8 +1,6 @@
 const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
+const fs = require("fs");
 var DataBase = require('../scripts/DataBase.js');
-//const multer = require("multer");
 
 async function takeObj(token) {
     let data;
@@ -13,53 +11,122 @@ async function takeObj(token) {
 }
 
 
-exports.uploadPhoto = async function(request, response) {
+exports.uploadPhotoAcc = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
     if (userId) {
-        let type = Number(request.params.type);
-
-        if (type == 1) {
-            let filedata = request.file;
-
-            console.log(filedata);
-            if (!filedata) {
-                response.send("Ошибка при загрузке файла");
-            } else {
-                response.send("Файл загружен");
+        let filedata = request.file;
+        //console.log(filedata);
+        if (filedata.mimetype == -1) {
+            response.json({ errFormat: "фото (png, jpg, jpeg) должно быть не больше 6 мб" });
+            return;
+        }
+        if (!filedata) {
+            response.json({ err: "Error loading file" });
+        } else {
+            try {
+                const namePhoto = String(userId) + String(Date.now());
+                await fs.writeFileSync("../uploads/profile/" + namePhoto, filedata.buffer, "binary");
+                let data;
+                await DataBase.addPhotoAcc(userId, namePhoto).then(function(val) {
+                    data = val;
+                }).catch(function(er) {
+                    response.json({ err: "#error DataBase" });
+                });
+                if (data == true) {
+                    response.json({ load: true });
+                } else {
+                    response.json({ err: "Error writing file" });
+                }
+            } catch {
+                response.json({ err: "Error writing file" });
             }
         }
+    } else {
+        response.json({ err: "did not login" });
     }
 };
 
+exports.uploadPhotoOrg = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == 2) {
+            let filedata = request.file;
+            filedata.filename = Date.now();
+            // console.log(filedata);
+            if (filedata.mimetype == -1) {
+                response.json({ errFormat: "фото (png, jpg, jpeg) должно быть не больше 6 мб" });
+                return;
+            }
+            if (!filedata) {
+                response.json({ err: "Error loading file" });
+            } else {
+                try {
+                    const namePhoto = String(userId) + String(Date.now());
+                    await fs.writeFileSync("../uploads/organizer/" + namePhoto, filedata.buffer, "binary");
+                    let data;
+                    await DataBase.addPhotoOrg(userId, namePhoto).then(function(val) {
+                        data = val;
+                    }).catch(function(er) {
+                        response.json({ err: "#error DataBase" });
+                    });
+                    if (data == true) {
+                        response.json({ load: true });
+                    } else {
+                        response.json({ err: "Error writing file" });
+                    }
+                } catch {
+                    response.json({ err: "Error writing file" });
+                }
+            }
+        } else {
+            response.json({ err: "not have permissons" });
+        }
+    } else {
+        response.json({ err: "did not login" });
+    }
+};
 
-// exports.mySubscribersLimit = async function(request, response) {
-//     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-//     if (userId) {
-//         const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-//         if (Role == 2 || Role == 0) {
-//             let count;
-//             await DataBase.countSubscribers(userId).then(function(val) {
-//                 count = val;
-//             });
+exports.uploadPhotoEvent = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+        if (Role == 2) {
+            let filedata = request.file;
+            filedata.filename = Date.now();
+            //console.log(request);
+            //console.log(filedata);
+            if (filedata.mimetype == -1) {
+                response.json({ errFormat: "фото (png, jpg, jpeg) должно быть не больше 6 мб" });
+                return;
+            }
+            if (!filedata) {
+                response.json({ err: "Error loading file" });
+            } else {
+                try {
+                    const namePhoto = String(userId) + String(Date.now());
+                    await fs.writeFileSync("../uploads/event/" + namePhoto, filedata.buffer, "binary");
+                    let data;
+                    let idEvent = request.params.event;
+                    await DataBase.addPhotoEvent(userId, idEvent, namePhoto).then(function(val) {
+                        data = val;
+                    }).catch(function(er) {
+                        response.json({ err: "#error DataBase" });
+                    });
 
-//             let limit = Number(request.params.limit);
-//             let offset = Number(request.params.offset);
-//             offset = offset <= 0 ? 1 : offset;
-//             limit = limit <= 0 ? 1 : limit;
-//             offset = (offset - 1) * limit;
-//             let data;
-//             await DataBase.subscribersLimit(userId, limit, offset).then(function(val) {
-//                 data = val;
-//             }).catch(function() {
-//                 data = { "err": "sub org error" }
-//             });
-
-//             response.json({ "count": count, data });
-
-//         } else {
-//             response.json({ err: "do not have permissions" });
-//         }
-//     } else {
-//         response.json({ err: "user dont sing in" });
-//     };
-//};
+                    if (data == true) {
+                        response.json({ load: true });
+                    } else {
+                        response.json({ err: "Error writing file" });
+                    }
+                } catch {
+                    response.json({ err: "Error writing file" });
+                }
+            }
+        } else {
+            response.json({ err: "not have permissons" });
+        }
+    } else {
+        response.json({ err: "did not login" });
+    }
+};

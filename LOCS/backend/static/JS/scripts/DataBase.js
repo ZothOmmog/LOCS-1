@@ -1,7 +1,6 @@
 const config = require('../../../DBsetings.json');
 let pgp = require("pg-promise")( /*options*/ );
 let db = pgp(config);
-//let db = pgp("postgres://postgres:123@localhost:5432/LocsBD_Dev");
 
 //проверка, что такое мыло есть
 const CheckUser = (mail) => {
@@ -923,6 +922,46 @@ const searchAddress = (word) => {
     });
 };
 
+
+////загрузка фото
+//загрузка фото лк
+const addPhotoAcc = (id, photo) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddPhotoAcc($1, $2);', [id, photo])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                reject("ERROR BD: addPhotoAcc");
+                return;
+            });
+    });
+};
+
+//загрузка фото организатора
+const addPhotoOrg = (id, photo) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddPhotoOrg($1, $2);', [id, photo])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                reject("ERROR BD: addPhotoOrg");
+                return;
+            });
+    });
+};
+
+//загрузка фото события
+const addPhotoEvent = (idOrg, idEvent, photo) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddPhotoEvent($1, $2, $3);', [idOrg, idEvent, photo])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                reject("ERROR BD: addPhotoEvent");
+                return;
+            });
+    });
+};
 module.exports = {
 
     //пользователь
@@ -1023,5 +1062,10 @@ module.exports = {
     'eventOrgListLimit': eventOrgListLimit, //Список событий странично по id организатора
 
     'checkOrganizationName': checkOrganizationName, //проверка имени организатора
+
+    //фото
+    'addPhotoAcc': addPhotoAcc, //загрузка фото лк
+    'addPhotoOrg': addPhotoOrg, //загрузка фото организатора
+    'addPhotoEvent': addPhotoEvent, //загрузка фото события
 
 };
