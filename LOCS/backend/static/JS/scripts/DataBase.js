@@ -578,9 +578,9 @@ let changeDataAboutOrg = (id, name, info, organizationLink) => {
 
 
 //Добавить событие (не учитывает теги, отдельная процедура)
-let addEvent = (name, info, link, ticket_price, id_org, id_address, publish = true) => {
+let addEvent = (name, info, link, ticket_price, id_org, id_address, datatime, publish = true) => {
     return new Promise((resolve, reject) => {
-        db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7);', [name, info, link, ticket_price, id_org, id_address, publish])
+        db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7,$8);', [name, info, link, ticket_price, id_org, id_address, publish, datatime])
             .then(function(data) {
                 resolve(data.addevent);
             }).catch(function(e) {
@@ -619,9 +619,9 @@ let addEventTag = (idEvent, tag) => {
 
 //Изменение мероприятия (без тегов)
 let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
-    idAddress, publish = true) => {
+    idAddress, datatime, publish = true) => {
     return new Promise((resolve, reject) => {
-        db.result('Call ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8);', [idev, name, info, link, ticketPrice, idOrg, idAddress, publish])
+        db.result('Call ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8,$9);', [idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish])
             .then(function(data) {
                 resolve(true);
             }).catch(function() {

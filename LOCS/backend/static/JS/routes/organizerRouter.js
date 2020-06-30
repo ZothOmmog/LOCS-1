@@ -56,7 +56,7 @@ organizerRouter.post("/events/:limit/:offset", organizerController.eventsListLim
 
 organizerRouter.post("/createEvent$", organizerController.createEvent); //создание события
 
-organizerRouter.post("/chaneEvent$", organizerController.changeEvent); //изменение события
+organizerRouter.post("/changeEvent$", organizerController.changeEvent); //изменение события
 
 organizerRouter.post("/searchAddress$", organizerController.searchAddress); //поиск id адреса 
 

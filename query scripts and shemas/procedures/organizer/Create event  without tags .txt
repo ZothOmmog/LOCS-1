@@ -14,3 +14,20 @@ BEGIN
 END;
 $BODY$;
 
+
+--добавление мероприятия
+CREATE OR REPLACE function AddEvent(name_ text,info_ text, link_ text, ticket_price_ numeric, id_org bigint, id_address_ bigint, publish_ bool, datatime_ timestamp )
+    RETURNS int
+	LANGUAGE 'plpgsql'
+AS $BODY$
+declare
+	id_ bigint;
+BEGIN
+    INSERT INTO event( name, info, link, ticket_price, id_organizer, id_address, published, datatime ) values (name_ ,info_ , link_ , ticket_price_ , id_org , id_address_ , publish_, datatime_ );
+	select into id_ id from event where name = name_ and info= info_ and link = link_ and
+	ticket_price = ticket_price_ and id_organizer = id_org and id_address = id_address_ and published = publish_ and datatime_ = datatime ;
+	return id_;
+END;
+$BODY$;
+
+

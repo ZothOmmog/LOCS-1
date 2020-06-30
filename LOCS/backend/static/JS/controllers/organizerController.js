@@ -2,7 +2,7 @@ const path = require('path')
 let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
-
+const funcs = require('../scripts/funcs.js');
 
 async function takeObj(token) {
     let data;
@@ -558,8 +558,11 @@ exports.createEvent = async function(request, response) {
             let link = request.body.link;
             let price = request.body.price;
 
+            let timestamp = request.body.timestamp;
+            let datatime = funcs.timeConvert(timestamp);
+
             let idEvent;
-            await DataBase.addEvent(name, info, link, price, userId, idAddress).then(function(val) {
+            await DataBase.addEvent(name, info, link, price, userId, idAddress, datatime).then(function(val) {
                 idEvent = val;
             }).catch(function(e) {
                 console.log(e);
@@ -622,8 +625,11 @@ exports.changeEvent = async function(request, response) {
             let idEvent = request.body.idEvent;
             let tags = request.body.tags;
 
+            let timestamp = request.body.timestamp;
+            let datatime = funcs.timeConvert(timestamp);
+
             let check;
-            await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress).then(function(val) {
+            await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress, datatime).then(function(val) {
                 check = val;
             }).catch(function(val) {
                 check = false;

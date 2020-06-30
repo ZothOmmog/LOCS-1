@@ -2,7 +2,7 @@ const path = require('path')
 let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
-
+const funcs = require('../scripts/funcs.js');
 
 
 // async function takeObj(token) {
@@ -25,7 +25,9 @@ exports.event = async function(request, response) {
     await DataBase.event(idEvent).then(function(val) {
         event = val;
     });
-    response.json({ "event": event.event, tags });
+    event.event.datatime = funcs.stringToObjectTimeConvert(event.event.datatime);
+    event.event.tags = tags;
+    response.json(event.event);
 };
 
 //надо подумать о фильтре по тегам 

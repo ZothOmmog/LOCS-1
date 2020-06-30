@@ -11,6 +11,9 @@ const sysRouter = require("./static/JS/routes/sysRouter.js");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
+
+//const test = require("./static/JS/scripts/funcs.js");
+
 const corsOptions = {
     credentials: true,
     origin: 'http://localhost:3000',
@@ -31,7 +34,7 @@ app.use(function(request, response, next) {
     let data = `${hour}:${minutes}:${seconds} ${request.method} ${request.url} ${request.get("user-agent")}`;
     console.log(data);
     console.log(data + request.url + "\n");*/
-
+    //test.stringToObjectTimeConvert("2020-01-01T00:05:30");
     next();
 });
 
