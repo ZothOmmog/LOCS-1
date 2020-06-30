@@ -40,18 +40,23 @@
 
 
 		{
-			"event": {
 				"id": int,
 				"name": string,
 				"info": string,
 				"link": string,
-				"ticket_price": "220,00 ?",
-				"id_organizer": 1,
-				"id_address": 1,
+				"ticket_price": int,
+				"id_organizer": int,
+				"id_address": int,
 				"image": string,
 				"organization_name": string,
-				"logo": string
-			},
+				"logo": string,
+				"datatime": {
+						"year": int,
+						"month": int,
+						"date": int,
+						"hours": int,
+						"minutes": int
+				},
 			"tags": [
 				{
 					"eventtags": {

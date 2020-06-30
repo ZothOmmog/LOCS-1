@@ -1,11 +1,23 @@
 --Изменение мероприятия
 CREATE OR REPLACE PROCEDURE ChangeEvent(idev_ bigint, name_ text,info_ text,
 										link_ text, ticket_price_ numeric, id_org bigint,
-										id_address_ bigint, publish_ bool default false)
+										id_address_ bigint,  publish_ bool default false)
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN 
-	update event set name = name_, info = info_, link = link_, ticket_price = ticket_price_,id_organizer = id_org,
-					id_address = id_address_, published = publish_ where id = idev_; 
+	update event set name = name_, info = info_, link = link_, ticket_price = ticket_price_,
+					id_address = id_address_, published = publish_ where id = idev_ and id_organizer = id_org; 
+END;
+$BODY$;
+
+--Изменение мероприятия
+CREATE OR REPLACE PROCEDURE ChangeEvent(idev_ bigint, name_ text,info_ text,
+										link_ text, ticket_price_ numeric, id_org bigint,
+										id_address_ bigint, datatime_ timestamp,  publish_ bool default false)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update event set name = name_, info = info_, link = link_, ticket_price = ticket_price_,
+					id_address = id_address_, published = publish_, datatime = datatime_ where id = idev_ and id_organizer = id_org; 
 END;
 $BODY$;
