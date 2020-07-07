@@ -139,3 +139,17 @@ alter table subscribe add column deleted bool default false;
 
 alter table organizer add CONSTRAINT org_name_unique UNIQUE (organization_name)
 --зайти в таблицу visitor,organizer раскрыть столбцы, нажать пкм на картинке в настройки, перевести varchar в text
+
+create table TokenToAcceptAccount(
+    token text,
+	userId bigint
+);
+
+create table TokenToResetPassword(
+    token text,
+	userId bigint,
+	created timestamp
+);
+
+alter table public.meta_data add column mail_confirmed bool default false;
+

@@ -17,10 +17,7 @@ function timeConvert(timestamp) {
 }
 
 function stringToObjectTimeConvert(str) {
-
-
     var a = new Date(str);
-
     let datatime = {
         year: a.getFullYear(),
         month: a.getMonth(),
@@ -28,7 +25,6 @@ function stringToObjectTimeConvert(str) {
         hours: a.getHours(),
         minutes: a.getMinutes()
     };
-
     return datatime;
 }
 
