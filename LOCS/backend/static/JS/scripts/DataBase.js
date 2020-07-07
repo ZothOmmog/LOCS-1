@@ -43,10 +43,11 @@ const TimeNow = () => {
 //регистрация нового пользователя
 const AddUser = (nick, mail, hashpas, role, city, createtime) => {
     return new Promise((resolve, reject) => {
-        db.result('Call CreateUser($1, $2, $3, $4, $5, $6);', [nick, mail, hashpas, role, city, createtime])
+        db.oneOrNone('select * from  CreateUser($1, $2, $3, $4, $5, $6);', [nick, mail, hashpas, role, city, createtime])
             .then(function(data) {
-                resolve(true);
-            }).catch(function() {
+                resolve(data.createuser);
+            }).catch(function(data) {
+                console.log(data);
                 reject("ERROR BD: AddUser");
                 return;
             });
@@ -388,7 +389,21 @@ let TakeToken = (tok) => {
     });
 };
 
+//добавить токен для создания ссылки подтверждения аккаунта
+let addTokenToAccept = (tok, obj) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call AddTokenToAccept($1, $2);', [String(tok), Number(obj)])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: AddTokenToAccept");
+                return;
+            });
+    })
+}
 
+////
 //Добавить район
 let addDistrict = (title, id_city) => {
     return new Promise((resolve, reject) => {
@@ -1001,6 +1016,10 @@ module.exports = {
     'TakeToken': TakeToken, //вернуть токен
     'deleteToken': DeleteToken, //удалить токен
     'changeTokenToOrg': changeTokenToOrg, //изменить роль на организатора в токене
+
+
+
+
     //для админки 
     'addDistrict': addDistrict, //Добавить район
     'addAddress': addAddress, //Добавить адрес
@@ -1024,6 +1043,9 @@ module.exports = {
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
+
+    'addTokenToAccept': addTokenToAccept, //добавить токен для создания ссылки подтверждения аккаунта
+
 
     'registationOrganizer': registationOrganizer, ///регистрация организатора 
 

@@ -40,10 +40,15 @@ exports.postRegistration = async function(request, response) {
         }
 
         var hash = crypt.hash(request.body.Registration.pas, CreateTime);
+
+        var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
+
+
         let checkAdd = false;
-        await DataBase.AddUser(request.body.Registration.nick, request.body.Registration.mail, hash, "User", 1, CreateTime).then(function(val) {
+        await DataBase.AddUser(request.body.Registration.nick, request.body.Registration.mail, hash, "User", null, CreateTime).then(function(val) {
             checkAdd = val;
         });
+
         if (!checkAdd) {
             response.json({
                 "Login": {
@@ -52,13 +57,33 @@ exports.postRegistration = async function(request, response) {
                 }
             });
         }
+        if (checkAdd != -1) {
+            //тут создается ссылка для подтв. почты
+            //var url = "///////";
+            var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
 
-        response.json({
-            "Login": {
-                "NickNameFlag": CheckNick,
-                "MailFlag": CheckMail
-            }
-        });
+
+            await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
+                checkAdd = val;
+                ///создать функцию, которая отсылает на почту письмо 
+            });
+            response.json({
+                "Login": {
+                    "NickNameFlag": CheckNick,
+                    "MailFlag": CheckMail
+                }
+            });
+
+
+        } else {
+            //отвечаем, что данные не корректны 
+            response.json({
+                "Login": {
+                    "NickNameFlag": CheckNick,
+                    "MailFlag": CheckMail
+                }
+            });
+        }
 
 
     } else {

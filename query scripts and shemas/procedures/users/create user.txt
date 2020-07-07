@@ -1,3 +1,25 @@
+//// возвращает id созданого пользователя или -1
+CREATE OR REPLACE function CreateUser(nickname_ text,login_ text, hashpassword_ text,role_ text,id_city_ bigint, time_ text)
+	RETURNS bigint
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    new_id bigint;
+BEGIN
+	    	INSERT INTO userlist(login, hashpassword, role, id_city) values (login_, hashpassword_ ,role_,id_city_);
+			select into new_id id from userlist where login = login_;
+			INSERT INTO visitor(id_user,nickname, profile_picture) values (new_id, nickname_,'-1' );
+			INSERT INTO meta_data(id_user,date_create, date_last_change,deleted,mail_confirmed) values (new_id,time_,time_, False, False  );
+	    IF new_id IS NULL  THEN
+        RETURN -1;
+    	ELSE 
+		return new_id;
+    END IF;
+END;
+$BODY$;
+
+
+////старая версия, не нужно
 drop PROCEDURE CreateUser;
 CREATE OR REPLACE PROCEDURE CreateUser(nickname_ text,login_ text, hashpassword_ text,role_ text,id_city_ bigint, time_ text)
     LANGUAGE 'plpgsql'

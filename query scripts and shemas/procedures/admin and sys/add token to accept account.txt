@@ -1,0 +1,9 @@
+--для добавления токена, для подтв. мыла аккаунта
+CREATE OR REPLACE PROCEDURE AddTokenToAccept(tok_ text,userID_ bigint)
+    LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+    INSERT INTO tokentoacceptaccount(token, userID) values (tok_,userID_);
+END;
+$BODY$;
