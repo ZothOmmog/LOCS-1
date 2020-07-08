@@ -96,9 +96,9 @@ const RoleUser = (UserId) => {
 
 //Данные об аккаунте по ID
 
-const DataUserAccount = (userId) => {
+const DataUserAccount = (userId, cityId = null) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select DataUserAccount($1);", userId)
+        db.manyOrNone("select DataUserAccount($1,$2);", [userId, cityId])
             .then(function(data) {
 
                 let strData = String(data[0].datauseraccount).replace(")", "");
@@ -402,6 +402,36 @@ let addTokenToAccept = (tok, obj) => {
             });
     })
 }
+
+//подтв аккаунт
+let acceptMail = (tok) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call acceptMail($1);', [tok])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: acceptMail");
+                return;
+            });
+    })
+}
+
+//вернуть токен по id для подтв аккаунт
+let returnTokenAcceptMail = (id) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select * from returnTokenAcceptMail($1);', [id])
+            .then(function(e) {
+                resolve(e.returntokenacceptmail);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: returnTokenAcceptMail");
+                return;
+            });
+    })
+}
+
+
 
 ////
 //Добавить район
@@ -1017,8 +1047,8 @@ module.exports = {
     'deleteToken': DeleteToken, //удалить токен
     'changeTokenToOrg': changeTokenToOrg, //изменить роль на организатора в токене
 
-
-
+    'acceptMail': acceptMail, //подтв аккаунт
+    'returnTokenAcceptMail': returnTokenAcceptMail, //вернуть токен по id для подтв аккаунт
 
     //для админки 
     'addDistrict': addDistrict, //Добавить район

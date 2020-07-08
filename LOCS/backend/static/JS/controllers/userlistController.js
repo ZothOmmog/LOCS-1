@@ -58,14 +58,12 @@ exports.postRegistration = async function(request, response) {
             });
         }
         if (checkAdd != -1) {
-            //тут создается ссылка для подтв. почты
-            //var url = "///////";
             var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
 
 
             await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
                 checkAdd = val;
-                ///создать функцию, которая отсылает на почту письмо 
+                ///создать функцию, которая создает ссылку и  отсылает на почту письмо 
             });
             response.json({
                 "Login": {
@@ -188,17 +186,19 @@ exports.acc = async function(request, response) {
                 }
             });
         }
+        console.log(masData);
         let UserMail = masData[0];
         let UserNickname = masData[1];
         let UserPicture = masData[2];
         let UserCity = masData[3];
-
+        let accept = (masData[4] == 't');
         response.json({
             "User": {
                 "Mail": UserMail,
                 "Nick": UserNickname,
                 "City": UserCity,
                 "UrlPicture": UserPicture,
+                "AcceptMail": accept,
                 "Auth": true
             }
         });

@@ -130,3 +130,35 @@ exports.uploadPhotoEvent = async function(request, response) {
         response.json({ err: "did not login" });
     }
 };
+
+
+exports.acceptAccount = async function(request, response) {
+    const hash = request.params.hash;
+
+    await DataBase.acceptMail(hash).then(function(val) {
+        data = val;
+        response.json({ accept: true });
+    }).catch(function(er) {
+        response.json({ err: "#error DataBase acceptMail" });
+    });
+
+};
+exports.forwardMail = async function(request, response) {
+    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+    if (userId) {
+
+        await DataBase.returnTokenAcceptMail(userId).then(function(val) {
+            console.log(val);
+            ///вызов функции для создания и отправки ссылки 
+
+            response.json({ send: true });
+        }).catch(function(er) {
+            console.log(er);
+            response.json({ err: "#error DataBase forwardMail" });
+        });
+
+    } else {
+        response.json({ err: "did not login" });
+    }
+
+};

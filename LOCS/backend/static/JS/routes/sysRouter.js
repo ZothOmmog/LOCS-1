@@ -27,6 +27,10 @@ sysRouter.post("/PhotoOrg", upload.single("file"), sysController.uploadPhotoOrg)
 sysRouter.post("/PhotoEvent/:event", upload.single("file"), sysController.uploadPhotoEvent); // для загрузки фото события, имя файла в запросе - file
 
 
+sysRouter.get("/accept/:hash", sysController.acceptAccount); //функция для подтв почты/аккаунта личного кабинета
+
+sysRouter.get("/forwardMail", sysController.forwardMail);
+
 ///создать функцию повторной отправки письма с ссылкой для подтв.
 
 module.exports = sysRouter;

@@ -50,8 +50,7 @@ app.use(session({
 app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
-app.use("/upload", sysRouter);
-
+app.use("/system", sysRouter);
 
 
 

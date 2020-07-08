@@ -1,0 +1,12 @@
+CREATE OR REPLACE function returnTokenAcceptMail(UserId_ bigint)
+	RETURNS text
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+	token_ text;
+BEGIN
+	select into token_ token from tokentoacceptaccount where userid = UserId_ ;
+
+	return token_;
+END;
+$BODY$;

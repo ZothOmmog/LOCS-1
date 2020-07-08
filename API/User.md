@@ -12,6 +12,7 @@
 				"Nick": "String",
 				"City": "String",
 				"UrlPicture" : "String",
+				"AcceptMail": true,
 				"Auth" :"Bool"
 			} 
 		}

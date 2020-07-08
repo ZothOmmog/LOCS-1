@@ -1,0 +1,11 @@
+CREATE OR REPLACE PROCEDURE acceptMail(tok_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update meta_data set mail_confirmed = true 
+	where id_user = (select userid from tokentoacceptaccount where token like tok_ limit 1);
+	delete from tokentoacceptaccount where token like tok_;
+END;
+$BODY$;
+
+
