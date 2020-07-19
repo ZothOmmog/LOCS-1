@@ -1,0 +1,60 @@
+//common
+$font-main: 'Roboto', sans-serif;
+
+$color-black: #212121;
+$color-fullblack: #000000;
+$color-white: #ffffff;
+$color-orange: #FE9800;
+
+$transition-duration: 0.2s;
+
+$border-radius: 16px;
+//======
+
+//nav-link-custom
+$font-nav-link-custom: $font-main;
+//===============
+
+//nav-link-bordered
+$color-nav-link-bordered: $color-black;
+$color-box-shadow-nav-link-bordered: $color-orange;
+$transition-duration-nav-link-bordered: $transition-duration;
+$border-radius-nav-link-bordered: $border-radius;
+$background-color-nav-link-bordered: $color-white;
+//=================
+
+//nav-link-colored
+$color-nav-link-colored: $color-white;
+$color-nav-link-colored-hover: $color-white;
+$background-color-nav-link-colored: $color-orange;
+$color-box-shadow-nav-link-colored: $color-orange;
+$transition-duration-nav-link-colored: $transition-duration;
+$border-radius-nav-link-colored: $border-radius;
+//=================
+
+//nav-link-profile
+$color-nav-link-profile: $color-black;
+$background-color-nav-link-profile: $color-white;
+$border-radius-nav-link-profile: $border-radius;
+$color-box-shadow-nav-link-profile: $color-orange;
+$transition-duration-nav-link-profile: $transition-duration;
+//================
+
+//nav-link-map
+$color-nav-link-map: $color-black;
+$background-color-nav-link-map: black;
+$transition-duration-nav-link-map: $transition-duration;
+//============
+
+//header
+$background-color-header: $color-fullblack;
+$color-header-logo: $color-white;
+$font-header-logo: $font-main;
+//======
+
+//event-profile-short
+$font-event-profile-short: $font-main;
+$color-event-profile-short: $color-black;
+$border-radius-event-profile-short: 10px;
+$transition-duration-event-profile-short: 0.4s;
+//===================

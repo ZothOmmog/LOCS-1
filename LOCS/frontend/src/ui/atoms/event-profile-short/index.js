@@ -1,0 +1,1 @@
+export { EventProfileShort } from './event-profile-short';

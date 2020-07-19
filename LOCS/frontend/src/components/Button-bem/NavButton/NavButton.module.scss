@@ -1,0 +1,113 @@
+@import '../../CommonStyles/Mixins.scss';
+
+.b {
+    height: 35px;
+    width: 100px;
+}
+
+.Button {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &_Style {
+        &_Base {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            background-color: black;
+            color: white;
+            transition: 0.2s;
+        }
+        &_Base:hover {
+            background-color: gray;
+            color: black;
+        }
+        &_Base:active {
+            background-color: white;
+            color: black;
+        }
+
+        &_NotBorderRadius {
+            font-weight: 400;
+            font-size: 16px;
+            border: none;
+            background-color: black;
+            color: white;
+            padding: 5px;
+            transition: 0.2s;
+        }
+        &_NotBorderRadius:hover {
+            background-color: gray;
+            color: black;
+        }
+
+        &_SearchNavigation {
+            justify-content: start;
+        }
+        &_SearchNavigation:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        &_SearchNavigationActive {
+            background-color: rgba(0, 0, 0, 0.2);
+            justify-content: start;
+        }
+
+        &_Profile {
+            $colorActive: rgba(49, 64, 95, 0.9);
+
+            &Header {
+                font-weight: 700;
+                font-size: 16px;
+                text-align: center;
+                background-color: white;
+                border: none;
+                border-bottom: 1px solid #000;
+                transition: 0.2s;
+            }
+            &HeaderActive {
+                font-weight: 700;
+                font-size: 16px;
+                text-align: center;
+                background-color: white;
+                border: none;
+                border-bottom: 1px solid #000;
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            &Header:hover {
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            
+            &Footer {
+                text-align: center;
+                font-weight: 300;
+                line-height: 21px;
+                transition: 0.2s;
+            }
+            &Footer:hover {
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+            &FooterActive {
+                font-weight: 300;
+                text-align: center;
+                box-shadow: inset 0px 0px 20px $colorActive;
+            }
+        }
+    }
+    
+    &_Size {
+        &_Base {
+            padding: 5px;
+        }
+
+        &_FullContainer {
+            height: 100%;
+            width: 100%;
+        }
+    }
+}

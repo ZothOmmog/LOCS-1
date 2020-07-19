@@ -1,9 +1,9 @@
 export { 
     backButtonReducer,
     setPathBack 
-} from "./backButtonReducer";
+} from './backButtonReducer';
 
-export { setFriendStatus } from "./userProfileReducer";
+export { setFriendStatus } from './userProfileReducer';
 
 export { 
     friendsReducer, 
@@ -14,4 +14,9 @@ export {
     setFriendRequestsInThunk,
     setFriendRequestsOutThunk,
     cleanFriends
-} from "./friendsReducer";
+} from './friendsReducer';
+
+export {
+    searchThunk,
+    setQuery
+} from './searchReducer'

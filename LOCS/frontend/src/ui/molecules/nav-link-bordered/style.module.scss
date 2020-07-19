@@ -1,0 +1,19 @@
+@import '~/styles/variables.scss';
+
+.nav-link-bordered {
+    color: $color-nav-link-bordered;
+    padding: 8px;
+    border-radius: $border-radius-nav-link-bordered;
+    transition-duration: $transition-duration-nav-link-bordered;
+    background-color: $color-white;
+    
+    &_inactive {
+        &:hover {
+            box-shadow: 0px 0px 0px 4px rgba($color: $color-box-shadow-nav-link-bordered, $alpha: 0.5) inset;
+        }
+    }
+    
+    &_active {
+        box-shadow: 0px 0px 0px 4px $color-box-shadow-nav-link-bordered inset;
+    }
+}

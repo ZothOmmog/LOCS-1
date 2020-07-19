@@ -1,0 +1,26 @@
+@mixin textbox-placeholder-font {
+    font-family: 'Roboto';
+    font-size: 16px;
+    font-weight: 300;
+    color: rgba(0, 0, 0, 0.5);
+}
+
+@mixin textbox-text-font {
+    font-family: 'Roboto';
+    font-size: 16px;
+    font-weight: 300;
+    color: rgb(0, 0, 0);
+}
+
+@mixin font-roboto-light {
+    font-family: 'Roboto';
+    font-weight: 300;
+}
+@mixin font-roboto-medium {
+    font-family: 'Roboto';
+    font-weight: 400;
+}
+@mixin font-roboto-bold {
+    font-family: 'Roboto';
+    font-weight: 700;
+}

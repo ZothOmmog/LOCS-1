@@ -14,3 +14,4 @@ export { AuthContainer } from './Auth/AuthContainer.jsx';
 export { UserProfileContainer } from './UserProfile/UserProfileContainer.jsx';
 export { UserProfileShort } from './UserProfileShort/UserProfileShort.jsx';
 export { PagesNumbersMenu } from './PagesNumbersMenu/PagesNumbersMenu.jsx';
+export { SearchPage } from './SearchPage/SearchPage';

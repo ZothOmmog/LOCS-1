@@ -1,33 +1,70 @@
 import React from 'react';
-import "../CommonStyles/Button/Button.css";
-import s from "./Search.module.css";
-// import Tag from "./Tag/tag.jsx"
+import s from "./Search.module.scss";
+import { useLocation, Redirect } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Formik, Field, Form, useFormikContext } from 'formik';
+import * as yup from 'yup';
+import { Button } from '../Button-bem/Button';
+import { useState } from 'react';
+import { setQuery, searchThunk } from '../../redux';
+import { connect } from 'react-redux';
 
-const Search = (props) => {
-    // const tags = props.state.tags.map(tag => {
-    //     return <Tag state={tag} />
-    // });
+const ResetIfChangeLocation = ({ location }) => {
+    const { resetForm } = useFormikContext();
+
+    useEffect(function CleanIfChangeLocation() {
+        resetForm('');
+    }, [location, resetForm]);
+
+    return null;
+}
+
+const Search = ({ setQuery, searchThunk }) => {
+    let location = useLocation();
+    const [isSearch, setIsSearch] = useState(false);
+    
+    useEffect(() => {
+        if(location.pathname !== '/Search') setIsSearch(false);
+    }, [location]);
+
     return (
-        <div className={s.Search}>
-            <div className={s.SearchArea}>
-                <input
-                    className={s.SearchArea__Input}
-                    type="text"
-                    placeholder="Поиск..."
-                    value={props.state.queryText}
-                    onChange={props.updateQueryText}
-                />
-                <div 
-                    className={`button ${s.SearchArea__Button}`}
-                    onClick={props.searchGo}
-                >
-                    Найти
-                </div>
-            </div>
+        <>
+            <Formik
+                enableReinitialize
+                initialValues={{ query: '' }}
 
-            {/* <div className={s.TagsArea}>{tags}</div> */}
-        </div>
+                validationSchema={yup.object({
+                    query: yup.string()
+                        .required()
+                })}
+                onSubmit={(values, { setSubmitting }) => {
+                    setQuery(values.query);
+                    setIsSearch(true);
+                    searchThunk(4, 1);
+                    setSubmitting(false);
+                }}
+            >
+                <Form className={s.Search}>
+                    <Field className={s.Search__Input} name='query' placeholder='События, организаторы...' />
+                    <div className={s.Search__Submit}>
+                        <Button
+                            style={{
+                                type: 'Search',
+                                size: 'FullContainer'
+                            }}
+                            typeButton='submit'
+                        />
+                    </div>
+                    {!isSearch ? (
+                        <ResetIfChangeLocation location={location} />
+                    ): null}
+                </Form>
+            </Formik>
+            {isSearch ? (
+                <Redirect to='/Search' />
+            ) : null}
+        </>
     );
 }
 
-export default Search;
+export const SearchWithSetQueryCallback = connect(null, { setQuery, searchThunk })(Search);

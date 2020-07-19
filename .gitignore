@@ -24,6 +24,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+#confic for vscode
+jsconfig.json
+
 #for backend
 
 LOCS/node_modules

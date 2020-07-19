@@ -9,6 +9,7 @@ export const Button = ({ style: { type, size, onClickHandler, buttonText }, type
         type === 'SwitchActive' ? (' ' + s.Button_Style_SwitchActive) :
         type === 'NotBorderRadius' ? (' ' + s.Button_Style_NotBorderRadius) :
         type === 'NotBorderRadiusRed' ? (' ' + s.Button_Style_NotBorderRadiusRed) :
+        type === 'Search' ? (' ' + s.Button_Style_Search) :
         type === 'ProfileExit' ? (' ' + s.Button_Style_ProfileExit) : (' ' + s.Button_Style_Base)
     );
 
