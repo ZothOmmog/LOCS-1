@@ -1,0 +1,1 @@
+export { NavLinkProfile } from './nav-link-profile';

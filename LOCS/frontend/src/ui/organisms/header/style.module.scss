@@ -1,0 +1,41 @@
+@import '~/styles/variables.scss';
+
+.header-template {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $background-color-header;
+    padding: 5px;
+
+    &__logo {
+        display: flex;
+        align-items: center;
+    }
+    
+    
+    // &__search-form {
+
+    // }
+        
+    &__profile {
+        display: flex;
+        justify-content: flex-end;
+        flex-basis: 204px;
+    }
+}
+        
+.header {
+    &__nav-link-custom {
+        display: flex;
+        align-items: center;
+    }
+
+    &__title {
+        font-family: $font-header-logo;
+        color: $color-header-logo;
+        font-size: 32px;
+        font-weight: bold;
+        margin-left: 10px;
+    }
+
+}

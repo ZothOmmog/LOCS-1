@@ -1,0 +1,1 @@
+export { NavLinkBordered } from './nav-link-bordered';

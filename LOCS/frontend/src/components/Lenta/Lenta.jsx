@@ -6,12 +6,14 @@ const Lenta = (props) => {
 	const pages = props.pages.map(p => {
 		return +p === +props.currentPage ?
 			<div
+				key={p}
 				className={s.page + " button " + s.currentPage}
 				onClick={() => { props.changePage(p) }}
 			>
 				{p}
 			</div> :
 			<div
+				key={p}
 				className={s.page + " button"}
 				onClick={() => { props.changePage(p) }}
 			>
@@ -20,7 +22,7 @@ const Lenta = (props) => {
 	});
 
 	const events = props.events.map(e => {
-		return <Event id={e.id} name={e.name} type={e.type} info={e.info} />;
+		return <Event key={e.id} id={e.id} name={e.name} type={e.type} info={e.info} />;
 	});
 
 	return (

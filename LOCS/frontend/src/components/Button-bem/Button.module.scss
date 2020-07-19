@@ -80,6 +80,23 @@
             color: black;
         }
 
+        &_Search {
+            background-image: url('./searchButton.png');
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 38px;
+            width: 38px;
+            border: none;
+            background-color: white;
+            transition: 0.2s;
+        }
+        &_Search:hover {
+            background-color: rgba(0,0,0,0.15);
+        }
+        &_Search:active {
+            background-color: rgba(0,0,0,0.3);
+        }
+        
         &_Profile {
             &Exit {
                 height: 100%;

@@ -1,0 +1,1 @@
+export { NavLinkColored } from './nav-link-colored';

@@ -10,6 +10,7 @@
 
 .SearchArea__Input {
 	flex-grow: 1;
+	font-family: 'Roboto';
 }
 
 .SearchArea__Button {

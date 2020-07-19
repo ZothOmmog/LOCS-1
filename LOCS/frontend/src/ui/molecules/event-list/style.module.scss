@@ -1,0 +1,9 @@
+@import '~/styles/variables.scss';
+
+.event-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 300px));
+    justify-content: center;
+    row-gap: 36px;
+    column-gap: 12px;
+}

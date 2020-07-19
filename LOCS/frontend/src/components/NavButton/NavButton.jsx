@@ -4,6 +4,8 @@ import { NavLink } from 'react-router-dom';
 
 
 export const NavButton = (props) => {
+    console.warn('На этой странице используется старая версия NavButton, используйте новую из /src/components/Button/NavButton');
+
     let type = s.Button;
     
     type += (

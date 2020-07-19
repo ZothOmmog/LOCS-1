@@ -2,7 +2,7 @@ import React from 'react';
 import { UserProfile } from "./UserProfile";
 import { withAuthRedirect } from "../../hoc/indexHoc";
 import { connect } from 'react-redux';
-import { searchClear } from '../../redux/searchReducer';
+// import { searchClear } from '../../redux/searchReducer';
 
 class UserContainerWithClean extends React.Component {
     componentWillUnmount() {
@@ -14,4 +14,4 @@ class UserContainerWithClean extends React.Component {
     }
 }
 
-export const UserProfileContainer = withAuthRedirect(connect(null, {searchClear})(UserContainerWithClean), false);
+export const UserProfileContainer = withAuthRedirect(connect(null)(UserContainerWithClean), false);

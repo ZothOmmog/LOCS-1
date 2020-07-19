@@ -116,9 +116,17 @@ class EventAPI extends FetchInstance {
 }
 
 class SearchAPI extends FetchInstance {
-    bodySearchUsersByNick = (nick) => ({ nick : nick });
+    __searchUsersByNickRoute = (pageSize, currentPage) => `user/SearchUser/${pageSize}/${currentPage}`;
+    __searchOrgRoute = (pageSize, currentPage) => `org/search/${pageSize}/${currentPage}`;
+    __searchEventsRoute = (pageSize, currentPage) => `event/search/${pageSize}/${currentPage}`;
 
-    SearchUsersByNick = (nick, pageSize, pageNum) => this.go(POST, `user/SearchUser/${pageSize}/${pageNum}`,this.bodySearchUsersByNick(nick), true);
+    __searchUsersByNickBody = (query) => ({ nick : query });
+    __searchOrgBody = (query) => ({ word: query });
+    __searchEventsBody = (query) => ({ word: query });
+
+    searchUsersByNick = (query, pageSize, currentPage) => this.go(POST, this.__searchUsersByNickRoute(pageSize, currentPage),this.__searchUsersByNickBody(query), true);
+    searchOrganizerByName = (query, pageSize, currentPage) => this.go(POST, this.__searchOrgRoute(pageSize, currentPage), this.__searchOrgBody(query), false);
+    searchEventsByName = (query, pageSize, currentPage) => { return this.go(POST, this.__searchEventsRoute(pageSize, currentPage), this.__searchEventsBody(query), false);}
 }
 
 export const userAPI = new UserAPI();

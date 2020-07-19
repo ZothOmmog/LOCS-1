@@ -1,4 +1,4 @@
-import { friendsApi, userAPI } from "../api/indexApi.js";
+import { friendsApi } from "../api/indexApi.js";
 
 const ADD_FRIEND = 'ADD_FRIEND';
 const DELETE_FRIEND = 'DELETE_FRIEND';
@@ -67,16 +67,7 @@ export const friendsReducer = (state = initialState, action) => {
 export const addFriendThunk = (idUser) => async (dispatch) => {
     try {
         const isAdded = await friendsApi.addUserInFriends(idUser);
-        
         if(isAdded.err) throw new Error(`Добавление пользователя в друзья не удалось: ${isAdded.err}`);
-        
-        const userAdded = await userAPI.getUser(idUser);
-        const userForDispatch = {
-            id: idUser,
-            nick: userAdded.User.nick
-        };
-        
-        //dispatch( addFriend(userForDispatch) );
     }
     catch(err) {
         console.log(err);

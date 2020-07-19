@@ -1,145 +1,64 @@
 import { searchAPI } from '../api/api';
 
-const UPDATE_QUERY_TEXT = 'UPDATE_QUERY_TEXT';
-const UPDATE_QUERY_TEXT_FOR_USERS = 'UPDATE_QUERY_TEXT_FOR_USERS';
-const UPDATE_CURRENT_QUERY_TEXT = 'UPDATE_CURRENT_QUERY_TEXT';
-const UPDATE_RESULT_SEARCH = 'UPDATE_RESULT_SEARCH';
-const UPDATE_RESULT_EVENTS_SEARCH = 'UPDATE_RESULT_EVENTS_SEARCH';
-const UPDATE_RESULT_ORG_SEARCH = 'UPDATE_RESULT_ORG_SEARCH';
-const UPDATE_IS_SEARCH = 'UPDATE_IS_SEARCH';
-const SEARCH_CLEAR = 'SEARCH_CLEAR';
-const UPDATE_PAGES = 'UPDATE_PAGES';
-const UPDATE_TYPE_SEARCH = 'UPDATE_TYPE_SEARCH';
+const SET_VISITORS = 'SET_RESULT';
+const SET_ORGANIZERS = 'SET_RESULT';
+const SET_EVENTS = 'SET_RESULT';
+const SET_QUERY = 'SET_QUERY';
 
+//TODO перенести все actons в соответствующую директорию
+//TODO добавить выборку результатов поиска через reselect
 const initialState = {
-    queryText: '',
-    currentQueryText: '',
-    queryTextForUsers: '',
-    resultSearch: null,
-    resultEventsSearch: null,
-    resultOrgSearch: null,
-    resultSize: null,
-    isSearch: false,
-    typeSearch: null,
-    pages: []
+    visitors: null,
+    result: null,
+    query: null
 }
 
 const searchReducer = (state = initialState, action) => {
     switch (action.type) {
-        case UPDATE_QUERY_TEXT:
+        case SET_VISITORS:
             return {
                 ...state,
-                queryText: action.queryText
+                visitors: action.visitors
             };
-        case UPDATE_TYPE_SEARCH:
+        case SET_ORGANIZERS:
             return {
                 ...state,
-                typeSearch: action.typeSearch
+                organizers: action.organizers
             };
-        case UPDATE_QUERY_TEXT_FOR_USERS:
+        case SET_EVENTS:
             return {
                 ...state,
-                queryTextForUsers: action.queryText
+                events: action.events
             };
-        case SEARCH_CLEAR:
-            return initialState;
-        case UPDATE_CURRENT_QUERY_TEXT:
+        case SET_QUERY:
             return {
                 ...state,
-                currentQueryText: action.currentQueryText
+                query: action.query
             };
-        case UPDATE_RESULT_SEARCH:
-            return {
-                ...state,
-                resultSearch: action.resultSearch,
-                resultSize: action.resultSize,
-                isSearch: true
-            };
-        case UPDATE_RESULT_EVENTS_SEARCH:
-            return {
-                ...state,
-                resultEventsSearch: action.resultSearch,
-                resultSize: action.resultSize,
-                isSearch: true
-            };
-        case UPDATE_RESULT_ORG_SEARCH:
-            return {
-                ...state,
-                resultOrgSearch: action.resultSearch,
-                resultSize: action.resultSize,
-                isSearch: true
-            };
-        case UPDATE_IS_SEARCH:
-            return {
-                ...state,
-                isSearch: action.isSearch,
-            }
-        case UPDATE_PAGES:
-            let newPages = [];
-            for (let i = 1; i <= Math.ceil(action.count / 3); i++) {
-				newPages = [...newPages, i];
-            }
-            return {
-                ...state,
-                pages: newPages,
-            }
         default:
             return state;
     }
 }
 
-export const SearchUsersByNickThunk = (pageSize, pageNum, nick) => async (dispatch) => {
-    const resultSearch = await searchAPI.SearchUsersByNick(nick, pageSize, pageNum);
-    dispatch(updateResultSearch(resultSearch.data, resultSearch.count));
-    dispatch(updateCurrentQueryText(nick));
+export const searchThunk = (pageSize, currentPage) => async (dispatch, getState) => {
+    const { auth: { isAuth }, search: { query } } = getState();
+
+    const visitorsFromServer = isAuth && await searchAPI.searchUsersByNick(query, pageSize, currentPage);
+    const organizersFromServer = await searchAPI.searchOrganizerByName(query, pageSize, currentPage);
+    const eventsFromServer = await searchAPI.searchEventsByName(query, pageSize, currentPage);
+    
+    dispatch(setEvents(eventsFromServer.Events.map(event => ({
+        id: event.searchevent.id,
+        name: event.searchevent.name,
+        info: event.searchevent.info,
+        type: `${event.tags.reduce((acc, tag) => acc + ' ' + tag)}`,
+    }))));
 }
 
-export const updateResultSearch = (resultSearch, resultSize) => ({
-    type: UPDATE_RESULT_SEARCH,
-    resultSearch: resultSearch,
-    resultSize: resultSize
-});
-export const updateResultEventsSearch = (resultSearch, resultSize) => ({
-    type: UPDATE_RESULT_EVENTS_SEARCH,
-    resultSearch: resultSearch,
-    resultSize: resultSize
-});
-export const updateResultOrgSearch = (resultSearch, resultSize) => ({
-    type: UPDATE_RESULT_ORG_SEARCH,
-    resultSearch: resultSearch,
-    resultSize: resultSize
-});
+const setVisitors = (visitors) => ({ type: SET_VISITORS, visitors: visitors });
+const setOrganizers = (organizers) => ({ type: SET_ORGANIZERS, organizers: organizers });
+const setEvents = (events) => ({ type: SET_EVENTS, events: events });
 
-export const updateCurrentQueryText = (currentQueryText) => ({
-    type: UPDATE_CURRENT_QUERY_TEXT,
-    currentQueryText: currentQueryText
-});
-// export const updateQueryTextForUsers = (currentQueryText) => ({
-//     type: UPDATE_CURRENT_QUERY_TEXT_FOR_USERS,
-//     currentQueryText: currentQueryText
-// });
-
-export const updateQueryText = (queryText) => ({
-    type: UPDATE_QUERY_TEXT,
-    queryText: queryText
-});
-export const searchClear = () => ({
-    type: SEARCH_CLEAR
-});
-
-export const updateIsSearch = (isSearch) => ({
-    type: UPDATE_IS_SEARCH,
-    isSearch: isSearch
-});
-export const updatePages = (count) => ({
-    type: UPDATE_PAGES,
-    count: count
-});
-export const updateTypeSearch = (typeSearch) => ({
-    type: UPDATE_TYPE_SEARCH,
-    typeSearch: typeSearch
-});
-
-
+export const setQuery = (query) => ({ type: SET_QUERY, query: query });
 
 export default searchReducer;

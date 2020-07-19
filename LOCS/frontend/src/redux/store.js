@@ -1,7 +1,9 @@
-import { combineReducers, createStore, applyMiddleware } from 'redux';
+//TODO переписать нормально эту кашу...
+import { combineReducers, createStore, applyMiddleware, compose } from 'redux';
 import thunkMiddleware from 'redux-thunk';
+import logger from 'redux-logger';
 
-import searchReducer from './searchReducer';
+// import searchReducer from './searchReducer';
 import addEventReducer from './addEventReducer';
 import lentaReducer from './lentaReducer';
 import eventProfileReducer from './eventProfileReducer';
@@ -14,8 +16,13 @@ import {
     backButtonReducer 
 } from './indexReducers';
 
+//Тут уже все в адекватном виде
+import {
+    searchReducer
+} from './reducers';
+
 const reducers = combineReducers({
-    searchPage: searchReducer,
+    search: searchReducer,
     addEventPage: addEventReducer,
     lentaPage: lentaReducer,
     EventProfilePage: eventProfileReducer,
@@ -27,8 +34,8 @@ const reducers = combineReducers({
     backButton: backButtonReducer
 });
 
-const store = createStore(reducers, applyMiddleware(thunkMiddleware));
-
-window.store = store;
-
-export default store;
+//TODO надо добавить redux-logger для отладки, вроде хорошая штука
+export const store = createStore(reducers, compose(
+    applyMiddleware(thunkMiddleware),
+    applyMiddleware(logger)
+));

@@ -6,10 +6,21 @@
 	height: 50px;
 }
 
+.Navigation {
+	display: flex;
+	justify-content: center;
+	flex-grow: 1;
+}
+
 .NavbarOutherWrapper {
 	margin-top: 1vh;
 }
 
 .Navbar__item + .Navbar__item {
 	margin-left: 1%;
+}
+
+.Navbar__Search {
+	margin-right: 8px;
+
 }

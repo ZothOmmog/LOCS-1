@@ -1,0 +1,13 @@
+@import '../CommonStyles/Mixins.scss';
+
+.SearchPage {
+    display: flex;
+
+    &__NavigationOutherWrapper {
+
+    }
+
+    &__ResultSearchOutherWrapper {
+        margin-left: 40px;
+    }
+}

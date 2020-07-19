@@ -2,7 +2,7 @@ import React from 'react';
 import s from './UserProfile.module.scss';
 import { ProfileContainer } from './Profile/ProfileContainer';
 import { Switch, Route } from 'react-router-dom';
-import { SearchUsersContainer } from './SearchUsers/SearchUsersContainer';
+// import { SearchUsersContainer } from './SearchUsers/SearchUsersContainer';
 import { Header } from './Header/Header';
 import { FriendRequestsOutContainer } from './FriendRequestsOut/FriendRequestsOutContainer';
 import { FriendRequestsInContainer } from './FriendRequestsIn/FriendRequestsInContainer';
@@ -38,7 +38,7 @@ export const UserProfile = (props) => {
                     <Route path='/UserProfile/me/Subscribes' render={() => <Subscribes />} />
                     <Route path='/UserProfile/me/FriendRequestsIn' render={() => <FriendRequestsInContainer />} />
                     <Route path='/UserProfile/me/FriendRequestsOut' render={() => <FriendRequestsOutContainer />} />
-                    <Route path='/UserProfile/me/SearchUsers' render={() => <SearchUsersContainer {...props} />} />
+                    <Route path='/UserProfile/me/SearchUsers' render={() => 'Теперь поиск пользователь осуществляется через общий поиск. :)'} />
                     <Route path='/UserProfile/me/Organizer/Subscribers' render={() => <Subscribers />} />
                     <Route path='/UserProfile/me/Organizer/Events' render={() => <Events />} />
                     <Route path='/UserProfile/me/Organizer/EditEvent/:eventId' render={({ match: { params: { eventId } } }) => <EditEvent eventId={eventId} />} />

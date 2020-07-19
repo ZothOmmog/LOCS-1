@@ -21,7 +21,7 @@ export const Organizer = ({logoLink, name, orgLink, info, id, myId}) => {
                 <NavLink className={s.OrgEvent} to={`/EventProfile/${event.eventorglist.id}`}>{event.eventorglist.name + ', '}</NavLink>
             )));
         }
-        if (id !== 'me') getOrgEvents();
+        if (orgId !== 'me') getOrgEvents();
     }, [orgId]);
 
     useEffect(function getStatus() {
@@ -41,7 +41,7 @@ export const Organizer = ({logoLink, name, orgLink, info, id, myId}) => {
         <div className={s.Profile}>                                                                                                                                                                                                     
             <div className={s.Profile__ContentWrapper}>
                 <div className={s.ProfilePicture}>
-                    <img className={s.Profile__Img} src={logoLink && logoLink !== '1' || logoLinkBase} alt='' />
+                    <img className={s.Profile__Img} src={(logoLink && logoLink !== '1') || logoLinkBase} alt='' />
                     <div className={s.Profile__Button}>
                     {id === 'me' ? (
                         <Button style={{
@@ -141,14 +141,15 @@ export const OrganizerWithSignUpRedirect = ({ userId }) => {
 
 export const OrganizerOuther = ({ userId }) => {
     const [isLoaging, setIsLoading] = useState(true);
-    const [loadingError, setLoadingError] = useState(null);
+    const [loadingError] = useState(null);
 
     const [orgData, setOrgData] = useState(null);
     const [myId, setMyId] = useState(null);
+    const [idOtherOrganizer] = useState(userId);
 
     useEffect(function setOrganizer() {
         const getOrg = async () => {
-            const result = await organizerApi.getOrg(userId);
+            const result = await organizerApi.getOrg(idOtherOrganizer);
             setOrgData({
                 name: result.data.organizerdata.organization_name,
                 info: result.data.organizerdata.info,
@@ -160,7 +161,7 @@ export const OrganizerOuther = ({ userId }) => {
             setIsLoading(false);
         }
         getOrg();
-    }, []);
+    }, [idOtherOrganizer]);
 
     useEffect(function initialSetMyId() {
         const getMeOrg = async () => {

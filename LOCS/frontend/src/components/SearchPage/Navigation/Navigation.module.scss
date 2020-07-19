@@ -1,0 +1,23 @@
+@import '../../CommonStyles/Mixins.scss';
+
+.Navigation {
+    display: flex;
+    flex-direction: column;
+
+    
+    &__Item {
+        @include font-roboto-medium;
+        font-size: 16px;
+        height: 36px;
+        width: 200px;
+        display: flex;
+        align-items: center;
+        transition: 0.2s;
+    }
+    &__Item:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+    &__Item + &__Item {
+        margin-top: 4px;
+    }
+}

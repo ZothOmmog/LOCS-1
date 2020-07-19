@@ -1,0 +1,34 @@
+@import '~/styles/variables.scss';
+
+.nav-link-map {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-left-radius: 50px;
+    border-bottom-left-radius: 50px;
+    height: 100px;
+    width: 50px;
+    color: $color-nav-link-map;
+    background-color: $background-color-nav-link-map;
+    transition-duration: $transition-duration-nav-link-map;
+    
+    &:hover {
+        
+        .nav-link-map__svg {
+            transform: rotate(-90deg);
+        }
+        
+        .nav-link-map__marker {
+            fill: $color-orange;
+        }
+    }
+    
+    &__svg {
+        transition-duration: $transition-duration-nav-link-map;
+    }
+
+    &__marker {
+        transition-duration: $transition-duration-nav-link-map;
+    }
+    
+}

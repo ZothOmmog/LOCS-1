@@ -1,0 +1,32 @@
+@import '~/styles/variables.scss';
+
+.nav-link-profile {
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        .nav-link-profile__name {
+            box-shadow: 0 0 0 4px $color-box-shadow-nav-link-profile inset;
+        }
+    }
+
+    &__name {
+        color: $color-nav-link-profile;
+        background-color: $background-color-nav-link-profile;
+        border-radius: $border-radius-nav-link-profile;
+        padding: 8px;
+        transition-duration: $transition-duration-nav-link-profile;
+    }
+    
+    &__img {
+        height: 64px;
+        border-radius: 32px;
+        margin-left: 10px;
+    }
+    
+    &_active {
+        .nav-link-profile__name {
+            box-shadow: 0 0 0 4px $color-box-shadow-nav-link-profile inset;
+        }
+    }
+}
