@@ -2,21 +2,14 @@ import React from 'React';
 import { connect } from 'react-redux';
 import { EventList } from '~/ui';
 
-const EventListView = ({ eventsData }) => {
+const EventListView = ({ eventsData }) => (
+    <EventList>
+        
+    </EventList>
+);
 
+export const EventList = () => {
     return (
-        <EventList>
-            
-        </EventList>
+        <EventListView />
     );
 }
-
-mapStateToProps = (state) => {
-
-}
-
-mapDispathToProps = (dispath) => {
-
-}
-
-export const EventList = connect()();
