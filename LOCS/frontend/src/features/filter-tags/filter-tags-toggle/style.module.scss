@@ -1,0 +1,11 @@
+.filter-tags-toggle {
+    &__button-bordered {
+        max-width: 155px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}
+
+.loader {
+    color: white;
+}

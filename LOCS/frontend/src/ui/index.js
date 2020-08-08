@@ -1,14 +1,18 @@
 export { 
     NavLinkCustom,
-    EventProfileShort
+    EventProfileShort,
+    Navbar,
+    ButtonCustom
 } from './atoms';
+
 export { 
     EventList,
-    NavLinkMap
+    NavLinkMap,
+    ButtonBordered,
+    ButtonColored,
+    ButtonGray
 } from './molecules';
+
 export { 
     Header
 } from './organisms';
-export { 
-    MainTemplate
-} from './templates';

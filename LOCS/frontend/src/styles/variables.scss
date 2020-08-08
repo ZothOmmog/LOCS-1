@@ -1,14 +1,21 @@
 //common
 $font-main: 'Roboto', sans-serif;
 
+$font-size-lg: 20px;
+$font-size-sm: 16px;
+
 $color-black: #212121;
+$color-gray: #c4c4c4;
 $color-fullblack: #000000;
 $color-white: #ffffff;
 $color-orange: #FE9800;
+$color-red: #d80e0e;
 
 $transition-duration: 0.2s;
 
 $border-radius: 16px;
+
+$box-shadow-offset: 0 0 10px 0 rgba($color: $color-black, $alpha: 0.75);
 //======
 
 //nav-link-custom
@@ -46,9 +53,16 @@ $background-color-nav-link-map: black;
 $transition-duration-nav-link-map: $transition-duration;
 //============
 
+//button-custom
+$font-button-custom: $font-main;
+$color-button-custom: $color-black;
+$background-color-button-custom: black;
+$transition-duration-button-custom: $transition-duration;
+//============
+
 //header
-$background-color-header: $color-fullblack;
-$color-header-logo: $color-white;
+$background-color-header: $color-white;
+$color-header-logo: $color-black;
 $font-header-logo: $font-main;
 //======
 
@@ -58,3 +72,14 @@ $color-event-profile-short: $color-black;
 $border-radius-event-profile-short: 10px;
 $transition-duration-event-profile-short: 0.4s;
 //===================
+
+//filter-tags-list-select
+$background-color-filter-tags-list-select: $color-white;
+$border-color-filter-tags-list-select: $color-gray;
+$border-radius-filter-tags-list-select: $border-radius;
+$font-filter-tags-list-select: $font-main;
+$color-tags-list-select: $color-black;
+$border-radius-filter-tags-list-select__search: $border-radius;
+$border-color-filter-tags-list-select__search: $color-orange;
+$border-color-filter-tags-list-select__tag: $color-orange;
+//=======================

@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import { 
     NavLinkCustom, 
     EventProfileShort,
-    MainTemplate,
-    Header,
     EventList,
     NavLinkMap
 } from '~/ui';
 import { eventProfileMockImg } from '~/assets';
 import { HeaderDefault } from '~/features/header-default';
-
+import { MainTemplate } from '~/templates';
+import { SelectedTagsList } from '~/features';
 
 const MainPageView = () => {
     const eventListData = [];
@@ -22,14 +21,9 @@ const MainPageView = () => {
     );
     
     return (
-        <MainTemplate>
+        <MainTemplate   >
             <HeaderDefault />
-            <div>
-                Тут будут отображаться фильтры
-                Тут будут отображаться фильтры
-                Тут будут отображаться фильтры
-                Тут будут отображаться фильтры
-            </div>
+            <SelectedTagsList />
             <EventList>
                 {eventListData}
             </EventList>

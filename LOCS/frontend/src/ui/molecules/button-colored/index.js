@@ -1,0 +1,1 @@
+export { ButtonColored } from './button-colored';
