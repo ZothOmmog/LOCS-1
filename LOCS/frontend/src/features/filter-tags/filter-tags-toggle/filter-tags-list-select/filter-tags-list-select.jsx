@@ -4,7 +4,6 @@ import style from './style.module.scss';
 import { useState } from 'react';
 import { ButtonBordered } from '~/ui';
 import { useEffect } from 'react';
-import { setIsFind } from '~/redux/userProfileReducer';
 
 const TagList = ({
     tagList,
