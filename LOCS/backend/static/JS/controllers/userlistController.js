@@ -28,12 +28,7 @@ exports.postRegistration = async function(request, response) {
                 CreateTime = val;
             });
             if (!CreateTime) {
-                response.json({
-                    "Login": {
-                        "NickNameFlag": CheckNick,
-                        "MailFlag": CheckMail
-                    }
-                });
+                response.status(500).end("time error");
             }
             var hash = crypt.hash(request.body.Registration.pas, CreateTime);
             var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
@@ -42,12 +37,7 @@ exports.postRegistration = async function(request, response) {
                 checkAdd = val;
             });
             if (!checkAdd) {
-                response.json({
-                    "Login": {
-                        "NickNameFlag": false,
-                        "MailFlag": false
-                    }
-                });
+                response.status(500).end("dont added");
             }
             if (checkAdd != -1) {
                 var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
@@ -55,29 +45,18 @@ exports.postRegistration = async function(request, response) {
                     checkAdd = val;
                     ///создать функцию, которая создает ссылку и  отсылает на почту письмо 
                 });
-                response.json({
-                    "Login": {
-                        "NickNameFlag": CheckNick,
-                        "MailFlag": CheckMail
-                    }
-                });
+                response.status(200).end();
             } else {
-                //отвечаем, что данные не корректны 
-                response.json({
-                    "Login": {
-                        "NickNameFlag": CheckNick,
-                        "MailFlag": CheckMail
-                    }
-                });
+                response.status(400).end();
             }
         } else {
-            //отвечаем, что данные не корректны 
-            response.json({
+            let a = json({
                 "Login": {
                     "NickNameFlag": CheckNick,
                     "MailFlag": CheckMail
                 }
             });
+            response.status(400).end(a);
         }
     } catch (err) {
         response.status(500).end(err);
