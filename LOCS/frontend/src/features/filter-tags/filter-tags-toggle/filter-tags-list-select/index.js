@@ -1,0 +1,1 @@
+export { FilterTagsListSelect } from './filter-tags-list-select';

@@ -6,6 +6,7 @@
     justify-content: space-between;
     background-color: $background-color-header;
     padding: 5px;
+    box-shadow: $box-shadow-offset;
 
     &__logo {
         display: flex;

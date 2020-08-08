@@ -1,0 +1,12 @@
+@import '~/styles/variables.scss';
+
+.button-custom {
+    text-decoration: none;
+    font-family: $font-button-custom;
+    font-weight: lighter;
+    font-size: 20px;
+    white-space: nowrap;
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+}

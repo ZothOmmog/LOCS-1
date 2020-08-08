@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import style from './style.module.scss';
 import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
 import { NavLinkBordered, NavLinkColored, NavLinkProfile } from '~/ui/molecules';
+import { FilterTagsToggle } from '~/features';
 
 const paths = {
     MAIN_PATH: '/',
@@ -36,20 +37,7 @@ export const Header = ({ isAuth, name, path }) => (
             <Logo />
             <span className={style['header__title']}>Locs</span>
         </NavLinkCustom>
-        <Navbar>
-            <NavLinkBordered to={paths.MAIN_PATH} active={path === paths.MAIN_PATH}>
-                Все события
-            </NavLinkBordered>
-            <NavLinkBordered to={paths.MAIN_PATH}>
-                Концерты
-            </NavLinkBordered>
-            <NavLinkBordered to={paths.MAIN_PATH}>
-                Театр
-            </NavLinkBordered>
-            <NavLinkBordered to={paths.MAIN_PATH}>
-                Ещё
-            </NavLinkBordered>
-        </Navbar>
+        <FilterTagsToggle />
         <input type='search' placeholder='MOCK SEARCH' />
         {isAuth ? (
             <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={path === paths.PROFILE_PATH} />

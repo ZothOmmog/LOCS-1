@@ -1,0 +1,23 @@
+@import '~/styles/variables.scss';
+
+.button-gray {
+    color: $color-nav-link-colored;
+    padding: 8px;
+    border-radius: $border-radius-nav-link-colored;
+    background-color: $color-gray;
+    border: 2px solid $color-black;
+    transition-duration: $transition-duration-nav-link-colored;
+    
+    &_inactive {
+        &:hover {
+            color: $color-nav-link-colored-hover;
+            background-color: $color-red;
+        }
+    }
+
+    &_active {
+        color: $color-nav-link-colored-hover;
+        background-color: rgba($color: $background-color-nav-link-colored, $alpha: 0.2);
+        box-shadow: 0px 0px 0px 4px $color-box-shadow-nav-link-colored inset;
+    }
+}
