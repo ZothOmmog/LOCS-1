@@ -1,0 +1,8 @@
+--Функция, которая возвращает тег по id  
+CREATE OR REPLACE FUNCTION TagById(_id bigint) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, title from topic where deleted = false and accept = true and id = _id)a;
+END;
+$$ LANGUAGE plpgsql;

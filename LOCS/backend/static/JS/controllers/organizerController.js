@@ -657,7 +657,7 @@ exports.changeEvent = async function(request, response) {
                     check = false;
                     console.log(val);
                 });
-                if (check) {
+                if (check.changeevent == 1) {
                     await DataBase.deleteEventTag(idEvent).then(function(val) {
                         check = val;
                     }).catch(function(val) {
@@ -676,10 +676,10 @@ exports.changeEvent = async function(request, response) {
                     if (check) {
                         response.status(200).end("has been change");
                     } else {
-                        response.status(500).end("error to change");
+                        response.status(500).end("error to change tags");
                     }
                 } else {
-                    response.status(500).end("error to change");
+                    response.status(400).end("error to change event");
                 }
             } else {
                 response.status(403).end("have not permissions");

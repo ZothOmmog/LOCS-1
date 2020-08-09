@@ -1,5 +1,15 @@
 --Функция, которая возвращает теги ивента 
 
+
+CREATE OR REPLACE FUNCTION EventTags(id_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select event_topic.id_topic as id from event_topic where event_topic.id_event = id_ )a;
+END;
+$$ LANGUAGE plpgsql;
+
+////старая версия
 CREATE OR REPLACE FUNCTION EventTags(id_ numeric) 
 RETURNS table (j json) AS
 $$

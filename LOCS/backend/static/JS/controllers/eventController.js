@@ -3,6 +3,7 @@ let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
+const { isNull } = require('util');
 
 
 // async function takeObj(token) {
@@ -22,12 +23,15 @@ exports.event = async function(request, response) {
         await DataBase.EventTags(idEvent).then(function(val) {
             tags = val;
         });
-
         await DataBase.event(idEvent).then(function(val) {
             event = val;
         });
+        var masTags = [];
+        for (j in tags) {
+            masTags.push(tags[j].eventtags.id);
+        };
         event.event.datatime = funcs.stringToObjectTimeConvert(event.event.datatime);
-        event.event.tags = tags;
+        event.event.tags = masTags;
         response.json(event.event);
     } catch (err) {
         response.status(500).end(err);
@@ -56,7 +60,7 @@ exports.shortList = async function(request, response) {
             });
             var masTags = [];
             for (j in tags) {
-                masTags.push(tags[j].eventtags.title);
+                masTags.push(tags[j].eventtags.id);
             };
             Events[i].tags = masTags;
         };
@@ -108,28 +112,29 @@ exports.tags = async function(request, response) {
         await DataBase.tags().then(function(val) {
             tags = val;
         });
-        response.json(tags);
+        var masTags = [];
+        for (j in tags) {
+            masTags.push({ "id": tags[j].tags.id, "title": tags[j].tags.title });
+        };
+        response.json(masTags);
     } catch (err) {
         response.status(500).end(err);
     }
 
 };
-exports.tagsLim = async function(request, response) {
+exports.tagById = async function(request, response) {
     try {
-        let limit = Number(request.params.limit);
-        let offset = Number(request.params.offset);
-        offset = offset <= 0 ? 1 : offset;
-        limit = limit <= 0 ? 1 : limit;
-        offset = (offset - 1) * limit;
-        var count;
+        let id = Number(request.params.id);
         var tags;
-        await DataBase.CountTags().then(function(val) {
-            count = val;
-        });
-        await DataBase.tagsLim(limit, offset).then(function(val) {
+        await DataBase.tagById(id).then(function(val) {
             tags = val;
         });
-        response.json({ "count": count.counttags.count, tags });
+        console.log(tags);
+        if (tags != null) {
+            response.json({ "id": tags.tagbyid.id, "title": tags.tagbyid.title });
+        } else {
+            response.json({});
+        }
     } catch (err) {
         response.status(500).end(err);
     }
