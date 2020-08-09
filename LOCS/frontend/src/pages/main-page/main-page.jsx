@@ -8,7 +8,7 @@ import {
 } from '~/ui';
 import { eventProfileMockImg } from '~/assets';
 import { HeaderDefault } from '~/features/header-default';
-import { SelectedTagsList } from '~/features/filter-tags';
+import { SelectedTagsList } from '~/features/selected-tags-list';
 import { MainTemplate } from '~/templates';
 
 const MainPageView = () => {

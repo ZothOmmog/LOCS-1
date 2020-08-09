@@ -2,18 +2,15 @@ import React from 'react';
 import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-    fetchTags, 
-    tagsSelector, 
-    selectedTagsIdSelector, 
-    selectedTagsClear, 
-    tagToggle, 
-    isLoadingSelector
-} from '../filter-tags-slice';
+    selectedTagsSelectors,
+    selectedTagsThunks,
+    selectedTagsActions,
+} from '~/redux/common-slices';
 import { ButtonBordered, Navbar } from '~/ui';
 import { useEffect } from 'react';
 import { FilterTagsListSelect } from './filter-tags-list-select';
 
-const FilterTagsToggleView = (props) => {
+const ToggleTagsMenuView = (props) => {
     const {
         tags,
         selectedTagsId,
@@ -63,28 +60,28 @@ const FilterTagsToggleView = (props) => {
     );
 };
 
-export const FilterTagsToggle = () => {
+export const ToggleTagsMenu = () => {
     const dispatch = useDispatch();
-    const tags = useSelector(tagsSelector);
-    const selectedTagsId = useSelector(selectedTagsIdSelector);
-    const isLoading = useSelector(isLoadingSelector);
+    const tags = useSelector(selectedTagsSelectors.tagsSelector);
+    const selectedTagsId = useSelector(selectedTagsSelectors.selectedTagsIdSelector);
+    const isLoading = useSelector(selectedTagsSelectors.isLoadingSelector);
 
     useEffect(() => {
         dispatch(
-            fetchTags()
+            selectedTagsThunks.fetchTags()
         );
     }, [dispatch]);
 
     const onClickTagToggle = id => () => dispatch(
-        tagToggle({ id })
+        selectedTagsActions.tagToggle({ id })
     );
 
     const onClickSelectedTagsClear = () => dispatch(
-        selectedTagsClear()
+        selectedTagsActions.selectedTagsClear()
     );
 
     return (
-        <FilterTagsToggleView
+        <ToggleTagsMenuView
             tags={tags}
             selectedTagsId={selectedTagsId}
             onClickTagToggle={onClickTagToggle}

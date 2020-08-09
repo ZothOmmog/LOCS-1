@@ -2,7 +2,10 @@ import React from 'react';
 import classNames from 'classnames';
 import style from './style.module.scss';
 import { useSelector, useDispatch } from 'react-redux';
-import { selectedTagsSelector, tagToggle, selectedTagsClear } from '../filter-tags-slice';
+import {
+    selectedTagsSelectors,
+    selectedTagsActions,
+} from '~/redux/common-slices';
 import { ButtonGray, ButtonCustom } from '~/ui';
 
 const ListTags = ({ tags, onClickTagToggle }) => (
@@ -63,14 +66,14 @@ const SelectedTagsListView = ({
 }
 
 export const SelectedTagsList = () => {
-    const selectedTags = useSelector(selectedTagsSelector);
+    const selectedTags = useSelector(selectedTagsSelectors.selectedTagsSelector);
     const dispatch = useDispatch();
 
     const onClickTagToggle = (id) => () => dispatch(
-        tagToggle({ id })
+        selectedTagsActions.tagToggle({ id })
     );
     const onClickSelectedTagsClear = () => dispatch(
-        selectedTagsClear()
+        selectedTagsActions.selectedTagsClear()
     );
 
     return (

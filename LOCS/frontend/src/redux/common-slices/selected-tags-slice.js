@@ -15,16 +15,19 @@ const MOCK_TAGS = [
     {id: 12, name: 'Мне надоело их придумывать'},
 ];
 
-//TODO тут надо реализовать нормальную логику отправки запроса
-export const fetchTags = createAsyncThunk(
-    'filterTags/fetchTagsStatus',
-    async () => {
-        return { tags: MOCK_TAGS };
-    }
-);
+const SLICE_NAME = 'selectedTags';
+
+const thunks = {
+    fetchTags: createAsyncThunk(
+        `${SLICE_NAME}/fetchTagsStatus`,
+        async () => {
+            return { tags: MOCK_TAGS };
+        }
+    )
+};
 
 const { actions, reducer } = createSlice({
-    name: 'filterTags',
+    name: SLICE_NAME,
     initialState: {
         tags: [],
         selectedTagsId: [],
@@ -53,10 +56,10 @@ const { actions, reducer } = createSlice({
         }
     },
     extraReducers: {
-        [fetchTags.pending]: (state) => {
+        [thunks.fetchTags.pending]: (state) => {
             state.isLoading = true;
         },
-        [fetchTags.fulfilled]: (state, action) => {
+        [thunks.fetchTags.fulfilled]: (state, action) => {
             const { tags } = action.payload;
             state.tags = tags;
             state.isLoading = false;
@@ -64,12 +67,11 @@ const { actions, reducer } = createSlice({
     }
 });
 
-export const tagsSelector = state => state.filterTags.tags;
-export const selectedTagsIdSelector = state => state.filterTags.selectedTagsId;
-export const isLoadingSelector = state => state.filterTags.isLoading;
-export const selectedTagsSelector = createSelector(
-    tagsSelector,
-    selectedTagsIdSelector,
+const tagsSelector = state => state.selectedTags.tags;
+const selectedTagsIdSelector = state => state.selectedTags.selectedTagsId;
+const isLoadingSelector = state => state.selectedTags.isLoading;
+const selectedTagsSelector = createSelector(
+    tagsSelector, selectedTagsIdSelector,
     (tags, selectedTagsId) => selectedTagsId.map(
         id => tags.find(
             tag => tag.id === id
@@ -77,5 +79,9 @@ export const selectedTagsSelector = createSelector(
     ),
 );
 
-export const { tagToggle, tagsChange, selectedTagsClear } = actions;
-export { reducer as filterTagsReducer };
+const selectors = { tagsSelector, selectedTagsIdSelector, isLoadingSelector, selectedTagsSelector };
+
+export { thunks as selectedTagsThunks };
+export { selectors as selectedTagsSelectors };
+export { actions as selectedTagsActions };
+export { reducer as selectedTagsReducer };

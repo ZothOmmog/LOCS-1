@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import style from './style.module.scss';
 import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
 import { NavLinkBordered, NavLinkColored, NavLinkProfile } from '~/ui/molecules';
-import { FilterTagsToggle } from '~/features/filter-tags';
+import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
 
 const paths = {
     MAIN_PATH: '/',
@@ -45,7 +45,7 @@ export const HeaderDefault = () => {
                 <Logo />
                 <span className={style['header__title']}>Locs</span>
             </NavLinkCustom>
-            <FilterTagsToggle />
+            <ToggleTagsMenu />
             <input type='search' placeholder='MOCK SEARCH' />
             {isAuth ? (
                 <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname === paths.PROFILE_PATH} />
