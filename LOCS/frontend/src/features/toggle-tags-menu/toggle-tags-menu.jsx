@@ -3,9 +3,12 @@ import style from './style.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
     selectedTagsSelectors,
-    selectedTagsThunks,
     selectedTagsActions,
-} from '~/redux/common-slices';
+} from '~/redux/common-slices/selected-tags-slice';
+import { 
+    tagsThunks,
+    tagsSelectors
+} from '~/redux/common-slices/tags-slice';
 import { ButtonBordered, Navbar } from '~/ui';
 import { useEffect } from 'react';
 import { FilterTagsListSelect } from './filter-tags-list-select';
@@ -20,8 +23,8 @@ const ToggleTagsMenuView = (props) => {
         HINT_ALL, 
     } = props;
 
-    const startToggls = tags.slice(0, 2);
-    const endToggls = tags.slice(2);
+    const startToggls = tags ? tags.slice(0, 2) : [];
+    const endToggls = tags ? tags.slice(2) : [];
 
     const startTogglsUi = startToggls.map(tag => (
         <ButtonBordered
@@ -62,13 +65,13 @@ const ToggleTagsMenuView = (props) => {
 
 export const ToggleTagsMenu = () => {
     const dispatch = useDispatch();
-    const tags = useSelector(selectedTagsSelectors.tagsSelector);
+    const tags = useSelector(tagsSelectors.tagsSelector);
     const selectedTagsId = useSelector(selectedTagsSelectors.selectedTagsIdSelector);
-    const isLoading = useSelector(selectedTagsSelectors.isLoadingSelector);
+    const isLoading = useSelector(tagsSelectors.isLoadingSelector);
 
     useEffect(() => {
         dispatch(
-            selectedTagsThunks.fetchTags()
+            tagsThunks.fetchTags()
         );
     }, [dispatch]);
 

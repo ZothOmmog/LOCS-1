@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
     selectedTagsSelectors,
     selectedTagsActions,
-} from '~/redux/common-slices';
+} from '~/redux/common-slices/selected-tags-slice';
 import { ButtonGray, ButtonCustom } from '~/ui';
 
 const ListTags = ({ tags, onClickTagToggle }) => (

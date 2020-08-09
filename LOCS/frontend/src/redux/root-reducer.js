@@ -1,7 +1,8 @@
 import { combineReducers } from "redux";
-import { selectedTagsReducer } from './common-slices';
-// import { filterTagsReducer } from "~/features/filter-tags";
+import { selectedTagsReducer } from './common-slices/selected-tags-slice';
+import { tagsReducer } from './common-slices/tags-slice';
 
 export const rootReducer = combineReducers({
-    selectedTags: selectedTagsReducer
+    tags: tagsReducer,
+    selectedTags: selectedTagsReducer,
 });
