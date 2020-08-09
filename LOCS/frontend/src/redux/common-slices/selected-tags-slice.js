@@ -79,7 +79,12 @@ const selectedTagsSelector = createSelector(
     ),
 );
 
-const selectors = { tagsSelector, selectedTagsIdSelector, isLoadingSelector, selectedTagsSelector };
+const selectors = {
+    tagsSelector,
+    selectedTagsIdSelector,
+    isLoadingSelector,
+    selectedTagsSelector
+};
 
 export { thunks as selectedTagsThunks };
 export { selectors as selectedTagsSelectors };
