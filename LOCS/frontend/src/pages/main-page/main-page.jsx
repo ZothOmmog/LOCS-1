@@ -8,8 +8,8 @@ import {
 } from '~/ui';
 import { eventProfileMockImg } from '~/assets';
 import { HeaderDefault } from '~/features/header-default';
+import { SelectedTagsList } from '~/features/filter-tags';
 import { MainTemplate } from '~/templates';
-import { SelectedTagsList } from '~/features';
 
 const MainPageView = () => {
     const eventListData = [];
