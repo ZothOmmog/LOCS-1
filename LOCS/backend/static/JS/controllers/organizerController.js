@@ -59,7 +59,7 @@ exports.delete = async function(request, response) {
                     await DataBase.deleteEventTag(idEvent).then(function(val) {
                         Check = val;
                     });
-                    response.status(200).end();
+                    response.status(200).end("has been deleted");
                 } else {
                     response.status(400).end("Deleted");
                 }
@@ -264,7 +264,7 @@ exports.subscribe = async function(request, response) {
                 check = val;
             });
             if (check) {
-                response.json({ subscribe: true });
+                response.status(200).end("has been subscribe");
             } else {
                 response.status(500).end("err in subscribe");
             }
@@ -286,7 +286,7 @@ exports.unSubscribe = async function(request, response) {
                 check = val;
             });
             if (check) {
-                response.json({ unSubscribe: true });
+                response.status(200).end("has been unsubscribe");
             } else {
                 response.status(500).end("err in subscribe");
             }
@@ -549,7 +549,7 @@ exports.registration = async function(request, response) {
                         await DataBase.changeTokenToOrg(request.cookies.userRole).then(function(val) {
                             data = val;
                         });
-                        response.json({ reg: true });
+                        response.status(200).end("has been registration");
                     } else {
                         response.status(500).end("error registationOrganizer");
                     }
@@ -602,7 +602,7 @@ exports.createEvent = async function(request, response) {
                         });
                     }
                     if (check) {
-                        response.json({ create: true });
+                        response.status(200).end("has been created");
                     } else {
                         response.status(500).end("create failed");
                     }
@@ -657,7 +657,7 @@ exports.changeEvent = async function(request, response) {
                     check = false;
                     console.log(val);
                 });
-                if (check) {
+                if (check.changeevent == 1) {
                     await DataBase.deleteEventTag(idEvent).then(function(val) {
                         check = val;
                     }).catch(function(val) {
@@ -674,12 +674,12 @@ exports.changeEvent = async function(request, response) {
                         });
                     }
                     if (check) {
-                        response.json({ change: true });
+                        response.status(200).end("has been change");
                     } else {
-                        response.status(500).end("error to change");
+                        response.status(500).end("error to change tags");
                     }
                 } else {
-                    response.status(500).end("error to change");
+                    response.status(400).end("error to change event");
                 }
             } else {
                 response.status(403).end("have not permissions");
@@ -709,7 +709,7 @@ exports.changeOrgAcc = async function(request, response) {
                     check = val;
                 });
                 if (check == true) {
-                    response.json({ change: true });
+                    response.status(200).end("has been changed");
                 } else if (check.constraint.includes("org_name_unique")) {
                     response.status(400).end("org name is already use");
                 } else {

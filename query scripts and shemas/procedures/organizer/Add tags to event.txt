@@ -1,5 +1,22 @@
 --добавление тега мероприятия по id
 --drop PROCEDURE AddEventTag;
+
+
+CREATE OR REPLACE PROCEDURE public.addeventtag(
+	id_event_ bigint,
+	id_tag_ bigint)
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+BEGIN
+    INSERT INTO event_topic(id_event, id_topic  ) select id_event_, id_tag_ from topic where topic.id = id_tag_ 
+	and topic.deleted = false and topic.accept = true;
+END;
+$BODY$;
+
+
+
+/////
 CREATE OR REPLACE PROCEDURE AddEventTag(id_event_ bigint, id_tag_ bigint)
     LANGUAGE 'plpgsql'
 AS $BODY$

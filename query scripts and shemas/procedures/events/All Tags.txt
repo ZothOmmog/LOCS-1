@@ -1,5 +1,8 @@
 --Функция, которая возвращает все теги  
 
+
+
+///старая
 CREATE OR REPLACE FUNCTION Tags() 
 RETURNS table (j json) AS
 $$

@@ -1,3 +1,38 @@
+
+CREATE OR REPLACE function  public.changeevent(
+	idev_ bigint,
+	name_ text,
+	info_ text,
+	link_ text,
+	ticket_price_ numeric,
+	id_org bigint,
+	id_address_ bigint,
+	datatime_ timestamp without time zone,
+	publish_ boolean DEFAULT false)
+	RETURNS int
+LANGUAGE 'plpgsql'
+
+AS $BODY$
+DECLARE
+  	check_ int;
+BEGIN 
+	select into check_ id from event where id = idev_ and id_organizer = id_org ;
+								  
+	IF  check_ > 0 THEN
+		update event set name = name_, info = info_, link = link_, ticket_price = ticket_price_,
+					id_address = id_address_, published = publish_, datatime = datatime_ where id = idev_ and id_organizer = id_org; 
+        	RETURN 1;	
+    END IF;
+	RETURN 0;
+
+END;
+$BODY$;
+
+
+
+
+
+////старые версии 
 --Изменение мероприятия
 CREATE OR REPLACE PROCEDURE ChangeEvent(idev_ bigint, name_ text,info_ text,
 										link_ text, ticket_price_ numeric, id_org bigint,

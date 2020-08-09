@@ -463,7 +463,7 @@ let addAddress = (street, house, latitude, longitude, idDistrict) => {
 
 ///////////////////
 
-//Теги по Id евента
+//id тегов по Id евента
 let EventTags = (id) => {
     return new Promise((resolve, reject) => {
         db.manyOrNone('select EventTags($1);', [id])
@@ -519,7 +519,20 @@ let event = (id) => {
     })
 }
 
+//  тег по id
+let tagById = (id) => {
+    return new Promise((resolve, reject) => {
+        db.oneOrNone('select tagById($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: tagById");
+                return;
+            });
+    })
 
+};
 // весь лист тегов
 let tags = () => {
         return new Promise((resolve, reject) => {
@@ -666,9 +679,9 @@ let addEventTag = (idEvent, tag) => {
 let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
     idAddress, datatime, publish = true) => {
     return new Promise((resolve, reject) => {
-        db.result('Call ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8,$9);', [idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish])
+        db.oneOrNone('select ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8,$9);', [idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish])
             .then(function(data) {
-                resolve(true);
+                resolve(data);
             }).catch(function() {
                 reject("ERROR BD: changeEvent");
                 return;
@@ -1064,6 +1077,8 @@ module.exports = {
     'tags': tags, //весь лист тегов
     'CountTags': CountTags, //кол тегов
     'tagsLim': tagsLim, //весь лист тегов странично
+    'tagById': tagById, //  тег по id
+
 
     'searchEvent': searchEvent, //поиск евентов (без тегов)
     'countSearchEvent': countSearchEvent, //кол поиск евентов 

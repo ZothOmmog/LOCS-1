@@ -33,7 +33,7 @@ exports.uploadPhotoAcc = async function(request, response) {
                         response.status(500).end(er);
                     });
                     if (data == true) {
-                        response.json({ load: true });
+                        response.status(200).end("has been loaded");
                     } else {
                         response.status(500).end("Error writing file");
                     }
@@ -74,7 +74,7 @@ exports.uploadPhotoOrg = async function(request, response) {
                             response.status(500).end("#error DataBase: " + er);
                         });
                         if (data == true) {
-                            response.json({ load: true });
+                            response.status(200).end("has been loaded");
                         } else {
                             response.status(500).end("Error writing file");
                         }
@@ -121,7 +121,7 @@ exports.uploadPhotoEvent = async function(request, response) {
                         });
 
                         if (data == true) {
-                            response.json({ load: true });
+                            response.status(200).end("has been loaded");
                         } else {
                             response.status(500).end("Error writing file");
                         }
@@ -145,7 +145,7 @@ exports.acceptAccount = async function(request, response) {
         const hash = request.params.hash;
         await DataBase.acceptMail(hash).then(function(val) {
             data = val;
-            response.json({ accept: true });
+            response.status(200).end("accept");
         }).catch(function(er) {
             response.status(500).end("#error DataBase acceptMail: " + er);
         });
@@ -162,7 +162,7 @@ exports.forwardMail = async function(request, response) {
                 console.log(val);
                 ///вызов функции для создания и отправки ссылки 
 
-                response.json({ send: true });
+                response.status(200).end("has been send");
             }).catch(function(er) {
                 console.log(er);
                 response.status(500).end("#error DataBase forwardMail: " + er);
