@@ -1,0 +1,8 @@
+--удалить тег
+CREATE OR REPLACE PROCEDURE deleteTag(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update topic set deleted = true where id = id_;
+END;
+$BODY$;

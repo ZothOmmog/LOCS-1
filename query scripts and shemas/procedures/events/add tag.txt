@@ -1,0 +1,8 @@
+--добавить тег
+CREATE OR REPLACE PROCEDURE addTag(title_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	insert into topic (title) values (title_);
+END;
+$BODY$;

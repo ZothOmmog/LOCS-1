@@ -6,13 +6,13 @@ const funcs = require('../scripts/funcs.js');
 const { isNull } = require('util');
 
 
-// async function takeObj(token) {
-//     let data;
-//     await DataBase.TakeToken(token).then(function(val) {
-//         data = val;
-//     });
-//     return data;
-// }
+async function takeObj(token) {
+    let data;
+    await DataBase.TakeToken(token).then(function(val) {
+        data = val;
+    });
+    return data;
+}
 
 
 exports.event = async function(request, response) {
@@ -104,9 +104,89 @@ exports.search = async function(request, response) {
 };
 
 
+exports.addTag = async function(request, response) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            var word = request.body.word;
+            if (word == null) {
+                response.status(400).end("");
+                return;
+            }
+            var tags;
+            await DataBase.addTag(word).then(function(val) {
+                tags = val;
+                response.status(200).end("added");
+            }).catch(function(val) {
+                check = false;
+                console.log(val);
+                response.status(500).end(val);
+            });
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        response.status(500).end(err);
+    }
+
+};
+
+exports.deleteTag = async function(request, response) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let idTag = Number(request.params.id);
+                await DataBase.deleteTag(idTag).then(function(val) {
+                    tags = val;
+                    response.status(200).end("deleted");
+                }).catch(function(val) {
+                    check = false;
+                    console.log(val);
+                    response.status(500).end(val);
+                });
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        response.status(500).end(err);
+    }
+
+};
+
+exports.acceptTag = async function(request, response) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let idTag = Number(request.params.id);
+                await DataBase.acceptTag(idTag).then(function(val) {
+                    tags = val;
+                    response.status(200).end("accept");
+                }).catch(function(val) {
+                    check = false;
+                    console.log(val);
+                    response.status(500).end(val);
+                });
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        response.status(500).end(err);
+    }
+
+};
 
 
-exports.tags = async function(request, response) {
+exports.tag = async function(request, response) {
     try {
         var tags;
         await DataBase.tags().then(function(val) {
@@ -129,7 +209,6 @@ exports.tagById = async function(request, response) {
         await DataBase.tagById(id).then(function(val) {
             tags = val;
         });
-        console.log(tags);
         if (tags != null) {
             response.json({ "id": tags.tagbyid.id, "title": tags.tagbyid.title });
         } else {

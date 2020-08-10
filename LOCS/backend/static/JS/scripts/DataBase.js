@@ -533,6 +533,50 @@ let tagById = (id) => {
     })
 
 };
+
+// удалить тег по id
+let deleteTag = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('call deleteTag($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: deleteTag");
+                return;
+            });
+    })
+
+};
+
+// подтв. тег 
+let acceptTag = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('call acceptTag($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: acceptTag");
+                return;
+            });
+    })
+};
+
+// добавить тег 
+let addTag = (title) => {
+    return new Promise((resolve, reject) => {
+        db.result('call addTag($1);', [title])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR BD: addTag");
+                return;
+            });
+    })
+};
+
 // весь лист тегов
 let tags = () => {
         return new Promise((resolve, reject) => {
@@ -1066,7 +1110,9 @@ module.exports = {
     //для админки 
     'addDistrict': addDistrict, //Добавить район
     'addAddress': addAddress, //Добавить адрес
-
+    'addTag': addTag, //добавить тег
+    'acceptTag': acceptTag, // подтв. тег
+    'deleteTag': deleteTag, //удалить тег
 
     //события 
     'EventTags': EventTags, //Теги по Id евента

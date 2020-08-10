@@ -90,22 +90,33 @@ exports.postLogin = async function(request, response) {
             await DataBase.RoleUser(UserId).then(function(val) {
                 Role = val;
             });
-            if (!Role) {
+            if (Role == 0 || Role == 1 || Role == 2) {
+                const hashId = crypt.hash(UserId, CreateTime);
+                const hashIdR = crypt.hash(Role, CreateTime);
+                let ok1;
+                let ok2;
+                await DataBase.addToken(hashId, UserId).then(function(val) {
+                    ok1 = val;
+                }).catch(function(e) {
+                    console.log(e);
+                    reject("ERROR BD: addToken");
+                    response.status(500).end("addToken error");
+                    return;
+                });
+                await DataBase.addToken(hashIdR, Role).then(function(val) {
+                    ok2 = val;
+                }).catch(function(e) {
+                    console.log(e);
+                    reject("ERROR BD: addToken");
+                    response.status(500).end("addToken error");
+                    return;
+                });
+                response.cookie('userRole', hashIdR, { maxAge: config.cookieLive });
+                response.cookie('userId', hashId, { maxAge: config.cookieLive });
+                response.status(200).end("login");
+            } else {
                 response.status(500).end("role error");
             }
-            const hashId = crypt.hash(UserId, CreateTime);
-            const hashIdR = crypt.hash(Role, CreateTime);
-            let ok1;
-            let ok2;
-            await DataBase.addToken(hashId, UserId).then(function(val) {
-                ok1 = val;
-            });
-            await DataBase.addToken(hashIdR, Role).then(function(val) {
-                ok2 = val;
-            });
-            response.cookie('userRole', hashIdR, { maxAge: config.cookieLive });
-            response.cookie('userId', hashId, { maxAge: config.cookieLive });
-            response.status(200).end("login");
         }
     } catch (err) {
         response.status(500).end(err);

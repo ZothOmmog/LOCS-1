@@ -1,0 +1,8 @@
+--утвердить тег тег
+CREATE OR REPLACE PROCEDURE acceptTag(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN 
+	update topic set accept = true where id = id_;
+END;
+$BODY$;
