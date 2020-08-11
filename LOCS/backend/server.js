@@ -7,6 +7,7 @@ const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 const organizerRouter = require("./static/JS/routes/organizerRouter.js");
 const sysRouter = require("./static/JS/routes/sysRouter.js");
+const adminRouterController = require("./static/JS/routes/adminRouter.js");
 
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -51,7 +52,7 @@ app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
 app.use("/system", sysRouter);
-
+app.use("/admin", adminRouterController);
 
 
 
