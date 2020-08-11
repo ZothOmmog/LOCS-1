@@ -1,3 +1,5 @@
+const DataBase = require('./DataBase.js');
+
 function timeConvert(timestamp) {
 
     // Create a new JavaScript Date object based on the timestamp
@@ -29,7 +31,16 @@ function stringToObjectTimeConvert(str) {
 }
 
 
+async function takeObj(token) {
+    let data;
+    await DataBase.TakeToken(token).then(function(val) {
+        data = val;
+    });
+    return data;
+}
+
 module.exports = {
     'timeConvert': timeConvert,
-    'stringToObjectTimeConvert': stringToObjectTimeConvert
+    'stringToObjectTimeConvert': stringToObjectTimeConvert,
+    'takeObj': takeObj
 };

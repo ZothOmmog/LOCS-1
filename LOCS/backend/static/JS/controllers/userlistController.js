@@ -2,14 +2,16 @@ const path = require('path')
 let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
+const funcs = require('../scripts/funcs.js');
+const takeObj = funcs.takeObj;
 
-async function takeObj(token) {
-    let data;
-    await DataBase.TakeToken(token).then(function(val) {
-        data = val;
-    });
-    return data;
-}
+// async function takeObj(token) {
+//     let data;
+//     await DataBase.TakeToken(token).then(function(val) {
+//         data = val;
+//     });
+//     return data;
+// }
 
 
 exports.postRegistration = async function(request, response) {

@@ -7,6 +7,7 @@ const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 const organizerRouter = require("./static/JS/routes/organizerRouter.js");
 const sysRouter = require("./static/JS/routes/sysRouter.js");
+const adminRouterController = require("./static/JS/routes/adminRouter.js");
 
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -35,6 +36,7 @@ app.use(function(request, response, next) {
     console.log(data);
     console.log(data + request.url + "\n");*/
     //test.stringToObjectTimeConvert("2020-01-01T00:05:30");
+    //  console.log(request);
     next();
 });
 
@@ -51,13 +53,12 @@ app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
 app.use("/system", sysRouter);
-
+app.use("/admin", adminRouterController);
 
 
 
 app.use(function(req, res, next) {
     res.status(404).send("Not Found");
-
 });
 
 app.listen(4000);

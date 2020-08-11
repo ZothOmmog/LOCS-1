@@ -10,10 +10,9 @@ eventRouter.post("/info", eventController.event); // конкретный иве
 eventRouter.get("/tag/:id", eventController.tagById); //тег по id
 
 eventRouter.get("/tag$", eventController.tag); //все теги 
-eventRouter.post("/tag$", eventController.addTag); //добавить тег
+eventRouter.post("/tag$", eventController.addTag); //добавить тег для предложения
 
-eventRouter.put("/tag/:id", eventController.acceptTag); //подтвердить тег (только организатор)
-eventRouter.delete("/tag/:id", eventController.deleteTag); //удалить тег (только организатор)
+
 
 eventRouter.post("/search/:limit/:offset", eventController.search);
 module.exports = eventRouter;

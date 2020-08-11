@@ -1,0 +1,34 @@
+CREATE OR REPLACE FUNCTION districts() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from district)a;
+END;
+$$ LANGUAGE plpgsql;
+
+////////////////
+CREATE OR REPLACE PROCEDURE AddDistrict(title_ text,id_city_ bigint, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	insert into district (title,id_city, deleted) values (title_, id_city_, deleted_);
+END;
+$BODY$;
+
+////////////////
+CREATE OR REPLACE PROCEDURE UpdateDistrict(id_ bigint, title_ text, id_city_ bigint, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update district set deleted = deleted_,   id_city = id_city_, title = title_ where id = id_;
+END;
+$BODY$;
+
+////////////////
+CREATE OR REPLACE PROCEDURE DeleteDistrict(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update district set deleted = true where id = id_;
+END;
+$BODY$;

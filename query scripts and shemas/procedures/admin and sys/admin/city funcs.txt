@@ -1,0 +1,37 @@
+///////////////////
+CREATE OR REPLACE FUNCTION Citys() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from city)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+///////////////////
+CREATE OR REPLACE PROCEDURE AddCity(title_ text, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	insert into city (title, deleted) values (title_,deleted_);
+END;
+$BODY$;
+
+///////////////////
+CREATE OR REPLACE PROCEDURE UpdateCity(id_ bigint, title_ text, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update city set deleted = deleted_, title = title_ where id = id_;
+END;
+$BODY$;
+
+
+///////////////////
+CREATE OR REPLACE PROCEDURE DeleteCity(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update city set deleted = true where id = id_;
+END;
+$BODY$;

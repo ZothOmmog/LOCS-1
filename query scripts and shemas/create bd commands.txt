@@ -156,3 +156,7 @@ alter table public.meta_data add column mail_confirmed bool default false;
 alter table public.topic add column deleted bool default false;
 alter table public.topic add column accept bool default false;
 alter table public.topic add column countEvents integer default 0;
+
+alter table city add column deleted bool default false;
+alter table district add column deleted bool default false;
+alter table address add column deleted bool default false;
