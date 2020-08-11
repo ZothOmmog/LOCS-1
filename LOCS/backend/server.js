@@ -36,6 +36,7 @@ app.use(function(request, response, next) {
     console.log(data);
     console.log(data + request.url + "\n");*/
     //test.stringToObjectTimeConvert("2020-01-01T00:05:30");
+    //  console.log(request);
     next();
 });
 
@@ -58,7 +59,6 @@ app.use("/admin", adminRouterController);
 
 app.use(function(req, res, next) {
     res.status(404).send("Not Found");
-
 });
 
 app.listen(4000);

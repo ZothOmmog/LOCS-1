@@ -4,15 +4,14 @@ var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const { isNull } = require('util');
-
-
-async function takeObj(token) {
-    let data;
-    await DataBase.TakeToken(token).then(function(val) {
-        data = val;
-    });
-    return data;
-}
+const takeObj = funcs.takeObj;
+// async function takeObj(token) {
+//     let data;
+//     await DataBase.TakeToken(token).then(function(val) {
+//         data = val;
+//     });
+//     return data;
+// }
 
 
 exports.event = async function(request, response) {

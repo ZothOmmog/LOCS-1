@@ -4,6 +4,7 @@ const adminRouter = express.Router();
 
 
 
+
 //теги
 adminRouter.put("/accepttag/:id", adminRouterController.acceptTag); //подтвердить тег 
 adminRouter.delete("/tag/:id", adminRouterController.deleteTag); //удалить тег 

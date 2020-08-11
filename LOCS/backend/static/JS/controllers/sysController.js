@@ -1,18 +1,23 @@
 const path = require('path')
 const fs = require("fs");
 var DataBase = require('../scripts/DataBase.js');
-
-async function takeObj(token) {
-    let data;
-    await DataBase.TakeToken(token).then(function(val) {
-        data = val;
-    });
-    return data;
-}
+const funcs = require('../scripts/funcs.js');
+const takeObj = funcs.takeObj;
+// async function takeObj(token) {
+//     let data;
+//     await DataBase.TakeToken(token).then(function(val) {
+//         data = val;
+//     });
+//     return data;
+// }
 
 
 exports.uploadPhotoAcc = async function(request, response) {
     try {
+        if (request.file == undefined) {
+            response.status(400).end("нет файла");
+            return;
+        }
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let filedata = request.file;
@@ -51,6 +56,10 @@ exports.uploadPhotoAcc = async function(request, response) {
 
 exports.uploadPhotoOrg = async function(request, response) {
     try {
+        if (request.file == undefined) {
+            response.status(400).end("нет файла");
+            return;
+        }
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
@@ -95,6 +104,10 @@ exports.uploadPhotoOrg = async function(request, response) {
 
 exports.uploadPhotoEvent = async function(request, response) {
     try {
+        if (request.file == undefined) {
+            response.status(400).end("нет файла");
+            return;
+        }
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;

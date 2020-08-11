@@ -1,15 +1,17 @@
 const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
-var DataBase = require('../scripts/adminDataBase.js');
+const crypt = require("../scripts/password.js");
+const config = require('../configs/config.json');
+const DataBase = require('../scripts/adminDataBase.js');
 const funcs = require('../scripts/funcs.js');
-
+const takeObj = funcs.takeObj;
 
 
 exports.deleteTag = async function(request, response) {
+
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
+            console.log("11");
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
                 let idTag = Number(request.params.id);

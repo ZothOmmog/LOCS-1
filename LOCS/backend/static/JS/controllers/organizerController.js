@@ -3,14 +3,14 @@ let crypt = require("../scripts/password.js");
 var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
-
-async function takeObj(token) {
-    let data;
-    await DataBase.TakeToken(token).then(function(val) {
-        data = val;
-    });
-    return data;
-}
+const takeObj = funcs.takeObj;
+// async function takeObj(token) {
+//     let data;
+//     await DataBase.TakeToken(token).then(function(val) {
+//         data = val;
+//     });
+//     return data;
+// }
 
 exports.personAccount = async function(request, response) {
     const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;

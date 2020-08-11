@@ -1,6 +1,16 @@
 const intiDB = require('./DBinit.js');
 let db = intiDB.db;
 
+//город (в бд)
+
+
+//район (в бд)
+
+//адрес
+
+
+//теги
+
 ////
 //Добавить район
 let addDistrict = (title, id_city) => {
