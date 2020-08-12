@@ -1,0 +1,39 @@
+///////////////////
+CREATE OR REPLACE FUNCTION getaddress() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from address)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+///////////////////
+CREATE OR REPLACE PROCEDURE AddAddress(street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_district_ bigint, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	insert into address (street, house, latitude, longitude, id_district, deleted) values (street_, house_, latitude_, longitude_, id_district_, deleted_);
+END;
+$BODY$;
+
+
+///////////////////
+CREATE OR REPLACE PROCEDURE UpdateAddress(id_ bigint, street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_district_ bigint, deleted_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update address set street = street_, house = house_, latitude = latitude_, longitude = longitude_,
+	deleted = deleted_, id_district = id_district_ where id = id_;
+END;
+$BODY$;
+
+
+///////////////////
+CREATE OR REPLACE PROCEDURE DeleteAddress(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update address set deleted = true where id = id_;
+END;
+$BODY$;

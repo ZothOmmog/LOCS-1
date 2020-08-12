@@ -1,0 +1,33 @@
+//удалить и подтв. тег находятся в events
+
+//////////////////
+CREATE OR REPLACE FUNCTION GetTags() 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from topic)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+//////////////////
+CREATE OR REPLACE PROCEDURE AddTagsAdmin(title_ text, deleted_ bool, accept_ bool, countevents_ numeric)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	insert into topic (title, deleted, accept, countevents) values (title_ , deleted_ , accept_ , countevents_ );
+END;
+$BODY$;
+
+
+//////////////////
+CREATE OR REPLACE PROCEDURE UpdateTagsAdmin(id_ bigint,title_ text, deleted_ bool, accept_ bool, countevents_ numeric)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	update topic set title = title_, deleted = deleted_, accept = accept_ , countevents = countevents_ where id = id_;
+END;
+$BODY$;
+
+
+//////////////////
