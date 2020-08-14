@@ -8,21 +8,20 @@ const adminRouter = express.Router();
 //теги
 adminRouter.put("/accepttag/:id", adminRouterController.acceptTag); //подтвердить тег 
 adminRouter.delete("/tag/:id", adminRouterController.deleteTag); //удалить тег 
-//adminRouter.get("/tag/:id", adminRouterController.getTagbyId); // тег по айди
-//adminRouter.get("/tag$", adminRouterController.getTag); //все теги
-//adminRouter.post("/tag$", adminRouterController.getTag); //добавить тег
-//adminRouter.put("/tag/:id", adminRouterController.changeTag); //изменить тег 
+adminRouter.get("/tag$", adminRouterController.getTag); //все теги
+adminRouter.post("/tag$", adminRouterController.addTag); //добавить тег
+adminRouter.put("/tag/:id", adminRouterController.changeTag); //изменить тег 
 
 
 //Город
-//adminRouter.get("/city$", adminRouterController.getCity); //все город
-//adminRouter.post("/city$", adminRouterController.createCity); //добавить город
-//adminRouter.put("/city/:id", adminRouterController.changeCity); //изменить город 
-//adminRouter.delete("/city/:id", adminRouterController.deleteCity); //удалить город 
+adminRouter.get("/city$", adminRouterController.getCity); //все город
+adminRouter.post("/city$", adminRouterController.createCity); //добавить город
+adminRouter.put("/city/:id", adminRouterController.changeCity); //изменить город 
+adminRouter.delete("/city/:id", adminRouterController.deleteCity); //удалить город 
 
 //район
-//adminRouter.get("/district$", adminRouterController.getDistrict); //все районы
-//adminRouter.post("/district$", adminRouterController.createDistrict); //добавить район
+adminRouter.get("/district$", adminRouterController.getDistrict); //все районы
+adminRouter.post("/district$", adminRouterController.createDistrict); //добавить район
 //adminRouter.put("/district/:id", adminRouterController.changeDistrict); //изменить район 
 //adminRouter.delete("/district/:id", adminRouterController.deleteDistrict); //удалить район 
 
