@@ -4,24 +4,16 @@
 - **Страничный вывод, GET запрос**
 Формат JSON ***сервер->React***
  список событий:
- 
+	[
 		{
-			"count": int,
-			"Events": [
-				{
-					"eventshortlist": {
-						"id": int,
-						"name": string,
-						"info": string,
-						"image": string
-					},
-					"tags": [
-						string
-					]
-				},
-			]
+			"id": int,
+			"name": string,
+			"date": string,
+			"idAddress": int,
+			"image": string,
+			"tags": [int]
 		}
-
+	]
 
 ----------
 # url/event/info 
@@ -37,7 +29,6 @@
 
  Формат JSON ***сервер->React***
  Данные аккаунта:
-
 
 		{
 				"id": int,
@@ -57,49 +48,47 @@
 						"hours": int,
 						"minutes": int
 				},
-			"tags": [
-				{
-					"eventtags": {
-						"title": string
-					}
-				},
-			]
+				"tags": [int]
 		}
 
 ---
-# url/event/tags
+# url/event/tag
 - ***список всех тегов***
 - **GET запрос**
  Формат JSON ***Сервер->React***
- Данные входа:
+ Данные:
  
 		[
 			{
-				"tags": {
 					"id":int,
 					"title": string
-				}
-			},
-		]
+			}
+		]	
 
+		
 ---
-# url/event/tags/колличеcтво_данных/страница
-- ***список всех тегов странично***
+# url/event/tag/id_Тега
+- ***список всех тегов***
 - **GET запрос**
  Формат JSON ***Сервер->React***
- Данные входа:
+ Данные:
+ 
+		
+			{
+					"id":int,
+					"title": string
+			}
+		
+---
+# url/event/tag
+- ***отправить тег для предложения***
+- **POST запрос**
+ Формат JSON ***React->Сервер***
+ Данные:
  
 			{
-				"count": int,
-				"tags": [
-					{
-						"tags": {
-							"id": int,
-							"title": string
-						}
-					},
-					]
-			}
+					"title": string
+			}	
 		
 ---
 # url/event/search/колличеcтво_данных/страница
@@ -117,19 +106,15 @@
 
 		{
 			"count": int,
-			"Events": [
-				{
-					"searchevent": {
+			"events": [
+					{
 						"id": int,
 						"name": string,
 						"info": string,
-						"image": string
-					},
-					"tags": [
-						string
-					]
-				},				
-			]
+						"image": string,
+						"tags": [int]
+					}	
+				]
 		}
 
 ---

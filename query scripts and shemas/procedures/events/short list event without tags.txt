@@ -4,6 +4,17 @@ CREATE OR REPLACE FUNCTION eventShortList(limit_ numeric, offset_ numeric)
 RETURNS table (j json) AS
 $$
 BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, name, image, id_address, datatime FROM event where published=true and deleted=false LIMIT limit_ OFFSET offset_ )a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+///old
+CREATE OR REPLACE FUNCTION eventShortList(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (select id, name, info, image FROM event where published=true and deleted=false LIMIT limit_ OFFSET offset_ )a;
 END;
 $$ LANGUAGE plpgsql;

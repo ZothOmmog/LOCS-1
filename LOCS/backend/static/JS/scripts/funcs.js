@@ -22,12 +22,18 @@ function stringToObjectTimeConvert(str) {
     var a = new Date(str);
     let datatime = {
         year: a.getFullYear(),
-        month: a.getMonth(),
+        month: a.getMonth() + 1,
         date: a.getDate(),
         hours: a.getHours(),
         minutes: a.getMinutes()
     };
     return datatime;
+}
+
+function getDateOnlyString(str) {
+    var a = new Date(str);
+    let date = a.getDate() + "-" + (a.getMonth() + 1) + "-" + a.getFullYear();
+    return date;
 }
 
 
@@ -42,5 +48,6 @@ async function takeObj(token) {
 module.exports = {
     'timeConvert': timeConvert,
     'stringToObjectTimeConvert': stringToObjectTimeConvert,
-    'takeObj': takeObj
+    'takeObj': takeObj,
+    'getDateOnlyString': getDateOnlyString
 };
