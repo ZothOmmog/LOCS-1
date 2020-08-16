@@ -44,13 +44,10 @@ exports.shortList = async function(request, response) {
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
-        var Events;
-        var count;
+        var Events = [];
+        var eventList = [];
         await DataBase.eventShortList(limit, offset).then(function(val) {
             Events = val;
-        });
-        await DataBase.countEventShortList().then(function(val) {
-            count = val;
         });
         for (i in Events) {
             var tags;
@@ -61,9 +58,18 @@ exports.shortList = async function(request, response) {
             for (j in tags) {
                 masTags.push(tags[j].eventtags.id);
             };
-            Events[i].tags = masTags;
+            let date = Events[i].eventshortlist.datatime == null ? null : funcs.getDateOnlyString(Events[i].eventshortlist.datatime);
+            var a = {
+                id: Events[i].eventshortlist.id,
+                name: Events[i].eventshortlist.name,
+                date: date,
+                idAddress: Events[i].eventshortlist.id_address,
+                image: Events[i].eventshortlist.image,
+                tags: masTags,
+            };
+            eventList.push(a);
         };
-        response.json({ "count": count, Events });
+        response.json(eventList);
     } catch (err) {
         response.status(500).end(err);
     }
@@ -77,26 +83,28 @@ exports.search = async function(request, response) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
         var word = request.body.word;
-        var Events;
+        var eventList;
         var count;
+        var events = [];
         await DataBase.searchEvent(word, limit, offset).then(function(val) {
-            Events = val;
+            eventList = val;
         });
         await DataBase.countSearchEvent(word).then(function(val) {
             count = val;
         });
-        for (i in Events) {
+        for (i in eventList) {
             var tags;
-            await DataBase.EventTags(Events[i].searchevent.id).then(function(val) {
+            await DataBase.EventTags(eventList[i].searchevent.id).then(function(val) {
                 tags = val;
             });
             var masTags = [];
             for (j in tags) {
-                masTags.push(tags[j].eventtags.title);
+                masTags.push(tags[j].eventtags.id);
             };
-            Events[i].tags = masTags;
+            eventList[i].searchevent.tags = masTags;
+            events.push(eventList[i].searchevent);
         };
-        response.json({ "count": count, Events });
+        response.json({ "count": count, events });
     } catch (err) {
         response.status(500).end(err);
     }
@@ -107,7 +115,7 @@ exports.addTag = async function(request, response) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            var word = request.body.word;
+            var word = request.body.title;
             if (word == null) {
                 response.status(400).end("");
                 return;
