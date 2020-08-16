@@ -5,6 +5,7 @@ import { eventsListMainSelectors, eventsListMainThunks } from './events-list-mai
 import { Loader } from '../loader';
 import { useEffect } from 'react';
 import { eventProfileMockImg } from '~/assets';
+import { useFilterEvents } from './use-filter-events';
 
 
 const EventListMainView = ({ eventsData }) => (
@@ -24,8 +25,9 @@ const EventListMainView = ({ eventsData }) => (
 
 export const EventListMain = () => {
     const dispatch = useDispatch();
-    const events = useSelector(eventsListMainSelectors.events);
     const isLoading = useSelector(eventsListMainSelectors.isLoading);
+    const events = useSelector(eventsListMainSelectors.events);
+    const filteredEvents = useFilterEvents(events);    
 
     useEffect(() => {
         dispatch(eventsListMainThunks.fetchEvents());
@@ -33,7 +35,7 @@ export const EventListMain = () => {
 
     return (
         <Loader isLoading={isLoading} >
-            <EventListMainView eventsData={events} />
+            <EventListMainView eventsData={filteredEvents} />
         </Loader>
     );
 }
