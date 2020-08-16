@@ -16,10 +16,12 @@ const { actions, reducer } = createSlice({
             const { id } = action.payload;
             const { allIds } = state;
 
-            const indexTag = allIds.indexOf(id);
+            const idNum = +id;
+
+            const indexTag = allIds.indexOf(idNum);
 
             if(indexTag > -1) allIds.splice(indexTag, 1);
-            else allIds.push(id);
+            else allIds.push(idNum);
         },
         selectedTagsClear: (state) => {
             state.allIds = []
