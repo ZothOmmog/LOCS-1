@@ -84,7 +84,7 @@ export const FilterTagsListSelect = ({ tagList, onClickTagToggle, selectedTagsId
     const [querySearch, setQuerySearch] = useState();
     const [tagsForList, setTagsForList] = useState([]);
     const [isListOpen, setIsListOpen] = useState(false);
-    const [isDisplay, setIsDisplay] = useState(true);
+    const [isDisplay, setIsDisplay] = useState(false);
 
     useEffect(function setFoundTags() {
         if(!querySearch) setTagsForList(tagList);
