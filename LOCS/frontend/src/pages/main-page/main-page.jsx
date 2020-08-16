@@ -1,32 +1,20 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { 
-    NavLinkCustom, 
-    EventProfileShort,
-    EventList,
-    NavLinkMap
-} from '~/ui';
+import { NavLinkMap } from '~/ui';
 import { eventProfileMockImg } from '~/assets';
 import { HeaderDefault } from '~/features/header-default';
 import { SelectedTagsList } from '~/features/selected-tags-list';
 import { MainTemplate } from '~/templates';
+import { EventListMain } from '~/features/event-list-main';
 
 const MainPageView = () => {
     const eventListData = [];
 
-    for(let i = 0; i < 12; i++) eventListData.push(
-        <NavLinkCustom to='#' key={i}>
-            <EventProfileShort date='Скоро' img={eventProfileMockImg} location='Где-то там' name='Крутая туса' />
-        </NavLinkCustom>
-    );
-    
     return (
         <MainTemplate   >
             <HeaderDefault />
             <SelectedTagsList />
-            <EventList>
-                {eventListData}
-            </EventList>
+            <EventListMain />
             <NavLinkMap to='/map' />
         </MainTemplate>
     );
