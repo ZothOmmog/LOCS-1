@@ -79,7 +79,7 @@ const tagsSelector = state => {
     if(!tagsObject) return null;
 
     const tagsArray = Object.keys(tagsObject).map(
-        id => ({ id: id, ...tagsObject[id] })
+        id => ({ id: +id, ...tagsObject[id] })
     );
 
     return tagsArray;
