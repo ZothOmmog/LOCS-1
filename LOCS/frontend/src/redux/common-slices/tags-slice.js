@@ -36,9 +36,8 @@ const tagsChange = (state, action) => {
 
     const { byId, allIds } = tags.reduce((acc, tag) => {
         const { id, ...outher } = tag;
-        acc.byId[String(id)] = outher;
         return {
-            byId: acc,
+            byId: {...acc.byId, [String(id)]: outher},
             allIds: acc.allIds.concat(id)
         };
     }, { byId: {}, allIds: [] });
@@ -63,7 +62,10 @@ const { actions, reducer } = createSlice({
         [thunks.fetchTags.pending]: (state) => {
             state.isLoading = true;
         },
-        [thunks.fetchTags.fulfilled]: tagsChange
+        [thunks.fetchTags.fulfilled]: (state, action) => {
+            tagsChange(state, action);
+            state.isLoading = false;
+        }
     }
 });
 //=============================================
@@ -76,7 +78,7 @@ const tagsSelector = state => {
     
     if(!tagsObject) return null;
 
-    const tagsArray = tagsObject.keys().map(
+    const tagsArray = Object.keys(tagsObject).map(
         id => ({ id: id, ...tagsObject[id] })
     );
 
