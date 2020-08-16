@@ -2,8 +2,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const MOCK_AUTH = null;
 
+//====================slice-name====================
 const SLICE_NAME = 'auth';
+//==================================================
 
+//====================thunks====================
 //TODO реальизовать без mock
 const thunks = {
     fetchAuth: createAsyncThunk(
@@ -13,7 +16,9 @@ const thunks = {
         }
     )
 };
+//==============================================
 
+//====================initialState====================
 const initialState = {
     user: {
         id: null,
@@ -25,7 +30,9 @@ const initialState = {
     isAuth: false,
     isLoading: null
 };
+//====================================================
 
+//====================slice====================
 const { actions, reducer } = createSlice({
     name: SLICE_NAME,
     initialState: initialState,
@@ -50,7 +57,9 @@ const { actions, reducer } = createSlice({
         }
     }
 });
+//=============================================
 
+//====================selectors====================
 const isAuthSelector = state => state.auth.isAuth;
 const isLoadingSelector = state => state.auth.isLoading;
 
@@ -58,8 +67,11 @@ const selectors = {
     isAuthSelector,
     isLoadingSelector,
 };
+//=================================================
 
+//====================exports====================
 export { selectors as authSelectors };
 export { thunks as authThunks };
 export { actions as authActions };
 export { reducer as authReducer };
+//===============================================

@@ -1,8 +1,11 @@
 import { createSlice, createSelector } from '@reduxjs/toolkit';
 import { tagsSelectors } from './tags-slice';
 
+//====================slice-name====================
 const SLICE_NAME = 'selectedTags';
+//==================================================
 
+//====================slice====================
 const { actions, reducer } = createSlice({
     name: SLICE_NAME,
     initialState: {
@@ -23,7 +26,9 @@ const { actions, reducer } = createSlice({
         }
     }
 });
+//=============================================
 
+//====================selectors====================
 const selectedTagsIdSelector = state => state.selectedTags.allIds;
 
 const selectedTagsSelector = createSelector(
@@ -39,7 +44,10 @@ const selectors = {
     selectedTagsIdSelector,
     selectedTagsSelector
 };
+//=================================================
 
+//====================exports====================
 export { selectors as selectedTagsSelectors };
 export { actions as selectedTagsActions };
 export { reducer as selectedTagsReducer };
+//===============================================

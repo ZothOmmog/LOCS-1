@@ -15,8 +15,11 @@ const MOCK_TAGS = [
     {id: 12, name: 'Мне надоело их придумывать'},
 ];
 
+//====================slice-name====================
 const SLICE_NAME = 'tags';
+//==================================================
 
+//====================thunks====================
 const thunks = {
     fetchTags: createAsyncThunk(
         `${SLICE_NAME}/fetchTagsStatus`,
@@ -25,7 +28,27 @@ const thunks = {
         }
     )
 };
+//==============================================
 
+//====================case-reducers bodys====================
+const tagsChange = (state, action) => {
+    const { tags } = action.payload;
+
+    const { byId, allIds } = tags.reduce((acc, tag) => {
+        const { id, ...outher } = tag;
+        acc.byId[String(id)] = outher;
+        return {
+            byId: acc,
+            allIds: acc.allIds.concat(id)
+        };
+    }, { byId: {}, allIds: [] });
+
+    state.byId = byId;
+    state.allIds = allIds;
+}
+//===========================================================
+
+//====================slice====================
 const { actions, reducer } = createSlice({
     name: SLICE_NAME,
     initialState: {
@@ -34,55 +57,30 @@ const { actions, reducer } = createSlice({
         isLoading: false
     },
     reducers: {
-        tagsChange: (state, action) => {
-            const { tags } = action.payload;
-
-            const { byId, allIds } = tags.reduce((acc, tag) => {
-                const { id, ...outher } = tag;
-                return {
-                    byId: acc.byId.set(id, outher),
-                    allIds: acc.allIds.concat(id)
-                };
-            }, { byId: new Map(), allIds: [] });
-
-            state.byId = byId;
-            state.allIds = allIds;
-        },
+        tagsChange: tagsChange,
     },
     extraReducers: {
         [thunks.fetchTags.pending]: (state) => {
             state.isLoading = true;
         },
-        [thunks.fetchTags.fulfilled]: (state, action) => {
-            const { tags } = action.payload;
-
-            const { byId, allIds } = tags.reduce((acc, tag) => {
-                const { id, ...outher } = tag;
-                return {
-                    byId: acc.byId.set(id, outher),
-                    allIds: acc.allIds.concat(id)
-                };
-            }, { byId: new Map(), allIds: [] });
-
-            state.byId = byId;
-            state.allIds = allIds;
-            state.isLoading = false;
-        }
+        [thunks.fetchTags.fulfilled]: tagsChange
     }
 });
+//=============================================
 
-const tagsMapSelector = state => state.tags.byId;
+//====================selectors====================
+const tagsObjectSelector = state => state.tags.byId;
 
 const tagsSelector = state => {
-    const tagsMap = tagsMapSelector(state);
+    const tagsObject = tagsObjectSelector(state);
     
-    if(!tagsMap) return null;
+    if(!tagsObject) return null;
 
-    return (
-        Array.from(
-            tagsMap.entries()
-        ).map( tag => ({ id: tag[0], ...tag[1] }))
+    const tagsArray = tagsObject.keys().map(
+        id => ({ id: id, ...tagsObject[id] })
     );
+
+    return tagsArray;
 };
 
 const isLoadingSelector = state => state.tags.isLoading;
@@ -91,8 +89,11 @@ const selectors = {
     tagsSelector,
     isLoadingSelector,
 };
+//=================================================
 
+//====================exports====================
 export { selectors as tagsSelectors };
 export { thunks as tagsThunks };
 export { actions as tagsActions };
 export { reducer as tagsReducer };
+//===============================================
