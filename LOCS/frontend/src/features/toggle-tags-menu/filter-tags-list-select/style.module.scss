@@ -1,0 +1,109 @@
+@import '~/styles/variables.scss';
+
+@keyframes visible {
+    from { opacity: 0; }
+    to { opacity: 100; }
+}
+
+@keyframes invisible {
+    from { opacity: 100; }
+    to { opacity: 0; }
+}
+
+.component{
+    &__drop-menu {
+        font-family: $font-main;
+        font-size: $font-size-sm;
+        font-weight: lighter;
+        background-color: $background-color-filter-tags-list-select;
+        padding: 10px;
+        position: absolute;
+        z-index: 1;
+        margin-top: 8px;
+        border: 3px solid $border-color-filter-tags-list-select;
+        border-radius: $border-radius-filter-tags-list-select;
+        max-height: 380px;
+        flex-direction: column;
+        align-items: center;
+        color: $color-tags-list-select;
+        box-shadow: $box-shadow-offset;
+        display: flex;
+        transform: translateX(-100%) translateX(54px);
+        transition-duration: 0.4s;
+
+        &_visible {
+            animation-name: visible;
+            animation-duration: 0.4s;
+        }
+        
+        &_invisible {
+            animation-name: invisible;
+            animation-duration: 0.4s;
+        }
+
+        &_display-none {
+            display: none;
+        }
+    }
+    
+    &__search {
+        width: 250px;
+        padding: 10px;
+        border-radius: $border-radius-filter-tags-list-select__search;
+        border: 3px solid rgba($color: $border-color-filter-tags-list-select__search, $alpha: 0.5);
+        font-family: $font-filter-tags-list-select;
+        font-size: $font-size-sm;
+        font-weight: lighter;
+        transition-duration: $transition-duration;
+        
+        &::placeholder {
+            font-family: $font-filter-tags-list-select;
+            font-size: $font-size-sm;
+            font-weight: lighter;
+            color: rgba($color: $color-tags-list-select, $alpha: 0.75);
+        }
+        
+        &:focus {
+            border: 3px solid $border-color-filter-tags-list-select__search;
+        }
+    }
+
+    &__list-tags {
+        width: 250px;
+        padding: 10px;
+        list-style: none;
+        border: 3px solid $border-color-filter-tags-list-select;
+        border-radius: 4px;
+        margin-top: 8px;
+        overflow: auto;
+    }
+
+    &__tag {
+        cursor: pointer;
+        transition: 0.2s;
+        padding: 6px;
+        border-radius: $border-radius;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        
+        &_selected {
+            box-shadow: 0 0 0 3px $color-orange inset;
+        }
+        
+        &_not-selected {
+            &:hover {
+                box-shadow: 0 0 0 3px rgba($color: $color-orange, $alpha: 0.5) inset;
+            }
+        }
+    }
+
+    &__tag + &__tag {
+        margin-top: 2px;
+    }
+
+    &__not-found {
+        color: $color-orange;
+    }
+}

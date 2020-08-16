@@ -1,1 +1,0 @@
-export { searchReducer } from './search';

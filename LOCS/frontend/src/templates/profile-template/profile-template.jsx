@@ -1,12 +1,11 @@
 import React from 'react';
 // import PropTypes from 'prop-types';
-import { DefaultTemplate } from '../default-template';
 
 //TODO реализовать страницу профиля пользователя
 export const ProfileTemplate = ({ children }) => (
-    <DefaultTemplate>
+    <div>
         Тут будет страница профиля пользователя
-    </DefaultTemplate>
+    </div>
 );
 
 // DefaultTemplate.propTypes = {

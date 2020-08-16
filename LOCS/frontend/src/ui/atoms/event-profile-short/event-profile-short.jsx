@@ -8,7 +8,7 @@ export const EventProfileShort = ({ img, name, date, location }) => (
             <img className={style['event-profile-short__img']} src={img} alt='Изображение события'/>
             <div className={style['event-profile-short__img-overlay']}></div>
         </div>
-        <div className={style['event-profile-short__name']}>
+        <div className={style['event-profile-short__name']} title={name} >
             {name}
         </div>
         <div className={style['event-profile-short__description']}>

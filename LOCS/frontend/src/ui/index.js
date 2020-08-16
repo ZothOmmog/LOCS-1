@@ -12,7 +12,3 @@ export {
     ButtonColored,
     ButtonGray
 } from './molecules';
-
-export { 
-    Header
-} from './organisms';

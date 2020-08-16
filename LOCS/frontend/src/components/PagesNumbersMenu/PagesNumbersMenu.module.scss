@@ -1,7 +1,0 @@
-.PagesNumbersMenu {
-    display: flex;
-
-    &__Item + &__Item {
-        margin-left: 15px;
-    }
-}
