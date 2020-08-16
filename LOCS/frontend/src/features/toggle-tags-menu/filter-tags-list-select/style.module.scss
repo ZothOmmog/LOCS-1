@@ -28,6 +28,7 @@
         color: $color-tags-list-select;
         box-shadow: $box-shadow-offset;
         display: flex;
+        transform: translateX(-100%) translateX(54px);
         transition-duration: 0.4s;
 
         &_visible {
