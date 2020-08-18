@@ -36,7 +36,7 @@
 				"name": string,
 				"info": string,
 				"link": string,
-				"ticket_price": int,
+				"ticket_price": float,
 				"id_organizer": int,
 				"id_address": int,
 				"image": string,
