@@ -5,16 +5,16 @@
 Формат JSON ***сервер->React***
  список событий:
  
-	[
-		{
-			"id": int,
-			"name": string,
-			"date": string,
-			"idAddress": int,
-			"image": string,
-			"tags": [int]
-		}
-	]
+		[
+			{
+				"id": int,
+				"name": string,
+				"date": string,
+				"idAddress": int,
+				"image": string,
+				"tags": [int]
+			}
+		]
 
 ----------
 # url/event/info 
