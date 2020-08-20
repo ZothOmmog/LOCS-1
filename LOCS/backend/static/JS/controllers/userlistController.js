@@ -15,34 +15,40 @@ const takeObj = funcs.takeObj;
 
 
 exports.postRegistration = async function(request, response) {
+
     try {
         var CreateTime;
         var CheckMail = false;
         var CheckNick = false;
-        await DataBase.CheckUser(request.body.Registration.mail).then(function(val) {
+        await DataBase.CheckUser(request.body.mail).then(function(val) {
             CheckMail = val;
         });
-        await DataBase.CheckNick(request.body.Registration.nick).then(function(val) {
+        await DataBase.CheckNick(request.body.nick).then(function(val) {
             CheckNick = val;
         });
-        if (CheckMail == true & CheckNick == true) {
+        if (CheckMail == true && CheckNick == true) {
+            console.log("123112");
             await DataBase.TimeNow().then(function(val) {
                 CreateTime = val;
             });
             if (!CreateTime) {
                 response.status(500).end("time error");
             }
-            var hash = crypt.hash(request.body.Registration.pas, CreateTime);
-            var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
+            console.log("12311");
+            var hash = crypt.hash(request.body.pas, CreateTime);
+            var hashToMail = crypt.hash(request.body.mail, CreateTime);
             let checkAdd = false;
-            await DataBase.AddUser(request.body.Registration.nick, request.body.Registration.mail, hash, "User", null, CreateTime).then(function(val) {
+            console.log("1234");
+            await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, CreateTime).then(function(val) {
                 checkAdd = val;
             });
+            console.log("1232");
             if (!checkAdd) {
                 response.status(500).end("dont added");
             }
+            console.log("123");
             if (checkAdd != -1) {
-                var hashToMail = crypt.hash(request.body.Registration.mail, CreateTime);
+                var hashToMail = crypt.hash(request.body.mail, CreateTime);
                 await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
                     checkAdd = val;
                     ///создать функцию, которая создает ссылку и  отсылает на почту письмо 
@@ -52,13 +58,7 @@ exports.postRegistration = async function(request, response) {
                 response.status(400).end();
             }
         } else {
-            let a = json({
-                "Login": {
-                    "NickNameFlag": CheckNick,
-                    "MailFlag": CheckMail
-                }
-            });
-            response.status(400).end(a);
+            response.status(400).end();
         }
     } catch (err) {
         response.status(500).end(err);
@@ -74,14 +74,14 @@ exports.postLogin = async function(request, response) {
         await DataBase.TimeNow().then(function(val) {
             CreateTime = val;
         });
-        await DataBase.DateCreate(request.body.Login.mail).then(function(val) {
+        await DataBase.DateCreate(request.body.mail).then(function(val) {
             salt = val;
         });
         if (!salt) {
             response.status(400).end();
         }
-        var hash = crypt.hash(request.body.Login.pas, salt);
-        await DataBase.LogUser(request.body.Login.mail, hash).then(function(val) {
+        var hash = crypt.hash(request.body.pas, salt);
+        await DataBase.LogUser(request.body.mail, hash).then(function(val) {
             UserId = val;
         });
         if (UserId == -1) {
@@ -136,20 +136,17 @@ exports.acc = async function(request, response) {
             if (!masData) {
                 return response.status(401).end();
             }
-            console.log(masData);
             let UserMail = masData[0];
             let UserNickname = masData[1];
             let UserPicture = masData[2];
             let UserCity = masData[3];
             let accept = (masData[4] == 't');
             response.json({
-                "User": {
-                    "Mail": UserMail,
-                    "Nick": UserNickname,
-                    "City": UserCity,
-                    "UrlPicture": UserPicture,
-                    "AcceptMail": accept
-                }
+                "Mail": UserMail,
+                "Nick": UserNickname,
+                "City": UserCity,
+                "UrlPicture": UserPicture,
+                "AcceptMail": accept
             });
         } else {
             //Переход на страницу login
@@ -232,17 +229,20 @@ exports.friendListWithLimit = async function(request, response) {
             offset = (offset - 1) * limit;
             var data;
             var count;
-            await DataBase.CountfriendListLimit(userId, limit, offset).then(function(val) {
+            await DataBase.CountfriendListLimit(userId).then(function(val) {
                 count = val;
             }).catch(function(er) {
                 response.status(500).end(er);
             });
             await DataBase.friendListLimit(userId, limit, offset).then(function(val) {
-                data = val;
+                let users = [];
+                for (i in val) {
+                    users.push(val[i].friend);
+                }
+                response.json({ count, users });
             }).catch(function(er) {
                 response.status(500).end(er);
             });
-            response.json({ "count": count[0].count, data });
         } else {
             return response.status(401).end();
         }
@@ -272,7 +272,12 @@ exports.searchUserWithLimit = async function(request, response) {
             if (!data) {
                 response.status(400).end(er);
             } else {
-                response.json({ "count": count[0].count, data });
+                let users = [];
+                for (i in data) {
+                    users.push(data[i].user);
+                }
+
+                response.json({ count, users });
             }
         } else {
             return response.status(401).end();
@@ -322,7 +327,11 @@ exports.friendRequestsWithLimit = async function(request, response) {
             }).catch(function(er) {
                 response.status(500).end(er);
             });
-            response.json({ "count": count[0].count, data });
+            var users = [];
+            for (i in data) {
+                users.push(data[i].request);
+            }
+            response.json({ count, users });
         } else {
             return response.status(401).end();
         }
@@ -372,7 +381,13 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response)
             }).catch(function(er) {
                 response.status(500).end(er);
             });
-            response.json({ "count": count[0].count, data });
+            let users = [];
+            for (i in data) {
+                users.push(data[i].request);
+            }
+
+
+            response.json({ count, data });
         } else {
             return response.status(401).end();
         }

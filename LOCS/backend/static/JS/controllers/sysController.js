@@ -92,7 +92,7 @@ exports.uploadPhotoOrg = async function(request, response) {
                     }
                 }
             } else {
-                response.json({ err: "not have permissons" });
+                response.status(401).end();
             }
         } else {
             return response.status(401).end();
@@ -116,11 +116,12 @@ exports.uploadPhotoEvent = async function(request, response) {
                 filedata.filename = Date.now();
 
                 if (filedata.mimetype == -1) {
-                    response.json({ errFormat: "фото (png, jpg, jpeg) должно быть не больше 6 мб" });
+                    response.status(400).end("фото (png, jpg, jpeg) должно быть не больше 6 мб");
                     return;
                 }
                 if (!filedata) {
-                    response.json({ err: "Error loading file" });
+                    response.status(400).end("Error loading file");
+                    return;
                 } else {
                     try {
                         const namePhoto = String(userId) + String(Date.now());
