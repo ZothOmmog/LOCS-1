@@ -27,7 +27,8 @@ exports.personAccount = async function(request, response) {
                     data = val;
                 }).catch(function() { data = false });
                 if (data && countSub) {
-                    response.json({ 'count': countSub.count, data });
+                    data.countSub = countSub;
+                    response.json({ data });
                 } else {
                     response.status(400).end("acc error");
                 }
@@ -107,7 +108,12 @@ exports.searchLimit = async function(request, response) {
         }).catch(function() {
             response.status(500).end("search error");
         });
-        response.json({ "count": count, data });
+        let users = []
+        for (i in data) {
+            users.push(data[i].searchorg);
+        }
+
+        response.json({ count, users });
     } catch (err) {
         response.status(500).end(err);
     }
@@ -160,7 +166,15 @@ exports.mySubscribersLimit = async function(request, response) {
                 }).catch(function() {
                     response.status(500).end("sub org error");
                 });
-                response.json({ "count": count, data });
+                let subscribers = []
+                for (i in data) {
+                    subscribers.push(data[i].subscribers);
+                }
+
+                response.json({ count, subscribers });
+
+
+
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -215,7 +229,11 @@ exports.subscribersLimit = async function(request, response) {
             }).catch(function() {
                 response.status(500).end("sub org error");
             });
-            response.json({ "count": count, data });
+            let users = [];
+            for (i in data) {
+                users.push(data[i].subscribers);
+            }
+            response.json({ count, users });
         } else {
             return response.status(401).end();
         }
@@ -245,7 +263,9 @@ exports.organizerAccount = async function(request, response) {
             data.Status = statusSub.substatus;
         }
         if (data && countSub) {
-            response.json({ 'count': countSub.count, data });
+            data.count = countSub;
+
+            response.json({ data });
         } else {
             response.status(500).end("acc error");
         }
@@ -407,7 +427,13 @@ exports.subscribeUserListLimit = async function(request, response) {
                 });
             }
             if (data) {
-                response.json({ "count": count, data });
+                let sublist = [];
+                for (i in data) {
+                    sublist.push(data[i].sublist);
+                }
+
+
+                response.json({ count, sublist });
             } else {
                 response.status(500).end("user in list sub list");
             }
@@ -461,7 +487,11 @@ exports.myEventsListLimit = async function(request, response) {
                 data = val;
             });
             if (data) {
-                response.json({ "count": count, data });
+                let events = []
+                for (i in data) {
+                    events.push(data[i].eventorglistlimit);
+                }
+                response.json({ count, events });
             } else {
                 response.status(500).end("user in list sub list");
             }
@@ -511,7 +541,12 @@ exports.eventsListLimit = async function(request, response) {
         });
 
         if (data) {
-            response.json({ "count": count, data });
+            let events = [];
+            for (i in data) {
+                events.push(data[i].eventorglistlimit);
+            }
+
+            response.json({ count, events });
         } else {
             response.status(500).end("user in list sub list");
         }
@@ -628,7 +663,12 @@ exports.searchAddress = async function(request, response) {
         await DataBase.searchAddress(word).then(function(val) {
             data = val;
         });
-        response.json(data);
+        let address = [];
+        for (i in data) {
+            address.push(data[i].searchaddress);
+        }
+
+        response.json(address);
     } catch (err) {
         response.status(500).end(err);
     }

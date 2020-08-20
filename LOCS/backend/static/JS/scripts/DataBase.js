@@ -18,11 +18,12 @@ const CheckUser = (mail) => {
 //проверка, что такой ник есть
 const CheckNick = (nick) => {
     return new Promise((resolve, reject) => {
-        db.many("select CheckNick($1);", nick)
+        db.one("select CheckNick($1);", nick)
             .then(function(data) {
-                resolve(data[0].checknick);
+                resolve(data.checknick);
             }).catch(function() {
-                reject("ERROR BD: CheckNick");
+                console.log("ERROR BD: CheckNick");
+                reject(false);
                 return;
             });
     });
@@ -129,9 +130,9 @@ const datauserlist = (nick) => {
 //count(ID и ник по поиску )
 const Countdatauserlist = (nick) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select count(*) from ( select datauserlist($1) )a;", ["%" + nick + "%"])
+        db.oneOrNone("select count(*) from ( select datauserlist($1) )a;", ["%" + nick + "%"])
             .then(function(data) {
-                resolve(data);
+                resolve(data.count);
             }).catch(function() {
                 reject("ERROR BD: Countdatauserlist");
                 return;
@@ -185,11 +186,11 @@ const friendListLimit = (id, limit, offset) => {
 };
 
 //Размер списка друзей 
-const CountfriendListLimit = (id, limit, offset) => {
+const CountfriendListLimit = (id) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select count(*) from (select friendList($1))a;", [id])
-            .then(data => {
-                resolve(data);
+        db.oneOrNone("select count(*) from (select friendList($1))a;", [id])
+            .then(function(data) {
+                resolve(data.count);
             }).catch(function(err) {
                 console.log(err);
                 reject("ERROR BD: CountfriendListLimit ");
@@ -217,7 +218,7 @@ const countfriendRequestsSent = (id) => {
     return new Promise((resolve, reject) => {
         db.manyOrNone("select count(*) from (select friendRequestsSent($1))a;", [id])
             .then(function(data) {
-                resolve(data);
+                resolve(data[0].count);
             }).catch(function() {
                 reject("ERROR BD: countfriendRequestsSent");
                 return;
@@ -259,7 +260,7 @@ let CountfriendRequests = (id) => {
     return new Promise((resolve, reject) => {
         db.manyOrNone("select count(*) from (select friendRequests($1))a;", [id])
             .then(function(data) {
-                resolve(data);
+                resolve(data[0].count);
             }).catch(function() {
                 reject("ERROR BD: CountfriendRequests");
                 return;
@@ -751,7 +752,7 @@ let organizerData = (id) => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select  organizerData($1);', [id])
             .then(function(data) {
-                resolve(data);
+                resolve(data.organizerdata);
             }).catch(function() {
                 reject("ERROR BD: organizerData");
                 return;
@@ -882,7 +883,7 @@ let countSub = (idOrg) => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select count(*) from   subscribers($1);', [idOrg])
             .then(function(data) {
-                resolve(data);
+                resolve(data.count);
             }).catch(function() {
                 reject("ERROR BD: countSub");
                 return;
