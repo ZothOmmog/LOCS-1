@@ -1,10 +1,4 @@
 ---
- в случае ошибок ответ сервера:
-
-		{ 
-				"err": string
-		}
----
 # url/org/delete
 - ***удаление мероприятия (событие и все теги связанные с ним)***
 пользователь должен быть организатором (личный кабинет)
@@ -15,15 +9,9 @@
 				"idEvent": int
 		}
 			
- 
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
- 
+ Формат http status ***Сервер->React***
 
-		{ 
-				"Deleted": bool
-		}
 
 
 ---
@@ -37,38 +25,18 @@
  Данные входа:
 
     		{
-                "count": int, //кол подписчиков
                 "data": {
-                    "organizerdata": {
                         "id_user": int,
                         "info": string,
                         "organization_name": string,
                         "organization_link": string,
-                        "logo": string
-                    }
+                        "logo": string,
+						"countSub": int
+                    
                 }
             }
 
-
----
-# url/org/mySubs
-- ***краткая форма данных о подписчиках***
-пользователь должен быть организатором (личный кабинет)
- Формат GET 
-- ***Ответ***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-    	[
-            {
-                "subscribers": {
-                    "id_user": int,
-                    "nickname": string
-                }
-            },
-        ]   
-
-
+			
 ---
 # url/org/mySubs/колличеcтво_данных/страница
 - ***краткая форма данных о подписчиках странично***
@@ -80,35 +48,16 @@
 
          {
             "count": int,
-            "data": [
-                        {
-                        "subscribers": 
+            "subscribers": 
+					[
+
                             {
                                 "id_user": int,
                                 "nickname": string
-                            }
-                        },
+							},
                     ]
         }
 
----
-# url/org/myEvents/
-- ***список мероприятий***
-пользователь должен быть организатором (личный кабинет)
- Формат GET 
-- ***Ответ***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-        [
-            {
-                "eventorglist": {
-                    "id": int,
-                    "name": string,
-                    "image": string
-                }
-            },
-        ]
 
 ---
 # url/org/myEvents/колличеcтво_данных/страница
@@ -148,13 +97,8 @@
         }
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
- 
+ Формат http status ***Сервер->React***
 
-		{ 
-				reg: bool
-		}
 
 
 ---
@@ -172,46 +116,18 @@
  Формат JSON ***Сервер->React***
  Данные входа:
  
-        {
-            "count": int, //кол сабов
-            "data": {
-                "organizerdata": {
-                    "id_user": int,
-                    "info": string,
-                    "organization_name": string,
-                    "organization_link": string,
-                    "logo": "string
-                },
-				 "Status": int // 0 - не подписан, 1 подписан (при условии авторизации )
-            }
-        }
-
-
----
-# url/org/search
-- ***поиск организатора по слову***
- Пользователь может быть не авторизован
- Формат POST ***React->Сервер***
- Данные входа:
-
         { 
-        	"word": string
-        }
- 
-- ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-        [
-            {
-                "searchorg": {
-                    "id_user": int,
-                    "organization_name": string,
-                    "logo": string
-                }
+            "data": {
+				"id_user": int,
+				"info": string,
+				"organization_name": string,
+				"organization_link": string,
+				"logo": "string,             
+				"Status": int, // 0 - не подписан, 1 подписан (при условии авторизации )
+				"count": int //кол сабов
             }
-        ]
-    
+        }
+
 ---
 # url/org/search/колличеcтво_данных/страница
 - ***поиск организатора по слову странично***
@@ -229,40 +145,15 @@
 
         {
             "count": "1",
-            "data": [
-                {
-                    "searchorg": {
-                        "id_user": int,
-                        "organization_name": string,
-                        "logo": string
-                    }
-                },
-            ]
+            "users": 
+				[
+					{
+							"id_user": int,
+							"organization_name": string,
+							"logo": string
+					},
+				]
         }
-    
----
-# url/org/subs
-- ***подписчики организатора по id***
- Пользователь авторизован
- Формат POST ***React->Сервер***
- Данные входа:
-
-        { 
-        	"org": int
-        }
- 
-- ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-       [
-            {
-                "subscribers": {
-                    "id_user": int,
-                    "nickname": string
-                }
-            },
-        ]
     
 ---
 # url/org/subs/колличеcтво_данных/страница
@@ -303,12 +194,8 @@
         }
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
+ Формат http status ***Сервер->React***
 
-        { 
-            subscribe: true
-        }
  ---
 # url/org/unSubscribe
 - ***отписаться***
@@ -321,40 +208,13 @@
         }
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
+ Формат http status ***Сервер->React***
 
-        { 
-            unSubscribe: true
-        }
         
- ---
-# url/org/subUser
-- ***список подписок по id пользователя***
- Пользователь авторизован
- Формат POST ***React->Сервер***
- Данные входа:
-
-        { 
-        	"user": int
-        }
- 
-- ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-       [
-             {
-                "sublist": {
-                    "id_user": int,
-                    "organization_name": string
-                }
-            }
-        ]
  ---
 # url/org/subUser/колличеcтво_данных/страница
 - ***список подписок по id пользователя странично***
- Пользователь авторизован
+ Пользователь авторизован (если переменная user не посылается -  берутся личные данные авторизированного)
  Формат POST ***React->Сервер***
  Данные входа:
 
@@ -368,39 +228,15 @@
 
         {
             "count": "1",
-            "data": [
-                {
-                    "sublist": {
+            "sublist": 
+				[
+					{
                         "id_user": int,
                         "organization_name": string
                     }
-                }
-            ]
+				]
         }
----
-# url/org/events
-- ***список мероприятий организатора***
- Пользователь может быть не авторизован
- Формат POST ***React->Сервер***
- Данные входа:
 
-        { 
-        	"org": int
-        }
- 
-- ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
-
-        [
-            {
-                "eventorglist": {
-                    "id": int,
-                    "name": string,
-                    "image": string
-                }
-            },
-        ]
 ---
 # url/org/events/колличеcтво_данных/страница
 - ***список мероприятий организатора***
@@ -415,16 +251,19 @@
 - ***Ответ на корректность данных***
  Формат JSON ***Сервер->React***
  Данные входа:
-
-        [
-            {
-                "eventorglist": {
-                    "id": int,
-                    "name": string,
-                    "image": string
-                }
-            },
-        ]
+		
+		{
+			"count": int,
+			"events" : 
+				[
+					{
+						"id": int,
+						"name": string,
+						"image": string
+					},
+				]
+		}
+		
 ---
 # url/org/createEvent
 - ***создание события***
@@ -447,12 +286,8 @@
           }
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
+ Формат http status ***Сервер->React***
 
-         { 
-            create: true
-         }
 ---
 # url/org/changeEvent
 - ***изменение события***
@@ -476,12 +311,8 @@
           }
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа:
+ Формат http status ***Сервер->React***
 
-         { 
-            change: true
-         }
  ---
 # url/org/searchAddress
 - ***изменение события (показывает 15 совпадений)***
@@ -497,15 +328,14 @@
  Формат JSON ***Сервер->React***
  Данные входа:
 
-       [
+		[
             {
-                "searchaddress": {
                     "id": int,
                     "street": string,
                     "house": string
-                }
             },
         ]
+		
  ---
 # url/org/changeAccount
 - ***изменение данных аккаунта (никнейм уникален)***
@@ -520,16 +350,6 @@
 		}
  
 - ***Ответ на корректность данных***
- Формат JSON ***Сервер->React***
- Данные входа(успешное выполнение):
-	
-		{
-			"change": true
-		}
-		
- Данные входа(такой ник уже есть):
-	
-		{
-			"errName": "org name is already use"
-		}
+ Формат http status ***Сервер->React***
+
 		

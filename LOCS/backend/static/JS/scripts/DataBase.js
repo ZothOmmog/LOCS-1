@@ -752,7 +752,7 @@ let organizerData = (id) => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select  organizerData($1);', [id])
             .then(function(data) {
-                resolve(data);
+                resolve(data.organizerdata);
             }).catch(function() {
                 reject("ERROR BD: organizerData");
                 return;
@@ -883,7 +883,7 @@ let countSub = (idOrg) => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select count(*) from   subscribers($1);', [idOrg])
             .then(function(data) {
-                resolve(data);
+                resolve(data.count);
             }).catch(function() {
                 reject("ERROR BD: countSub");
                 return;
