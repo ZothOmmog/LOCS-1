@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import style from './style.module.scss';
 import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
-import { NavLinkBordered, NavLinkColored, NavLinkProfile } from '~/ui/molecules';
+import { NavLinkBordered, NavLinkColored, NavLinkProfile, ButtonColored } from '~/ui/molecules';
 import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
 
 const paths = {
@@ -51,9 +51,9 @@ export const HeaderDefault = () => {
                 <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname === paths.PROFILE_PATH} />
             ) : (
                 <Navbar>
-                    <NavLinkColored to={paths.LOGIN_PATH} active={pathname === paths.LOGIN_PATH}>
+                    <ButtonColored to={paths.LOGIN_PATH} active={pathname === paths.LOGIN_PATH}>
                         Вход
-                    </NavLinkColored>
+                    </ButtonColored>
                     <NavLinkBordered to={paths.REGISTRATION_PATH} active={pathname === paths.REGISTRATION_PATH}>
                         Регистрация
                     </NavLinkBordered>
