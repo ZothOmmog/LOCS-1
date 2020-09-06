@@ -2,7 +2,7 @@ import React from 'react';
 import { EventList, EventProfileShort, NavLinkCustom } from '~/ui';
 import { useSelector, useDispatch } from 'react-redux';
 import { eventsListMainSelectors, eventsListMainThunks } from './events-list-main-slice';
-import { Loader } from '../loader';
+import { Loader } from '~/features/loader';
 import { useEffect } from 'react';
 import { eventProfileMockImg } from '~/assets';
 import { useFilterEvents } from './use-filter-events';
