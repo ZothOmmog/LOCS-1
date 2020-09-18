@@ -142,11 +142,11 @@ exports.acc = async function(request, response) {
             let UserCity = masData[3];
             let accept = (masData[4] == 't');
             response.json({
-                "Mail": UserMail,
-                "Nick": UserNickname,
-                "City": UserCity,
-                "UrlPicture": UserPicture,
-                "AcceptMail": accept
+                "mail": UserMail,
+                "nick": UserNickname,
+                "city": UserCity,
+                "urlPicture": UserPicture,
+                "acceptMail": accept
             });
         } else {
             //Переход на страницу login
