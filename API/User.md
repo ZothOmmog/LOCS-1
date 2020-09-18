@@ -6,12 +6,12 @@
 
 
 		{ 
-				"Mail": "String",
-				"Nick": "String",
-				"City": "String",
-				"UrlPicture" : "String",
-				"AcceptMail": true,
-				"Auth" :"Bool"
+				"mail": "String",
+				"nick": "String",
+				"city": "String",
+				"urlPicture" : "String",
+				"acceptMail": true,
+				"auth" :"Bool"
 		}
 
 ---
