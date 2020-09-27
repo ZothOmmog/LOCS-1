@@ -1,0 +1,35 @@
+@import '~/styles/variables.scss';
+
+.button-colored {
+    color: $color-nav-link-colored;
+    padding: 8px;
+    border-radius: 16px;
+    background-color: $color-black;
+    transition-duration: 0.2s;
+    
+    
+    &_inactive {
+        &:hover {
+            color: $color-black;
+            background-color: rgba($color: $color-black, $alpha: 0.2);
+            box-shadow: 0px 0px 0px 4px rgba($color: $color-black, $alpha: 0.5) inset;
+        }
+        &:active {
+            color: $color-black;
+            background-color: rgba($color: $color-black, $alpha: 0.5);
+            box-shadow: 0px 0px 0px 4px rgba($color: $color-black, $alpha: 0.2) inset;
+        }
+    }
+
+    &_active {
+        color: $color-black;
+        background-color: rgba($color: $color-black, $alpha: 0.2);
+        box-shadow: 0px 0px 0px 4px rgba($color: $color-black, $alpha: 0.5) inset;
+    }
+
+    &:disabled {
+        color: rgba($color: $color-black, $alpha: 0.5);
+        background-color: rgba($color: $color-black, $alpha: 0.2);
+        box-shadow: 0px 0px 0px 4px rgba($color: $color-black, $alpha: 0.2) inset;
+    }
+}

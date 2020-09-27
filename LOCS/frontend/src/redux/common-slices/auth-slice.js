@@ -1,6 +1,21 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-const MOCK_AUTH = null;
+const MOCK_AUTH_TRUE = { 
+    Mail: "test@gmail.com",
+    Nick: "tuser",
+    City: "test_city",
+    UrlPicture: null,
+    Auth: true
+};
+
+const MOCK_AUTH_FALSE = { 
+    Auth: false
+};
+
+const MOCK_USER = {
+    login: 'test@gmail.com',
+    password: '123'
+}
 
 //====================slice-name====================
 const SLICE_NAME = 'auth';
@@ -12,7 +27,20 @@ const thunks = {
     fetchAuth: createAsyncThunk(
         `${SLICE_NAME}/fetchAuth`,
         async () => {
-            return { user: MOCK_AUTH };
+            return { ...MOCK_AUTH_FALSE };
+        }
+    ),
+    fetchLogin: createAsyncThunk(
+        `${SLICE_NAME}/fetchAuth`,
+        async ({ login, password }) => {
+            return (
+                login === MOCK_USER.login && 
+                password === MOCK_USER.password ? (
+                    { ...MOCK_AUTH_TRUE }
+                ) : (
+                    { ...MOCK_AUTH_FALSE }
+                )
+            );
         }
     )
 };
@@ -21,7 +49,6 @@ const thunks = {
 //====================initialState====================
 const initialState = {
     user: {
-        id: null,
         mail: null,
         nick: null,
         city: null,
@@ -46,10 +73,10 @@ const { actions, reducer } = createSlice({
             state.isLoading = true;
         },
         [thunks.fetchAuth.fulfilled]: (state, action) => {
-            const { user } = action.payload;
+            const { Mail: mail, Nick: nick, City: city, UrlPicture: urlPicture, Auth: isAuth } = action.payload;
 
-            if (user) {
-                state.user = user;
+            if(isAuth) {
+                state.user = { mail, nick, city, urlPicture };
                 state.isAuth = true;
             }
 
@@ -60,12 +87,19 @@ const { actions, reducer } = createSlice({
 //=============================================
 
 //====================selectors====================
-const isAuthSelector = state => state.auth.isAuth;
-const isLoadingSelector = state => state.auth.isLoading;
+const sliceSelector = state => state.auth;
+const isAuthSelector = state => sliceSelector(state).isAuth;
+const isLoadingSelector = state => sliceSelector(state).isLoading;
+const userSelector = state => sliceSelector(state).user;
+const userNickSelector = state => userSelector(state).nick;
+const userUrlPictureSelector = state => userSelector(state).urlPicture;
 
 const selectors = {
     isAuthSelector,
     isLoadingSelector,
+    userSelector,
+    userNickSelector,
+    userUrlPictureSelector,    
 };
 //=================================================
 

@@ -26,5 +26,8 @@ module.exports = {
                 cwd: process.cwd(),
             }),
         ],
+        optimization: {
+            namedModules: false
+        }
     },
 };

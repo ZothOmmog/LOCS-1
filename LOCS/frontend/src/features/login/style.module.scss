@@ -1,0 +1,53 @@
+@import '~/styles/variables.scss';
+
+.login-popup {
+    width: 360px;
+    transform: translateX(-360px + 59.75px);
+    margin-top: 10px;
+    background-color: #ffffff;
+    border-radius: 30px;
+}
+
+.__inner {
+    background-color: #ececec;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.__field {
+    border-radius: 30px;
+    width: 250px;
+    padding: 8px;
+    border: 2px solid $color-black;
+    font-family: $font-main;
+    font-size: $font-size-sm;
+
+    &_error {
+        border-color: $color-red;
+
+        &:focus {
+            outline-color: $color-red;
+        }
+    }
+}
+
+.__submit {
+    width: 150px;
+    font-size: 14px;
+}
+
+.__error-message {
+    height: 18px;
+    color: $color-red;
+    margin-bottom: 15px;
+
+    &-text {
+        &::before {
+           content: '*';
+        }
+    }
+
+}
