@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import style from './style.module.scss';
 
-export const ButtonCustom = ({ onClick, className, children, ...outherProps}) => (
+export const ButtonCustom = ({ onClick, className, children, buttonRef, ...outherProps }) => (
     <button 
         onClick={onClick} 
         className={ClassNames(
@@ -11,13 +11,15 @@ export const ButtonCustom = ({ onClick, className, children, ...outherProps}) =>
             { [className]: className }
         )}
         {...outherProps}
+        ref={buttonRef}
     >
         {children}
     </button>
 );
 
 ButtonCustom.propTypes = {
-    onClick: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
     className: PropTypes.string,
+    buttonRef: PropTypes.oneOfType([PropTypes.object, PropTypes.func]),
     children: PropTypes.node.isRequired
 };
