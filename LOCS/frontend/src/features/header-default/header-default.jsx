@@ -13,7 +13,7 @@ const paths = {
     MAIN_PATH: '/',
     LOGIN_PATH: '/login',
     REGISTRATION_PATH: '/registration',
-    PROFILE_PATH: '/profile',
+    PROFILE_PATH: '/profile/visitor/info',
 }
 
 const HeaderTemplate = ({ children }) => (

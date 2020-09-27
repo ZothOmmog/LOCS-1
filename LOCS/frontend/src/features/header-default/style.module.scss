@@ -7,6 +7,7 @@
     background-color: $background-color-header;
     padding: 5px;
     box-shadow: $box-shadow-offset;
+    overflow: auto;
 
     &__logo {
         display: flex;
