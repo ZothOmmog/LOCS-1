@@ -1,12 +1,13 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-// import { useSelector } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import style from './style.module.scss';
 import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
-import { NavLinkBordered, NavLinkColored, NavLinkProfile, ButtonColored } from '~/ui/molecules';
+import { NavLinkBordered, NavLinkProfile } from '~/ui/molecules';
 import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
+import { Login } from '../login';
+import { authSelectors } from '~/redux/common-slices/auth-slice';
 
 const paths = {
     MAIN_PATH: '/',
@@ -34,10 +35,9 @@ HeaderTemplate.propTypes = {
 
 export const HeaderDefault = () => {
     const { pathname } = useLocation();
-    // const isAuth = useSelector( (state) => state.auth.isAuth ); TODO сделать, чтобы так работало
-    // const name = useSelector(myNameSelector);
-    const isAuth = false;
-    const name = null;
+    const isAuth = useSelector(authSelectors.isAuthSelector);
+    const name = useSelector(authSelectors.userNickSelector);
+    const urlPicture = useSelector(authSelectors.userUrlPictureSelector);
 
     return (
         <HeaderTemplate>
@@ -51,9 +51,11 @@ export const HeaderDefault = () => {
                 <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname === paths.PROFILE_PATH} />
             ) : (
                 <Navbar>
-                    <ButtonColored to={paths.LOGIN_PATH} active={pathname === paths.LOGIN_PATH}>
-                        Вход
-                    </ButtonColored>
+                    <>
+                        {isAuth ? (
+                            <NavLinkProfile imgPath={urlPicture} name={name} />
+                        ): <Login />}
+                    </>
                     <NavLinkBordered to={paths.REGISTRATION_PATH} active={pathname === paths.REGISTRATION_PATH}>
                         Регистрация
                     </NavLinkBordered>
