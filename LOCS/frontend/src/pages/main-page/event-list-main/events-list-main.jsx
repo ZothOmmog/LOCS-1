@@ -11,7 +11,7 @@ import { useFilterEvents } from './use-filter-events';
 const EventListMainView = ({ eventsData }) => (
     <EventList>
         {eventsData.map(event => (
-            <NavLinkCustom to={`/events/${event.id}`}>
+            <NavLinkCustom to={`/events/${event.id}`} key={event.id}>
                 <EventProfileShort
                     date={'Когда-то'}
                     img={event.img ? event.img : eventProfileMockImg}
