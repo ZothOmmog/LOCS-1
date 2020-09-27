@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import style from './style.module.scss';
-import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
+import { Logo, Navbar, LinkCustom } from '~/ui/atoms';
 import { NavLinkBordered, NavLinkProfile } from '~/ui/molecules';
 import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
 import { Login } from '../login';
@@ -41,10 +41,10 @@ export const HeaderDefault = () => {
 
     return (
         <HeaderTemplate>
-            <NavLinkCustom to={'/'} className={style['header__nav-link-custom']}>
+            <LinkCustom to={'/'} className={style['header__link-custom']}>
                 <Logo />
                 <span className={style['header__title']}>Locs</span>
-            </NavLinkCustom>
+            </LinkCustom>
             <ToggleTagsMenu />
             <input type='search' placeholder='MOCK SEARCH' />
             {isAuth ? (

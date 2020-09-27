@@ -1,38 +1,24 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Switch, Route, Redirect } from 'react-router-dom';
 import { MainPage } from './main-page';
+import { ProfileVisitorInfoPage } from './profile-visitor-info-page';
 
 export const Routes = () => (
     <Switch>
-        <Route 
-            exact path='/' 
-            render={({ location }) => (
-                <MainPage path={location.pathname} />
-            )}
-        />
-        <Route 
-            path='/login' 
-            render={({ location }) => (
-                <div>Страница с логином</div>
-            )}
-        />
-        <Route 
-            path='/registration' 
-            render={({ location }) => (
-                <div>Страница с регистрацией</div>
-            )}
-        />
-        <Route 
-            path='/profile' 
-            render={({ location }) => (
-                <div>Страница с профилем пользователя</div>
-            )}
-        />
-        <Route 
-            exact path='/map' 
-            render={({ location }) => (
-                <div>Страница с картой</div>
-            )}
-        />
+        <Route exact path='/'>
+            <MainPage />
+        </Route>
+        <Route path='/registration'>
+            <div>Страница с регистрацией</div>
+        </Route>
+        <Route path='/profile/visitor/info'>
+            <ProfileVisitorInfoPage />
+        </Route>
+        <Route exact path='/map'>
+            <div>Страница с картой</div>
+        </Route>
+        <Route path='*'>
+            <Redirect to='/' />
+        </Route>
     </Switch>
 );

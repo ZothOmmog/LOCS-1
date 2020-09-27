@@ -2,9 +2,9 @@ import React from 'react';
 // import PropTypes from 'prop-types';
 
 //TODO реализовать страницу профиля пользователя
-export const ProfileTemplate = ({ children }) => (
+export const ProfileVisitorInfoTemplate = ({ children }) => (
     <div>
-        Тут будет страница профиля пользователя
+        {children}
     </div>
 );
 
