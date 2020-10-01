@@ -14,6 +14,7 @@ const paths = {
     LOGIN_PATH: '/login',
     REGISTRATION_PATH: '/registration',
     PROFILE_PATH: '/profile/visitor/info',
+    PROFILE_PATH_FOR_ACTIVE: '/profile',
 }
 
 const HeaderTemplate = ({ children }) => (
@@ -32,12 +33,11 @@ const HeaderTemplate = ({ children }) => (
 HeaderTemplate.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired
 };
-
 export const HeaderDefault = () => {
     const { pathname } = useLocation();
     const isAuth = useSelector(authSelectors.isAuthSelector);
-    const name = useSelector(authSelectors.userNickSelector);
-    const urlPicture = useSelector(authSelectors.userUrlPictureSelector);
+    const name = useSelector(authSelectors.visitorNickSelector);
+    const urlPicture = useSelector(authSelectors.visitorUrlPictureSelector);
 
     return (
         <HeaderTemplate>
@@ -48,12 +48,12 @@ export const HeaderDefault = () => {
             <ToggleTagsMenu />
             <input type='search' placeholder='MOCK SEARCH' />
             {isAuth ? (
-                <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname === paths.PROFILE_PATH} />
+                <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname.includes(paths.PROFILE_PATH_FOR_ACTIVE)} />
             ) : (
                 <Navbar>
                     <>
                         {isAuth ? (
-                            <NavLinkProfile imgPath={urlPicture} name={name} />
+                            <NavLinkProfile to={paths.PROFILE_PATH} imgPath={urlPicture} name={name} />
                         ): <Login />}
                     </>
                     <NavLinkBordered to={paths.REGISTRATION_PATH} active={pathname === paths.REGISTRATION_PATH}>

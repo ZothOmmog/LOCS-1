@@ -1,0 +1,49 @@
+@import '~/styles/variables.scss';
+
+.button-with-drop-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &:hover {
+        .__drop-list {
+            height: auto;
+            box-shadow: $box-shadow-offset;
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .__button {
+            color: $color-orange;
+        }
+
+    }
+    
+    .__drop-list {
+        border-radius: $border-radius;
+        background-color: $color-white;
+        padding-left: 16px;
+        padding-right: 16px;
+        margin-top: 56px;
+        height: 0;
+        position: absolute;
+        list-style: none;
+        overflow: hidden;
+        transition-duration: $transition-duration;
+        
+    }
+
+    .__drop-list-item {
+        transition-duration: $transition-duration;
+        border-radius: 8px;
+        padding: 8px;
+
+        &:hover {
+            background-color: $color-gray;
+        }
+    }
+
+    .__drop-list-item + .__drop-list-item {
+        margin-top: 8px;
+    }
+}
