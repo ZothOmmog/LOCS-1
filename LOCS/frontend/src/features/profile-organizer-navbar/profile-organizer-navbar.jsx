@@ -1,7 +1,7 @@
 import React from 'react';
 import style from './style.module.scss';
 import classNames from 'classnames';
-import { ButtonCustom, NavLinkCustom } from '~/ui/atoms';
+import { ButtonCustom, LinkCustom, NavLinkCustom } from '~/ui/atoms';
 import { useDispatch } from 'react-redux';
 import { authActions } from '~/redux/common-slices/auth-slice';
 import { ButtonWithDropList } from '~/ui/molecules';
@@ -15,16 +15,24 @@ const ProfileOrganizerNavbarView = ({ logoutCallback, eventsPages, currentEventP
         </NavLinkCustom>
         <ButtonWithDropList
             componentsForList={eventsPages.map(
-                ([ name, path ]) => (
-                <NavLinkCustom to={path} className={style['__list-events-item']} activeClassName={style['__list-events-item_active']}>
-                   {name} 
-                </NavLinkCustom>
-            ))}
+                ([ name, path ]) => ({
+                    renderProp: className => (
+                        <LinkCustom to={path} className={classNames(style['__list-events-item'], className)}>
+                        {name}
+                        </LinkCustom>
+                    ),
+                    key: path
+                })
+            )}
             className={style['__drop-list']}
         >
-            {className => (
-                <ButtonCustom className={classNames(style['__item'], className)}>
-                    {currentEventPage}
+            {className => currentEventPage[1] ? (console.log(currentEventPage[1]),
+                <LinkCustom to={currentEventPage[1]} className={classNames(style['__item'], style['__item_active'], style['__item_button'], className)}>
+                    {currentEventPage[0]} 
+                </LinkCustom>
+            ) : (//console.log(currentEventPage[1]),
+                <ButtonCustom className={classNames(style['__item'], style['__item_button'], className)}>
+                    {currentEventPage[0]}
                 </ButtonCustom>
             )}
         </ButtonWithDropList>
@@ -39,8 +47,6 @@ export const ProfileOrganizerNavbar = () => {
     const logoutCallback = () => dispatch(authActions.logout());
     const { pathname } = useLocation();
 
-    const eventPageType = pathname.split('/')[4];
-
     const eventsPages = [
         ['Список событий', '/profile/organizer/events/list'],
         ['Создать событие', '/profile/organizer/events/create'],
@@ -50,10 +56,11 @@ export const ProfileOrganizerNavbar = () => {
 
     const currentEventPage = (
         eventsPages.find(
-            (item, index) => item[1] === pathname ? (console.log(eventPageType), eventsPages.splice(index, 1), true) : false
+            (item, index) => item[1] === pathname ? (eventsPages.splice(index, 1), true) : false
         ) ||
         ['Мои события']
-    )[0];
+    );
+    eventsPages.sort();
 
     return (
         <ProfileOrganizerNavbarView
