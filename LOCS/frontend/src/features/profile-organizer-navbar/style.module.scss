@@ -17,11 +17,6 @@
             color: $color-orange;
         }
         
-        &_button {
-            padding: 16px;
-            margin: 0px;
-        }
-        
         & + & {
             margin-left: 64px;
         }
@@ -33,6 +28,14 @@
                 color: $color-black;
             }
         }
+
+        &_button {
+            text-align: left;
+        }
+    }
+
+    .__list-events-item {
+        width: 260px;
     }
     
     .__exit {

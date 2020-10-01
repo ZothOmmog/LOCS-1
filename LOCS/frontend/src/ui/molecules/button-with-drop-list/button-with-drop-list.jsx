@@ -10,9 +10,7 @@ export const ButtonWithDropList = ({ children, componentsForList, className }) =
         {children(style['__button'])}
         <ul className={style['__drop-list']}>
             {componentsForList.map(
-                (item, index) => (
-                    children ? <li className={style['__drop-list-item']}>{item}</li> : index > 0 ? <li className={style['__drop-list-item']}>{item}</li> : null
-                )
+                ({ renderProp, key }) => <li key={key} className={style['__drop-list-item']}>{renderProp(style['__drop-list-item-inner'])}</li>
             )}
         </ul>
     </div>
