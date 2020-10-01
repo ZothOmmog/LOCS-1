@@ -2,7 +2,7 @@ import React from 'react';
 import img from './MOCK_IMG.jpg';
 import { EventProfileShort } from './event-profile-short';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { NavLinkCustom } from '../nav-link-custom';
+import { LinkCustom } from '../link-custom';
 
 export default {
     title: 'atoms__EventProfileShort',
@@ -20,13 +20,13 @@ export const Redular = () => (
 
 export const WithLink = () => (
     <Router>
-        <NavLinkCustom to='#'>
+        <LinkCustom to='#'>
             <EventProfileShort
                 img={img}
                 name='Аниме Пати'
                 date='29.09.2020'
                 location='Улица Пушкина, Дом Колотушкина'
             />
-        </NavLinkCustom>
+        </LinkCustom>
     </Router>
 );

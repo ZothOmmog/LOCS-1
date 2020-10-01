@@ -7,3 +7,4 @@ export { ButtonGray } from './button-gray';
 export { ButtonBordered } from './button-bordered';
 export { EventList } from './event-list';
 export { ButtonBlack } from './button-black';
+export { ButtonWithDropList } from './button-with-drop-list';

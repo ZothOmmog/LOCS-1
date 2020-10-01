@@ -1,0 +1,19 @@
+@import '~/styles/variables.scss';
+
+.__profile-visitor-main-info-view {
+    display: flex;
+    align-items: center;
+}
+
+.__picture {
+    max-width: 128px;
+    max-height: 128px;
+    border-radius: 64px;
+}
+
+.__nick {
+    font-family: $font-main;
+    font-size: $font-size-xl;
+    font-weight: lighter;
+    margin-left: 16px;
+}

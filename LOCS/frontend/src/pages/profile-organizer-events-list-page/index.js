@@ -1,0 +1,1 @@
+export { ProfileOrganizerEventsListPage } from './profile-organizer-events-list-page';

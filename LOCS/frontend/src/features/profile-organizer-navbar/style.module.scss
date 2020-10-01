@@ -1,0 +1,50 @@
+@import '~/styles/variables.scss';
+
+.profile-organizer-navbar {
+    display: flex;
+    position: relative;
+    width: 100%;
+    
+    .__item {
+        font-weight: lighter;
+        font-size: $font-size-lg;
+        padding: 8px;
+        margin: 8px;
+        transition: color $transition-duration;
+        color: $color-black;
+        
+        &:hover {
+            color: $color-orange;
+        }
+        
+        &_button {
+            padding: 16px;
+            margin: 0px;
+        }
+        
+        & + & {
+            margin-left: 64px;
+        }
+        
+        &_active {
+            border-bottom: 2px solid #000;
+    
+            &:hover {
+                color: $color-black;
+            }
+        }
+    }
+    
+    .__exit {
+        position: absolute;
+        right: 0;
+        padding: 8px;
+        margin: 8px;
+        color: $color-red;
+        transition: color $transition-duration;
+    
+        &:hover {
+            color: rgba($color: $color-red, $alpha: 0.5);
+        }
+    }
+}

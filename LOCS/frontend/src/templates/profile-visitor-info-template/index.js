@@ -1,0 +1,1 @@
+export { ProfileVisitorInfoTemplate } from './profile-visitor-info-template';

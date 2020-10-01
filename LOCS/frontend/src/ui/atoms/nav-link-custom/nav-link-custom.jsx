@@ -1,24 +1,18 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import style from './style.module.scss';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
-export const NavLinkCustom = ({ to, className, children, ...outherProps}) => (
-    <Link 
-        to={to} 
+export const NavLinkCustom = ({ to, className, children, activeClassName, ...outherProps}) => (
+    <NavLink 
+        exact to={to} 
         className={ClassNames(
-            style['nav-link-custom'],
+            style['link-custom'],
             { [className]: className }
         )}
+        activeClassName={activeClassName}
         {...outherProps}
     >
         {children}
-    </Link>
+    </NavLink>
 );
-
-NavLinkCustom.propTypes = {
-    to: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    children: PropTypes.node.isRequired
-};

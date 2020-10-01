@@ -7,6 +7,7 @@
     background-color: $background-color-header;
     padding: 5px;
     box-shadow: $box-shadow-offset;
+    overflow: auto;
 
     &__logo {
         display: flex;
@@ -26,7 +27,7 @@
 }
         
 .header {
-    &__nav-link-custom {
+    &__link-custom {
         display: flex;
         align-items: center;
     }

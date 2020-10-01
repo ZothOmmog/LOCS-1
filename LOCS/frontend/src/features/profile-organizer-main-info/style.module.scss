@@ -1,0 +1,19 @@
+@import '~/styles/variables.scss';
+
+.__profile-organizer-main-info {
+    display: flex;
+    align-items: center;
+}
+
+.__picture {
+    max-width: 128px;
+    max-height: 128px;
+    border-radius: 32px;
+}
+
+.__name {
+    font-family: $font-main;
+    font-size: $font-size-xl;
+    font-weight: lighter;
+    margin-left: 16px;
+}

@@ -1,0 +1,19 @@
+@import '~/styles/variables.scss';
+
+.__header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.__main-info {
+    margin: 16px 0px 16px 16px;
+}
+
+.__toggle-link {
+    margin-top: 16px;
+    margin-right: 16px;
+}
+
+.__navbar {
+    margin-top: 45px;
+}

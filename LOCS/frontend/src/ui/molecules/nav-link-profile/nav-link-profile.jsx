@@ -3,10 +3,10 @@ import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import style from './style.module.scss';
 import imgDefault from './img-default.jpg';
-import { NavLinkCustom } from '~/ui/atoms';
+import { LinkCustom } from '~/ui/atoms';
 
 export const NavLinkProfile = ({ to, name, imgPath, active }) => (
-    <NavLinkCustom to={to}>
+    <LinkCustom to={to}>
         <div className={ClassNames(
             style['nav-link-profile'],
             { [style['nav-link-profile_active']]: active }
@@ -22,7 +22,7 @@ export const NavLinkProfile = ({ to, name, imgPath, active }) => (
                 alt='Изображение профиля'
             />
         </div>
-    </NavLinkCustom>
+    </LinkCustom>
 );
 
 NavLinkProfile.propTypes = {
