@@ -1,0 +1,18 @@
+@import '~/styles/variables.scss';
+
+.formik-input-custom {
+    border-radius: 30px;
+    padding: 8px;
+    border: 2px solid $color-black;
+    font-family: $font-main;
+    font-size: $font-size-sm;
+
+}
+
+._error {
+    border-color: $color-red;
+
+    &:focus {
+        outline-color: $color-red;
+    }
+}

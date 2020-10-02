@@ -9,7 +9,7 @@ export const DefaultTemplate = ({ children }) => (
         <div className={style['default-template__body']}>
             {children}
             <div className={style['default-template__map-link']}>
-                <NavLinkMap />
+                <NavLinkMap to='/map' />
             </div>
         </div>
     </div>
