@@ -1,0 +1,1 @@
+export { ProfileOrganizerInfoPage } from './profile-organizer-info-page';

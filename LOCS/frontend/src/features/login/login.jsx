@@ -35,49 +35,48 @@ export const Login = () => {
                 setIsOpen={setIsOpenPopup}
                 windowClass={style['login-popup']}
             >
-                
-                    <Formik
-                        initialValues={{ login: '', password: '' }}
-                        validationSchema={loginSchema}
-                        onSubmit={({ login, password }, { setSubmitting }) => {
-                            fetchLogin(login, password);
-                            setSubmitting(false);
-                        }}
-                    >
-                        {({ isSubmitting, errors, touched }) => (
-                            <Form>
-                                <div className={style['__inner']}>
-                                    <Field 
-                                        type='text'
-                                        name='login'
-                                        className={classNames(
-                                            style['__field'],
-                                            { [style['__field_error']]: errors.login && touched.login }
-                                        )}
-                                        placeholder='Логин'
-                                    />
-                                    <div className={style['__error-message']}>
-                                        <ErrorMessage name='login' component='div' className={style['__error-message-text']} />
-                                    </div>
-                                    <Field 
-                                        type='password'
-                                        name='password'
-                                        className={classNames(
-                                            style['__field'],
-                                            { [style['__field_error']]: errors.password && touched.password }
-                                        )}
-                                        placeholder='Пароль'
-                                    />
-                                    <div className={style['__error-message']}>
-                                        <ErrorMessage name='password' component='div' className={style['__error-message-text']}/>
-                                    </div>
-                                    <ButtonBlack type="submit" disabled={isSubmitting} className={style['__submit']}>
-                                        Войти
-                                    </ButtonBlack>
+                <Formik
+                    initialValues={{ login: '', password: '' }}
+                    validationSchema={loginSchema}
+                    onSubmit={({ login, password }, { setSubmitting }) => {
+                        fetchLogin(login, password);
+                        setSubmitting(false);
+                    }}
+                >
+                    {({ isSubmitting, errors, touched }) => (
+                        <Form>
+                            <div className={style['__inner']}>
+                                <Field 
+                                    type='text'
+                                    name='login'
+                                    className={classNames(
+                                        style['__field'],
+                                        { [style['__field_error']]: errors.login && touched.login }
+                                    )}
+                                    placeholder='Логин'
+                                />
+                                <div className={style['__error-message']}>
+                                    <ErrorMessage name='login' component='div' className={style['__error-message-text']} />
                                 </div>
-                            </Form>
-                        )}
-                    </Formik>
+                                <Field 
+                                    type='password'
+                                    name='password'
+                                    className={classNames(
+                                        style['__field'],
+                                        { [style['__field_error']]: errors.password && touched.password }
+                                    )}
+                                    placeholder='Пароль'
+                                />
+                                <div className={style['__error-message']}>
+                                    <ErrorMessage name='password' component='div' className={style['__error-message-text']}/>
+                                </div>
+                                <ButtonBlack type="submit" disabled={isSubmitting} className={style['__submit']}>
+                                    Войти
+                                </ButtonBlack>
+                            </div>
+                        </Form>
+                    )}
+                </Formik>
             </PopupWindow>
         </div>
     );

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import style from './style.module.scss';
-import { NavLinkCustom } from '~/ui/atoms';
+import { LinkCustom } from '~/ui/atoms';
 
 export const NavLinkBordered = ({ to, active, className, children, ...outherProps}) => (
-    <NavLinkCustom 
+    <LinkCustom 
         to={to}
         className={ClassNames(
             style['nav-link-bordered'],
@@ -16,7 +16,7 @@ export const NavLinkBordered = ({ to, active, className, children, ...outherProp
         {...outherProps}
     >
         {children}
-    </NavLinkCustom>
+    </LinkCustom>
 );
 
 NavLinkBordered.propTypes = {

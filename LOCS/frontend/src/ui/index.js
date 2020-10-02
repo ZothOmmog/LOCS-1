@@ -1,5 +1,5 @@
 export { 
-    NavLinkCustom,
+    LinkCustom,
     EventProfileShort,
     Navbar,
     ButtonCustom

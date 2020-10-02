@@ -1,5 +1,5 @@
 import React from 'react';
-import { EventList, EventProfileShort, NavLinkCustom } from '~/ui';
+import { EventList, EventProfileShort, LinkCustom } from '~/ui';
 import { useSelector, useDispatch } from 'react-redux';
 import { eventsListMainSelectors, eventsListMainThunks } from './events-list-main-slice';
 import { Loader } from '~/features/loader';
@@ -11,14 +11,14 @@ import { useFilterEvents } from './use-filter-events';
 const EventListMainView = ({ eventsData }) => (
     <EventList>
         {eventsData.map(event => (
-            <NavLinkCustom to={`/events/${event.id}`} key={event.id}>
+            <LinkCustom to={`/events/${event.id}`} key={event.id}>
                 <EventProfileShort
                     date={'Когда-то'}
                     img={event.img ? event.img : eventProfileMockImg}
                     location={'Где-то'}
                     name={event.name}
                 />
-            </NavLinkCustom>
+            </LinkCustom>
         ))}
     </EventList>
 );

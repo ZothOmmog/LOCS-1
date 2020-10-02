@@ -1,0 +1,11 @@
+@import '~/styles/variables.scss';
+
+.link-custom {
+    text-decoration: none;
+    font-family: $font-link-custom;
+    font-weight: lighter;
+    font-size: 20px;
+    white-space: nowrap;
+    display: inline-block;
+    color: $color-black;
+}

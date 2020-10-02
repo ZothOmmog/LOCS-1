@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ClassNames from 'classnames';
 import style from './style.module.scss';
-import { NavLinkCustom } from '~/ui/atoms';
+import { LinkCustom } from '~/ui/atoms';
 
 export const NavLinkColored = ({ to, active, className, children, ...outherProps}) => (
-    <NavLinkCustom 
+    <LinkCustom 
         to={to}
         className={ClassNames(
             style['nav-link-colored'],
@@ -16,7 +16,7 @@ export const NavLinkColored = ({ to, active, className, children, ...outherProps
         {...outherProps}
     >
         {children}
-    </NavLinkCustom>
+    </LinkCustom>
 );
 
 NavLinkColored.propTypes = {

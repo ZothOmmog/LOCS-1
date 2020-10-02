@@ -1,6 +1,7 @@
 //common
 $font-main: 'Roboto', sans-serif;
 
+$font-size-xl: 40px;
 $font-size-lg: 20px;
 $font-size-sm: 16px;
 
@@ -18,8 +19,8 @@ $border-radius: 16px;
 $box-shadow-offset: 0 0 10px 0 rgba($color: $color-black, $alpha: 0.75);
 //======
 
-//nav-link-custom
-$font-nav-link-custom: $font-main;
+//link-custom
+$font-link-custom: $font-main;
 //===============
 
 //nav-link-bordered

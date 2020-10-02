@@ -1,0 +1,21 @@
+.default-template {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+
+    &__body {
+        flex-grow: 1;
+        margin-top: 40px;
+        display: flex;
+        justify-content: center;
+        position: relative;
+    }
+
+    &__map-link {
+        display: inline-block;
+        position: fixed;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}

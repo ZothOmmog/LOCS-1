@@ -1,0 +1,29 @@
+@import '~/styles/variables.scss';
+
+.__list-custom {
+    margin: 0;
+    padding: 0;
+}
+
+.__record {
+    display: flex;
+    font-family: $font-main;
+    font-size: 32px;
+
+    & + & {
+        margin-top: 16px;
+    }
+}
+
+.__label {
+    &::after {
+        content: ':';
+    }
+
+    flex-basis: 250px;
+}
+
+.__info {
+    color: #000000a1;
+    flex-basis: 250px;
+}

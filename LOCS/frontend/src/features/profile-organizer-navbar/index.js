@@ -1,0 +1,1 @@
+export { ProfileOrganizerNavbar } from './profile-organizer-navbar';

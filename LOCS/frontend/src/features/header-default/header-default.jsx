@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import style from './style.module.scss';
-import { Logo, Navbar, NavLinkCustom } from '~/ui/atoms';
+import { Logo, Navbar, LinkCustom } from '~/ui/atoms';
 import { NavLinkBordered, NavLinkProfile } from '~/ui/molecules';
 import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
 import { Login } from '../login';
@@ -13,7 +13,8 @@ const paths = {
     MAIN_PATH: '/',
     LOGIN_PATH: '/login',
     REGISTRATION_PATH: '/registration',
-    PROFILE_PATH: '/profile',
+    PROFILE_PATH: '/profile/visitor/info',
+    PROFILE_PATH_FOR_ACTIVE: '/profile',
 }
 
 const HeaderTemplate = ({ children }) => (
@@ -32,28 +33,27 @@ const HeaderTemplate = ({ children }) => (
 HeaderTemplate.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired
 };
-
 export const HeaderDefault = () => {
     const { pathname } = useLocation();
     const isAuth = useSelector(authSelectors.isAuthSelector);
-    const name = useSelector(authSelectors.userNickSelector);
-    const urlPicture = useSelector(authSelectors.userUrlPictureSelector);
+    const name = useSelector(authSelectors.visitorNickSelector);
+    const urlPicture = useSelector(authSelectors.visitorUrlPictureSelector);
 
     return (
         <HeaderTemplate>
-            <NavLinkCustom to={'/'} className={style['header__nav-link-custom']}>
+            <LinkCustom to={'/'} className={style['header__link-custom']}>
                 <Logo />
                 <span className={style['header__title']}>Locs</span>
-            </NavLinkCustom>
+            </LinkCustom>
             <ToggleTagsMenu />
             <input type='search' placeholder='MOCK SEARCH' />
             {isAuth ? (
-                <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname === paths.PROFILE_PATH} />
+                <NavLinkProfile to={paths.PROFILE_PATH} name={name} active={pathname.includes(paths.PROFILE_PATH_FOR_ACTIVE)} />
             ) : (
                 <Navbar>
                     <>
                         {isAuth ? (
-                            <NavLinkProfile imgPath={urlPicture} name={name} />
+                            <NavLinkProfile to={paths.PROFILE_PATH} imgPath={urlPicture} name={name} />
                         ): <Login />}
                     </>
                     <NavLinkBordered to={paths.REGISTRATION_PATH} active={pathname === paths.REGISTRATION_PATH}>
