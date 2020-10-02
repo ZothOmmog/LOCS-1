@@ -6,7 +6,6 @@ import { useEffect } from 'react';
 import { Loader } from '../loader';
 
 function AppView({ isLoading }) {
-    
 
     return (
         <Loader isLoading={isLoading}>
