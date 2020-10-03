@@ -4,93 +4,96 @@ var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
-// async function takeObj(token) {
-//     let data;
-//     await DataBase.TakeToken(token).then(function(val) {
-//         data = val;
-//     });
-//     return data;
-// }
 
-exports.personAccount = async function(request, response) {
-    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-    if (userId) {
-        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-        if (Role == 2 || Role == 0) {
-            try {
+exports.personAccount = async function(request, response, next) {
+try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 2 || Role == 0) {
+
                 let data;
                 let countSub;
+
                 await DataBase.countSub(userId).then(function(val) {
                     countSub = val;
-                }).catch(function() { data = false });
+                }).catch(function(err) {   next({err : err, code : 500}).end(); });
+
                 await DataBase.organizerData(userId).then(function(val) {
                     data = val;
-                }).catch(function() { data = false });
+                }).catch(function(err) {   next({err : err, code : 500}).end(); });
+
                 if (data && countSub) {
                     data.countSub = countSub;
                     response.json({ data });
                 } else {
                     response.status(400).end("acc error");
                 }
-            } catch (err) {
-                response.status(500).end(err);
-            }
 
-        } else {
-            response.status(403).end("have not permissions");
-        }
-    } else {
-        return response.status(401).end();
-    };
-};
-
-exports.delete = async function(request, response) {
-    const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-    if (userId) {
-        const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-        //организатор или админ
-        if (Role == 2 || Role == 0) {
-            try {
-                let idEvent = request.body.idEvent;
-                var Check;
-                await DataBase.deleteEvent(idEvent, userId).then(function(val) {
-                    Check = val;
-                }).catch(function() { Check = false });
-                if (Check) {
-                    await DataBase.deleteEventTag(idEvent).then(function(val) {
-                        Check = val;
-                    });
-                    response.status(200).end("has been deleted");
-                } else {
-                    response.status(400).end("Deleted");
-                }
-            } catch (err) {
-                response.status(500).end(err);
+            } else {
+                response.status(403).end("have not permissions");
             }
         } else {
-            response.status(403).end("have not permissions");
-        }
-    } else {
-        return response.status(401).end();
+            return response.status(401).end();
+        };
+    } catch(err){
+        next({err : err, code : 500});
     }
 };
 
-exports.search = async function(request, response) {
+exports.delete = async function(request, response, next) {
+    try {
+            const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+            if (userId) {
+                const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+                //организатор или админ
+                if (Role == 2 || Role == 0) {
+
+                        let idEvent = request.body.idEvent;
+                        var Check;
+
+                        await DataBase.deleteEvent(idEvent, userId).then(function(val) {
+                            Check = val;
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
+                        if (Check) {
+                            await DataBase.deleteEventTag(idEvent).then(function(val) {
+                                Check = val;
+                            }).catch(function(err){  next({err : err, code : 500}).end(); });
+                            response.status(200).end("has been deleted");
+                        } else {
+                            response.status(400).end("Deleted");
+                        }
+                
+                } else {
+                    response.status(403).end("have not permissions");
+                }
+            } else {
+                return response.status(401).end();
+            }
+        } catch (err) {
+            next({err : err, code : 500});
+    }
+};
+
+exports.search = async function(request, response, next) {
     try {
         let word = request.body.word;
         let data;
+
         await DataBase.searchOrg(word).then(function(val) {
             data = val;
-        }).catch(function() {
-            response.status(500).end("search error");
+        }).catch(function(err) {
+            next({err : err, code : 500}).end();
         });
+
         response.json(data);
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.searchLimit = async function(request, response) {
+exports.searchLimit = async function(request, response, next) {
     try {
         let word = request.body.word;
         let count;
@@ -102,12 +105,16 @@ exports.searchLimit = async function(request, response) {
         let data;
         await DataBase.countSearchOrg(word).then(function(val) {
             count = val;
+        }).catch(function(err) {
+            next({err : err, code : 500}).end();
         });
+
         await DataBase.searchOrglimit(word, limit, offset).then(function(val) {
             data = val;
-        }).catch(function() {
-            response.status(500).end("search error");
+        }).catch(function(err) {
+            next({err : err, code : 500}).end();
         });
+
         let users = []
         for (i in data) {
             users.push(data[i].searchorg);
@@ -115,22 +122,24 @@ exports.searchLimit = async function(request, response) {
 
         response.json({ count, users });
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.mySubscribers = async function(request, response) {
+exports.mySubscribers = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 2 || Role == 0) {
                 let data;
+
                 await DataBase.subscribers(userId).then(function(val) {
                     data = val;
-                }).catch(function() {
-                    response.status(500).end("sub org error");
+                }).catch(function(err) {
+                    next({err : err, code : 500}).end();
                 });
+
                 response.json(data);
             } else {
                 response.status(403).end("have not permissions");
@@ -139,42 +148,45 @@ exports.mySubscribers = async function(request, response) {
             return response.status(401).end();
         };
     } catch (err) {
-        response.status(500).end(err);
+          next({err : err, code : 500});
     }
 };
 
 
 
-exports.mySubscribersLimit = async function(request, response) {
+exports.mySubscribersLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 2 || Role == 0) {
                 let count;
+
                 await DataBase.countSubscribers(userId).then(function(val) {
                     count = val;
+                }).catch(function(err) {
+                    next({err : err, code : 500}).end();
                 });
+
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
                 let data;
+
                 await DataBase.subscribersLimit(userId, limit, offset).then(function(val) {
                     data = val;
-                }).catch(function() {
-                    response.status(500).end("sub org error");
+                }).catch(function(err) {
+                      next({err : err, code : 500}).end();
                 });
+
                 let subscribers = []
                 for (i in data) {
                     subscribers.push(data[i].subscribers);
                 }
 
                 response.json({ count, subscribers });
-
-
-
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -182,12 +194,12 @@ exports.mySubscribersLimit = async function(request, response) {
             return response.status(401).end();
         };
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.subscribers = async function(request, response) {
+exports.subscribers = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -195,21 +207,21 @@ exports.subscribers = async function(request, response) {
             let data;
             await DataBase.subscribers(orgId).then(function(val) {
                 data = val;
-            }).catch(function() {
-                response.status(500).end("sub org error");
+            }).catch(function(err) {
+                next({err : err, code : 500}).end();
             });
             response.json(data);
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
 
-exports.subscribersLimit = async function(request, response) {
+exports.subscribersLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -221,14 +233,19 @@ exports.subscribersLimit = async function(request, response) {
             offset = (offset - 1) * limit;
             let count;
             let data;
+
             await DataBase.countSubscribers(orgId).then(function(val) {
                 count = val;
+            }).catch(function(err) {
+                next({err : err, code : 500}).end();
             });
+
             await DataBase.subscribersLimit(orgId, limit, offset).then(function(val) {
                 data = val;
-            }).catch(function() {
-                response.status(500).end("sub org error");
+            }).catch(function(err) {
+                next({err : err, code : 500}).end();
             });
+
             let users = [];
             for (i in data) {
                 users.push(data[i].subscribers);
@@ -238,12 +255,12 @@ exports.subscribersLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.organizerAccount = async function(request, response) {
+exports.organizerAccount = async function(request, response, next) {
     try {
         let orgId = request.body.org;
         let data;
@@ -251,38 +268,42 @@ exports.organizerAccount = async function(request, response) {
         let statusSub;
         await DataBase.countSub(orgId).then(function(val) {
             countSub = val;
-        }).catch(function() { data = false });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
         await DataBase.organizerData(orgId).then(function(val) {
             data = val;
-        }).catch(function() { data = false });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             await DataBase.subStatus(orgId, userId).then(function(val) {
                 statusSub = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             data.Status = statusSub.substatus;
         }
         if (data && countSub) {
             data.count = countSub;
-
             response.json({ data });
         } else {
             response.status(500).end("acc error");
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.subscribe = async function(request, response) {
+exports.subscribe = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let check;
             let orgId = request.body.org;
+
             await DataBase.subOrg(orgId, userId).then(function(val) {
                 check = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             if (check) {
                 response.status(200).end("has been subscribe");
             } else {
@@ -292,19 +313,21 @@ exports.subscribe = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.unSubscribe = async function(request, response) {
+exports.unSubscribe = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let check;
             let orgId = request.body.org;
+            
             await DataBase.unSubOrg(orgId, userId).then(function(val) {
                 check = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             if (check) {
                 response.status(200).end("has been unsubscribe");
             } else {
@@ -314,18 +337,20 @@ exports.unSubscribe = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500}).end();
     }
 };
 
-exports.mySubscribeList = async function(request, response) {
+exports.mySubscribeList = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let data;
+
             await DataBase.subList(userId).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             if (data) {
                 response.json(data);
             } else {
@@ -335,11 +360,11 @@ exports.mySubscribeList = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.mySubscribeListLimit = async function(request, response) {
+exports.mySubscribeListLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -352,10 +377,12 @@ exports.mySubscribeListLimit = async function(request, response) {
             offset = (offset - 1) * limit;
             await DataBase.countSubList(userId).then(function(val) {
                 count = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             await DataBase.subListLimit(userId, limit, offset).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             if (data) {
                 response.json({ "count": count, data });
             } else {
@@ -365,25 +392,27 @@ exports.mySubscribeListLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+       next({err : err, code : 500}).end();
     }
 };
 
 
-exports.subscribeUserList = async function(request, response) {
+exports.subscribeUserList = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let data;
             let user = request.body.user ? request.body.user : undefined;
             if (user) {
+
                 await DataBase.subList(user).then(function(val) {
                     data = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             } else {
                 await DataBase.subList(userId).then(function(val) {
                     data = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
             }
             if (data) {
                 response.json(data);
@@ -394,12 +423,12 @@ exports.subscribeUserList = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+       next({err : err, code : 500});
     }
 };
 
 
-exports.subscribeUserListLimit = async function(request, response) {
+exports.subscribeUserListLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -414,17 +443,19 @@ exports.subscribeUserListLimit = async function(request, response) {
             if (user) {
                 await DataBase.countSubList(user).then(function(val) {
                     count = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                 await DataBase.subListLimit(user, limit, offset).then(function(val) {
                     data = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             } else {
                 await DataBase.countSubList(userId).then(function(val) {
                     count = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
                 await DataBase.subListLimit(userId, limit, offset).then(function(val) {
                     data = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
             }
             if (data) {
                 let sublist = [];
@@ -441,20 +472,21 @@ exports.subscribeUserListLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+         next({err : err, code : 500});
     }
 };
 
 
 
-exports.myEventsList = async function(request, response) {
+exports.myEventsList = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             let data;
             await DataBase.eventOrgList(userId).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
             if (data) {
                 response.json(data);
             } else {
@@ -465,11 +497,11 @@ exports.myEventsList = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.myEventsListLimit = async function(request, response) {
+exports.myEventsListLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -482,10 +514,10 @@ exports.myEventsListLimit = async function(request, response) {
             let data;
             await DataBase.countEventOrgList(userId).then(function(val) {
                 count = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
             await DataBase.eventOrgListLimit(userId, limit, offset).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
             if (data) {
                 let events = []
                 for (i in data) {
@@ -499,30 +531,30 @@ exports.myEventsListLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
 
-exports.eventsList = async function(request, response) {
+exports.eventsList = async function(request, response, next) {
     try {
         let orgId = request.body.org;
         let data;
         await DataBase.eventOrgList(orgId).then(function(val) {
             data = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
         if (data) {
             response.json(data);
         } else {
             response.status(500).end("user in list sub list");
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.eventsListLimit = async function(request, response) {
+exports.eventsListLimit = async function(request, response, next) {
     try {
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
@@ -534,11 +566,11 @@ exports.eventsListLimit = async function(request, response) {
         let count;
         await DataBase.countEventOrgList(orgId).then(function(val) {
             count = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
 
         await DataBase.eventOrgListLimit(orgId, limit, offset).then(function(val) {
             data = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
 
         if (data) {
             let events = [];
@@ -551,11 +583,11 @@ exports.eventsListLimit = async function(request, response) {
             response.status(500).end("user in list sub list");
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.registration = async function(request, response) {
+exports.registration = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -570,20 +602,19 @@ exports.registration = async function(request, response) {
 
                 await DataBase.checkOrganizationName(organizationName).then(function(val) {
                     checkName = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
 
                 if (checkName == 1) {
                     let data;
                     await DataBase.registationOrganizer(userId, info, organizationName, organizationLink, logo).then(function(val) {
                         data = val;
-                    }).catch(function(e) {
-                        console.log(e);
-                        data = false;
-                    });
+                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                     if (data) {
                         await DataBase.changeTokenToOrg(request.cookies.userRole).then(function(val) {
                             data = val;
-                        });
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                         response.status(200).end("has been registration");
                     } else {
                         response.status(500).end("error registationOrganizer");
@@ -598,13 +629,13 @@ exports.registration = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
 
-exports.createEvent = async function(request, response) {
+exports.createEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -618,23 +649,18 @@ exports.createEvent = async function(request, response) {
                 let timestamp = request.body.timestamp;
                 let datatime = funcs.timeConvert(timestamp);
                 let idEvent;
+
                 await DataBase.addEvent(name, info, link, price, userId, idAddress, datatime).then(function(val) {
                     idEvent = val;
-                }).catch(function(e) {
-                    console.log(e);
-                    idEvent = false;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                 if (idEvent) {
                     let tags = request.body.tags;
                     let check;
                     for (i in tags) {
                         await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
                             check = val;
-                        }).catch(function(e) {
-                            console.log(e);
-                            check = false;
-                            break;
-                        });
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
                     }
                     if (check) {
                         response.status(200).end("has been created");
@@ -651,18 +677,18 @@ exports.createEvent = async function(request, response) {
             return response.status(401).end();
         };
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500}); 
     }
 };
 
 
-exports.searchAddress = async function(request, response) {
+exports.searchAddress = async function(request, response, next) {
     try {
         let word = request.body.word;
         let data;
         await DataBase.searchAddress(word).then(function(val) {
             data = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); });
         let address = [];
         for (i in data) {
             address.push(data[i].searchaddress);
@@ -670,12 +696,12 @@ exports.searchAddress = async function(request, response) {
 
         response.json(address);
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.changeEvent = async function(request, response) {
+exports.changeEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -693,25 +719,16 @@ exports.changeEvent = async function(request, response) {
                 let check;
                 await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress, datatime).then(function(val) {
                     check = val;
-                }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                 if (check.changeevent == 1) {
                     await DataBase.deleteEventTag(idEvent).then(function(val) {
                         check = val;
-                    }).catch(function(val) {
-                        check = false;
-                        console.log(val);
-                    });
+                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
                     for (i in tags) {
                         await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
                             check = val;
-                        }).catch(function(e) {
-                            console.log(e);
-                            check = false;
-                            break;
-                        });
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
                     }
                     if (check) {
                         response.status(200).end("has been change");
@@ -728,12 +745,12 @@ exports.changeEvent = async function(request, response) {
             return response.status(401).end();
         };
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.changeOrgAcc = async function(request, response) {
+exports.changeOrgAcc = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -745,9 +762,8 @@ exports.changeOrgAcc = async function(request, response) {
                 let check;
                 await DataBase.changeDataAboutOrg(userId, orgName, info, link).then(function(val) {
                     check = val;
-                }).catch(function(val) {
-                    check = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+
                 if (check == true) {
                     response.status(200).end("has been changed");
                 } else if (check.constraint.includes("org_name_unique")) {
@@ -764,6 +780,6 @@ exports.changeOrgAcc = async function(request, response) {
             return response.status(401).end();
         };
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
