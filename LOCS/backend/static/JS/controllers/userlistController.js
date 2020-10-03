@@ -14,7 +14,7 @@ const takeObj = funcs.takeObj;
 // }
 
 
-exports.postRegistration = async function(request, response) {
+exports.postRegistration = async function(request, response, next) {
 
     try {
         var CreateTime;
@@ -22,15 +22,18 @@ exports.postRegistration = async function(request, response) {
         var CheckNick = false;
         await DataBase.CheckUser(request.body.mail).then(function(val) {
             CheckMail = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         await DataBase.CheckNick(request.body.nick).then(function(val) {
             CheckNick = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         if (CheckMail == true && CheckNick == true) {
             console.log("123112");
             await DataBase.TimeNow().then(function(val) {
                 CreateTime = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (!CreateTime) {
                 response.status(500).end("time error");
             }
@@ -41,7 +44,8 @@ exports.postRegistration = async function(request, response) {
             console.log("1234");
             await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, CreateTime).then(function(val) {
                 checkAdd = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             console.log("1232");
             if (!checkAdd) {
                 response.status(500).end("dont added");
@@ -52,7 +56,8 @@ exports.postRegistration = async function(request, response) {
                 await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
                     checkAdd = val;
                     ///создать функцию, которая создает ссылку и  отсылает на почту письмо 
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 response.status(200).end();
             } else {
                 response.status(400).end();
@@ -61,29 +66,32 @@ exports.postRegistration = async function(request, response) {
             response.status(400).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.postLogin = async function(request, response) {
+exports.postLogin = async function(request, response, next) {
     try {
         var UserId;
         var salt;
         var CreateTime;
         await DataBase.TimeNow().then(function(val) {
             CreateTime = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         await DataBase.DateCreate(request.body.mail).then(function(val) {
             salt = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         if (!salt) {
             response.status(400).end();
         }
         var hash = crypt.hash(request.body.pas, salt);
         await DataBase.LogUser(request.body.mail, hash).then(function(val) {
             UserId = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         if (UserId == -1) {
             //неправильные данные для входа
             response.status(400).end();
@@ -91,7 +99,8 @@ exports.postLogin = async function(request, response) {
             var Role;
             await DataBase.RoleUser(UserId).then(function(val) {
                 Role = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (Role == 0 || Role == 1 || Role == 2) {
                 const hashId = crypt.hash(UserId, CreateTime);
                 const hashIdR = crypt.hash(Role, CreateTime);
@@ -99,20 +108,12 @@ exports.postLogin = async function(request, response) {
                 let ok2;
                 await DataBase.addToken(hashId, UserId).then(function(val) {
                     ok1 = val;
-                }).catch(function(e) {
-                    console.log(e);
-                    reject("ERROR BD: addToken");
-                    response.status(500).end("addToken error");
-                    return;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 await DataBase.addToken(hashIdR, Role).then(function(val) {
                     ok2 = val;
-                }).catch(function(e) {
-                    console.log(e);
-                    reject("ERROR BD: addToken");
-                    response.status(500).end("addToken error");
-                    return;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 response.cookie('userRole', hashIdR, { maxAge: config.cookieLive });
                 response.cookie('userId', hashId, { maxAge: config.cookieLive });
                 response.status(200).end("login");
@@ -121,18 +122,19 @@ exports.postLogin = async function(request, response) {
             }
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.acc = async function(request, response) {
+exports.acc = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             var masData;
             await DataBase.DataUserAccount(userId).then(function(val) {
                 masData = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (!masData) {
                 return response.status(401).end();
             }
@@ -153,38 +155,40 @@ exports.acc = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.logout = async function(request, response) {
+exports.logout = async function(request, response, next) {
     try {
         let masData;
         await DataBase.deleteToken(request.cookies.userId).then(function(val) {
             masData = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}); }); 
 
         await DataBase.deleteToken(request.cookies.userRole).then(function(val) {
             masData = val;
-        });
+        }).catch(function(err) {  next({err : err, code : 500}); }); 
+
         response.clearCookie("userRole");
         response.clearCookie("userId");
         response.clearCookie("whatisname");
         response.status(200).end("logout");
     } catch (err) {
-        response.status(500).end(err);
+       next({err : err, code : 500}); 
     }
 
 };
 
-exports.searchUser = async function(request, response) {
+exports.searchUser = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             var data;
             await DataBase.datauserlist(request.body.nick).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (!data) {
                 response.status(400).end("not found");
             } else {
@@ -194,31 +198,30 @@ exports.searchUser = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+      next({err : err, code : 500}).end();
     }
 };
 
 
-exports.friendList = async function(request, response) {
+exports.friendList = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             var data;
             await DataBase.friendList(userId).then(function(val) {
                 data = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             response.json(data);
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.friendListWithLimit = async function(request, response) {
+exports.friendListWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -231,28 +234,26 @@ exports.friendListWithLimit = async function(request, response) {
             var count;
             await DataBase.CountfriendListLimit(userId).then(function(val) {
                 count = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             await DataBase.friendListLimit(userId, limit, offset).then(function(val) {
                 let users = [];
                 for (i in val) {
                     users.push(val[i].friend);
                 }
                 response.json({ count, users });
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.searchUserWithLimit = async function(request, response) {
+exports.searchUserWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -265,10 +266,12 @@ exports.searchUserWithLimit = async function(request, response) {
             let count;
             await DataBase.Countdatauserlist(request.body.nick, limit, offset).then(function(val) {
                 count = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             await DataBase.datauserlistLimit(request.body.nick, limit, offset).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (!data) {
                 response.status(400).end(er);
             } else {
@@ -283,30 +286,29 @@ exports.searchUserWithLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.friendRequests = async function(request, response) {
+exports.friendRequests = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             var data;
             await DataBase.friendRequests(userId).then(function(val) {
                 data = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             response.json(data);
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.friendRequestsWithLimit = async function(request, response) {
+exports.friendRequestsWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -319,14 +321,12 @@ exports.friendRequestsWithLimit = async function(request, response) {
             var count;
             await DataBase.friendRequestsWithLimit(userId, limit, offset).then(function(val) {
                 data = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             await DataBase.CountfriendRequests(userId, limit, offset).then(function(val) {
                 count = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             var users = [];
             for (i in data) {
                 users.push(data[i].request);
@@ -336,31 +336,30 @@ exports.friendRequestsWithLimit = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.friendRequestsSent = async function(request, response) {
+exports.friendRequestsSent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             var data;
             await DataBase.friendRequestsSent(userId).then(function(val) {
                 data = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             response.json(data);
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.friendRequestsWithLimitSentWithLimit = async function(request, response) {
+exports.friendRequestsWithLimitSentWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -373,14 +372,12 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response)
             var count;
             await DataBase.friendRequestsSentWithLimit(userId, limit, offset).then(function(val) {
                 data = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             await DataBase.countfriendRequestsSent(userId).then(function(val) {
                 count = val;
-            }).catch(function(er) {
-                response.status(500).end(er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             let users = [];
             for (i in data) {
                 users.push(data[i].request);
@@ -392,11 +389,11 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response)
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.addfriend = async function(request, response) {
+exports.addfriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
@@ -405,7 +402,8 @@ exports.addfriend = async function(request, response) {
                 let checkAdd = false;
                 await DataBase.addFriend(userId, userid2).then(function(val) {
                     checkAdd = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 if (!checkAdd) {
                     response.status(500).end("error on AddFriend");
                 }
@@ -417,12 +415,12 @@ exports.addfriend = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.acceptfriend = async function(request, response) {
+exports.acceptfriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
@@ -431,7 +429,8 @@ exports.acceptfriend = async function(request, response) {
                 let checkAdd = false;
                 await DataBase.acceptFriend(userId, userid2).then(function(val) {
                     checkAdd = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 if (!checkAdd) {
                     response.status(500).end("error on acceptfriend");
                 }
@@ -443,13 +442,13 @@ exports.acceptfriend = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
 
-exports.deletefriend = async function(request, response) {
+exports.deletefriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         const userid2 = request.body.friend ? request.body.friend : undefined;
@@ -458,7 +457,8 @@ exports.deletefriend = async function(request, response) {
                 let checkAdd = false;
                 await DataBase.deleteFriend(userId, userid2).then(function(val) {
                     checkAdd = val;
-                });
+                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                 if (!checkAdd) {
                     response.status(500).end("error on deleteFriend");
                 }
@@ -470,12 +470,12 @@ exports.deletefriend = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
 
-exports.UserAccount = async function(request, response) {
+exports.UserAccount = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         const userId2 = request.body.user ? request.body.user : undefined;
@@ -484,10 +484,12 @@ exports.UserAccount = async function(request, response) {
             var status;
             await DataBase.friendStatus(userId, userId2).then(function(val) {
                 status = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             await DataBase.DataUserAccount(userId2).then(function(val) {
                 data = val;
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
             if (!data) {
                 response.status(500).end("account search data");
             }
@@ -508,6 +510,6 @@ exports.UserAccount = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };

@@ -55,6 +55,13 @@ app.use("/user", userlistRouter);
 app.use("/system", sysRouter);
 app.use("/admin", adminRouterController);
 
+app.use((err, req, res, next) => {
+    console.log(err);
+    let code = err.code ? err.code : 500;
+    let str = err.code ? err.code :"123";
+    res.status(code).end();
+  })
+
 
 
 app.use(function(req, res, next) {

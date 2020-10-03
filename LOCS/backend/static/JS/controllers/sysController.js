@@ -12,8 +12,8 @@ const takeObj = funcs.takeObj;
 // }
 
 
-exports.uploadPhotoAcc = async function(request, response) {
-    try {
+exports.uploadPhotoAcc = async function(request, response, next) {
+try {
         if (request.file == undefined) {
             response.status(400).end("нет файла");
             return;
@@ -34,9 +34,9 @@ exports.uploadPhotoAcc = async function(request, response) {
                     let data;
                     await DataBase.addPhotoAcc(userId, namePhoto).then(function(val) {
                         data = val;
-                    }).catch(function(er) {
-                        response.status(500).end(er);
-                    });
+
+                    }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+
                     if (data == true) {
                         response.status(200).end("has been loaded");
                     } else {
@@ -50,11 +50,11 @@ exports.uploadPhotoAcc = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.uploadPhotoOrg = async function(request, response) {
+exports.uploadPhotoOrg = async function(request, response, next) {
     try {
         if (request.file == undefined) {
             response.status(400).end("нет файла");
@@ -79,9 +79,7 @@ exports.uploadPhotoOrg = async function(request, response) {
                         let data;
                         await DataBase.addPhotoOrg(userId, namePhoto).then(function(val) {
                             data = val;
-                        }).catch(function(er) {
-                            response.status(500).end("#error DataBase: " + er);
-                        });
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
                         if (data == true) {
                             response.status(200).end("has been loaded");
                         } else {
@@ -98,11 +96,11 @@ exports.uploadPhotoOrg = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500}); 
     }
 };
 
-exports.uploadPhotoEvent = async function(request, response) {
+exports.uploadPhotoEvent = async function(request, response, next) {
     try {
         if (request.file == undefined) {
             response.status(400).end("нет файла");
@@ -130,9 +128,7 @@ exports.uploadPhotoEvent = async function(request, response) {
                         let idEvent = request.params.event;
                         await DataBase.addPhotoEvent(userId, idEvent, namePhoto).then(function(val) {
                             data = val;
-                        }).catch(function(er) {
-                            response.status(500).end("#error DataBase: " + er);
-                        });
+                        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
                         if (data == true) {
                             response.status(200).end("has been loaded");
@@ -150,25 +146,23 @@ exports.uploadPhotoEvent = async function(request, response) {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
 
-exports.acceptAccount = async function(request, response) {
+exports.acceptAccount = async function(request, response, next) {
     try {
         const hash = request.params.hash;
         await DataBase.acceptMail(hash).then(function(val) {
             data = val;
             response.status(200).end("accept");
-        }).catch(function(er) {
-            response.status(500).end("#error DataBase acceptMail: " + er);
-        });
+        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
     } catch (err) {
         response.status(500).end(err);
     }
 
 };
-exports.forwardMail = async function(request, response) {
+exports.forwardMail = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -177,15 +171,12 @@ exports.forwardMail = async function(request, response) {
                 ///вызов функции для создания и отправки ссылки 
 
                 response.status(200).end("has been send");
-            }).catch(function(er) {
-                console.log(er);
-                response.status(500).end("#error DataBase forwardMail: " + er);
-            });
+            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
         } else {
             return response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 };
