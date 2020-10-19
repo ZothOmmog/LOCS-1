@@ -1,0 +1,10 @@
+@import '~/styles/variables.scss';
+
+.__error-text {
+    font-family: $font-main;
+    color:red;
+
+    &::before {
+        content: '*';
+    }
+}
