@@ -30,20 +30,26 @@
         transition-duration: $transition-duration;
         
     }
-
+    
     .__drop-list-item {
+        color: $color-black;
         transition-duration: $transition-duration;
         border-radius: 8px;
         
         &:hover {
             background-color: $color-gray;
+            color: $color-white;
         }
-
+        
         &-inner {
             display: block;
             padding: 8px;
             height: 100%;
             width: 100%;
+
+            &:hover {
+                color: $color-white;
+            }
         }
     }
     
