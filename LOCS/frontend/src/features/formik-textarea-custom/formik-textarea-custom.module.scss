@@ -1,5 +1,10 @@
 @import '~/styles/variables.scss';
 
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
 .formik-textarea-custom {
     border-radius: 4px;
     resize: none;
@@ -7,10 +12,19 @@
     border: 2px solid $color-black;
     font-family: $font-main;
     font-size: $font-size-sm;
+    line-height: 24px;
+    transition-duration: $transition-duration;
+    flex-grow: 1;
+    width: 100%;
+
+    &:focus {
+        box-shadow: 0px 0px 0px 3px $color-orange;
+        outline: none;
+    }
 }
 
 ._error {
-    border-color: $color-red;
+    border-color: red;
 
     &:focus {
         outline-color: $color-red;
