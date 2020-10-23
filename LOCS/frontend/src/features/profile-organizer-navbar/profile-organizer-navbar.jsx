@@ -26,11 +26,11 @@ const ProfileOrganizerNavbarView = ({ logoutCallback, eventsPages, currentEventP
             )}
             className={style['__drop-list']}
         >
-            {className => currentEventPage[1] ? (console.log(currentEventPage[1]),
+            {className => currentEventPage[1] ? (
                 <LinkCustom to={currentEventPage[1]} className={classNames(style['__item'], style['__item_active'], style['__item_button'], className)}>
                     {currentEventPage[0]} 
                 </LinkCustom>
-            ) : (//console.log(currentEventPage[1]),
+            ) : (
                 <ButtonCustom className={classNames(style['__item'], style['__item_button'], className)}>
                     {currentEventPage[0]}
                 </ButtonCustom>

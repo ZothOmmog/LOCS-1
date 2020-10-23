@@ -1,56 +1,53 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { normalizeEventsList } from '~/helpers/normalizeEvents';
+import { eventAPI } from '~/api';
 
-const MOCK_EVENTS = {
-    count: 5,
-    Events: [
-        {
-            eventshortlist: {
-                id: 1,
-                name: 'Крутая туса',
-                info: 'Новая крутая туса, где будет что-то интересное',
-                image: null
-            },
-            tags: [1, 2, 3, 4]
-        },
-        {
-            eventshortlist: {
-                id: 2,
-                name: 'Ещё одна крутая туса',
-                info: 'Это уже какая-то другая туса, с соверщенно другим описанием',
-                image: null
-            },
-            tags: [5, 2, 3, 10]
-        },
-        {
-            eventshortlist: {
-                id: 3,
-                name: 'А это туса с длинным названием для того, чтобы проверить, как будет выглядеть',
-                info: 'Уникальное описание для тусы с очень длинным названием, таким длинным, что было сложно придумать более длинное описание',
-                image: null
-            },
-            tags: [1, 2, 10, 11]
-        },
-        {
-            eventshortlist: {
-                id: 4,
-                name: 'Событие с другим названием',
-                info: 'Для того, чтобы было какое-то разнообразие',
-                image: null
-            },
-            tags: [1, 2, 5, 7]
-        },
-        {
-            eventshortlist: {
-                id: 5,
-                name: 'Последнее событие',
-                info: 'Надоело придумывать эти события, хватит и столько',
-                image: null
-            },
-            tags: [6, 7, 8, 9]
-        },
-    ]
-}
+const MOCK_EVENTS = [
+    {
+        id: 1,
+        name: 'Крутая туса',
+        info: 'Новая крутая туса, где будет что-то интересное',
+        image: null,
+        date: new Date(2020, 12, 1, 19, 30, 0),
+        idAddress: null,
+        tags: [1, 2, 3, 4]
+    },
+    {
+        id: 2,
+        name: 'Ещё одна крутая туса',
+        info: 'Это уже какая-то другая туса, с соверщенно другим описанием',
+        image: null,
+        date: new Date(2020, 11, 20, 18, 0, 0),
+        idAddress: null,
+        tags: [5, 2, 3, 10]
+    },
+    {
+        id: 3,
+        name: 'А это туса с длинным названием для того, чтобы проверить, как будет выглядеть',
+        info: 'Уникальное описание для тусы с очень длинным названием, таким длинным, что было сложно придумать более длинное описание',
+        image: null,
+        date: new Date(2020, 12, 11, 21, 40, 0),
+        idAddress: null,
+        tags: [1, 2, 10, 11]
+    },
+    {
+        id: 4,
+        name: 'Событие с другим названием',
+        info: 'Для того, чтобы было какое-то разнообразие',
+        image: null,
+        date: new Date(2020, 12, 23, 15, 30, 0),
+        idAddress: null,
+        tags: [1, 2, 5, 7]
+    },
+    {
+        id: 5,
+        name: 'Последнее событие',
+        info: 'Надоело придумывать эти события, хватит и столько',
+        image: null,
+        date: new Date(2020, 12, 1, 19, 30, 0),
+        idAddress: null,
+        tags: [6, 7, 8, 9]
+    }
+]
 
 //====================slice-name====================
 const SLICE_NAME = 'eventsListMain';
@@ -60,8 +57,12 @@ const SLICE_NAME = 'eventsListMain';
 const thunks = {
     fetchEvents: createAsyncThunk(
         `${SLICE_NAME}/fetchEventsStatus`,
-        async () => {
-            return { events: MOCK_EVENTS };
+        async (_arg, thunkAPI) => {
+            const state = thunkAPI.getState();
+            const onePageSize = onePageSizeSelector(state);
+            const currentPage = currentPageSelector(state);
+
+            return await eventAPI.getEvents(currentPage, onePageSize);
         }
     )
 };
@@ -90,6 +91,8 @@ const { actions, reducer } = createSlice({
     initialState: {
         byId: null,
         allIds: null,
+        onePageSize: 12,
+        currentPage: 0,
         isLoading: null
     },
     reducers: {
@@ -101,12 +104,20 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchEvents.fulfilled]: (state, action) => {
             const { payload, ...outher } = action;
-            const { events } = payload;
-
-            const normalizeEvents = normalizeEventsList(events);
+            const events = payload;
             eventsChange(state, {
                 ...outher, 
-                payload: { events: normalizeEvents }
+                payload: { events }
+            });
+
+            state.isLoading = false;
+        },
+        [thunks.fetchEvents.rejected]: (state, action) => {
+            const { payload, ...outher } = action;
+            console.error('Запрос к серверу для получения списка событий провалился, был загружен фейковый список');
+            eventsChange(state, {
+                ...outher, 
+                payload: { events: MOCK_EVENTS }
             });
 
             state.isLoading = false;
@@ -116,10 +127,12 @@ const { actions, reducer } = createSlice({
 //=============================================
 
 //====================selectors====================
-const eventsObject = state => state.eventsListMain.byId;
+function sliceSelector (state) { return state.eventsListMain; }
 
-const events = state => {
-    const events = eventsObject(state);
+const eventsObjectSelector = state => sliceSelector(state).byId;
+
+const eventsSelector = state => {
+    const events = eventsObjectSelector(state);
     
     if(!events) return null;
 
@@ -130,11 +143,15 @@ const events = state => {
     return eventsArray;
 };
 
-const isLoading = state => state.eventsListMain.isLoading;
+const isLoadingSelector = state => sliceSelector(state).isLoading;
+function onePageSizeSelector (state) { return sliceSelector(state).onePageSize; }
+function currentPageSelector (state) { return sliceSelector(state).currentPage; }
 
 const selectors = {
-    events,
-    isLoading,
+    events: eventsSelector,
+    isLoading: isLoadingSelector,
+    onePageSize: onePageSizeSelector,
+    currentPage: currentPageSelector
 };
 //=================================================
 

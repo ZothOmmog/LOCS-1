@@ -7,11 +7,13 @@ import { FormikInputCustom } from '~/features/formik-input-custom';
 import { FormikTextareaCustom } from '~/features/formik-textarea-custom';
 import { FormikDatePicker } from '~/features/formik-datepicker';
 import { FormikMultiselectCustom } from '~/features/formik-multiselect-custom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { tagsSelectors } from '~/redux/common-slices/tags-slice';
 import { CreateEventFormTemplate } from './create-event-form-template';
 import addDays from 'date-fns/addDays'
 import { ButtonColored } from '~/ui';
+import { FormikSelectCustom } from '~/features/formik-select-custom';
+import { searchAddressSelectors, searchAddressThunks } from '~/redux/common-slices/search-address-slice';
 
 const  REQUIRED_HINT = 'Обязательно для ввода';
 
@@ -27,8 +29,13 @@ const loginSchema = Yup.object().shape({
 
 export const CreateEventForm = () => {
     const tags = useSelector(tagsSelectors.tagsSelector);
-
     const tagsForMultiselect = tags ? tags.map(tag => ({ value: tag.id, label: tag.name })) : [];
+
+    const dispatch = useDispatch();
+    const searchAddresses = word => { dispatch(searchAddressThunks.fetchSearch(word)); };
+
+    const addresses = useSelector(searchAddressSelectors.addressesSelector);
+    const addressesForSelect = addresses.map(address => ({ value: address.id, label: address.street + ' ' + address.house }));
 
     return (
         <Formik
@@ -58,7 +65,12 @@ export const CreateEventForm = () => {
                     className={classNames(style['__input'], style['__input-description'])}
                     wrapperClassName={classNames(style['__input'], style['__input-description'])}
                 />
-                <FormikInputCustom name='idAddress' placeholder='Адрес проведения' 
+                <FormikSelectCustom 
+                    onInputChange={searchAddresses}
+                    items={addressesForSelect}
+                    name='idAddress'
+                    placeholder='Адрес проведения'
+                    noOptionsMessage={({ inputValue }) => inputValue ? 'В нашей базе нет такого адреса :(' : 'Начни вводить адрес :)'}
                     wrapperClassName={classNames(style['__input'], style['__input-address'])}
                 />
                 <FormikDatePicker name='date' placeholder='Дата проведения' />
