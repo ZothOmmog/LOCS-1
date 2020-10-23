@@ -22,7 +22,7 @@ class OrganizerApi extends FetchInstance {
     
     __signUpBody = (info, orgName, orgLink, logoLink) => ({ info: info, organizationName: orgName, organizationLink: orgLink, logo: logoLink });
     __deleteEventBody = (id) => ({ idEvent: id });
-    __createEventBody = (idAddres, name, info, price, link, tags) => ({ idAddress: idAddres, name: name, info: info, price: price, link: link, tags: tags });
+    __createEventBody = (idAddress, name, info, price, link, tags, timestamp) => ({ idAddress, name, info, price, link, tags, timestamp });
     __editEventBody = (eventId, idAddres, name, info, price, link, tags) => ({ idEvent: eventId, idAddress: idAddres, name: name, info: info, price: price, link: link, tags: tags });
     __getOrgBody = (orgId) => ({ org: orgId });
     __searchOrgBody = (word) => ({ word: word });
@@ -37,7 +37,7 @@ class OrganizerApi extends FetchInstance {
     getMyEvents = (pageSize, pageNumber) => this.go(GET, this.__getMyEventsRoute(pageSize, pageNumber), null, true);
     signUp = (info, orgName, orgLink, logoLink) => this.go(POST, this.__signUpRoute, this.__signUpBody(info, orgName, orgLink, logoLink), true);
     deleteEvent = (id) => this.go(POST, this.__deleteEventRoute, this.__deleteEventBody(id), true);
-    createEvent = (idAddress, name, info, price, link, tags) => this.go(POST, this.__createEventRoute, this.__createEventBody(idAddress, name, info, price, link, tags), true);
+    createEvent = (idAddress, name, info, price, link, tags, timestamp) => this.go(POST, this.__createEventRoute, this.__createEventBody(idAddress, name, info, price, link, tags, timestamp), true);
     editEvent = (eventId, idAddress, name, info, price, link, tags) => this.go(POST, this.__editEventRoute, this.__editEventBody(eventId, idAddress, name, info, price, link, tags), true);
     getOrg = (orgId) => this.go(POST, this.__getOrgRoute, this.__getOrgBody(orgId), false);
     searchOrg = (pageSize, pageNumber, word) => this.go(POST, this.__searchOrgRoute(pageSize, pageNumber), this.__searchOrgBody(word), false);
