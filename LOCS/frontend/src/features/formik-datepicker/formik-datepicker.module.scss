@@ -1,0 +1,33 @@
+@import '~/styles/variables.scss';
+
+.__formik-datepicker-input-custom {
+    border-radius: 30px;
+    padding: 8px;
+    border: 2px solid $color-black;
+    font-family: $font-main;
+    font-size: $font-size-sm;
+    transition-duration: $transition-duration;
+
+    &:focus {
+        box-shadow: 0px 0px 0px 3px $color-orange;
+        outline: none;
+    }
+}
+
+._error {
+    border-color: red;
+
+    &:focus {
+        outline-color: $color-red;
+    }
+}
+
+.__error-text {
+    font-family: $font-main;
+    font-size: 15px;
+    color: red;
+
+    &::before {
+        content: '*';
+    }
+}

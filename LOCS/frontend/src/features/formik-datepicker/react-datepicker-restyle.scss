@@ -1,0 +1,66 @@
+@import '~/styles/variables.scss';
+
+.react-datepicker {
+    font-family: $font-main;
+
+    &__triangle {
+        border-bottom-color: $color-white !important;
+    }
+
+    &__header {
+        background-color: $color-white !important;
+    }
+
+    &__navigation {
+        &--previous {
+            border-right-color: $color-black;
+        }
+        &--next {
+            border-left-color: $color-black;
+        }
+    }
+
+    &__day {
+        transition-duration: $transition-duration;
+
+        &:hover {
+            background-color: rgba($color: $color-orange, $alpha: 0.5) !important;
+        }
+        
+        &--selected {
+            background-color: $color-orange;
+            
+            &:hover {
+                background-color: $color-orange !important;
+            }
+        }
+        
+        &--keyboard-selected {
+            background-color: $color-orange;
+            
+            &:hover {
+                background-color: $color-orange !important;
+            }
+        }
+    
+        &--today {
+            color: $color-red;
+        }
+    }
+
+    &__time-list-item {
+        transition-duration: $transition-duration;
+
+        &:hover {
+            background-color: rgba($color: $color-orange, $alpha: 0.5) !important;
+        }
+        
+        &--selected {
+            background-color: #f7c331 !important;
+            
+            &:hover {
+                background-color: $color-orange !important;
+            }
+        }
+    }
+}

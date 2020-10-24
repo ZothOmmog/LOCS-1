@@ -1,0 +1,42 @@
+@import '~/styles/variables.scss';
+
+.form {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    font-family: $font-main;
+}
+
+.__name-link {
+    display: flex;
+}
+
+.__description-left {
+    margin-top: 16px;
+    flex-grow: 1;
+    display: flex;
+}
+
+.__right {
+    margin-left: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    max-width: 420px;
+    
+    &-top-date-price {
+        display: flex;
+    }
+    
+    &-bottom {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin-top: 150px;
+    }
+}
+
+.__loader {
+    
+}

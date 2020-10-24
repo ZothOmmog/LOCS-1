@@ -89,12 +89,12 @@
 
         
         &_selected {
-            box-shadow: 0 0 0 3px $color-orange inset;
+            background-color: rgba($color: $color-orange, $alpha: 0.75);
         }
         
         &_not-selected {
             &:hover {
-                box-shadow: 0 0 0 3px rgba($color: $color-orange, $alpha: 0.5) inset;
+                box-shadow: 0 0 0 3px $color-orange inset;
             }
         }
     }

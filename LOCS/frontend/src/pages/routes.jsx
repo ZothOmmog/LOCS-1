@@ -4,6 +4,7 @@ import { PrivateRoute } from '~/features/private-route';
 import { MainTemplate } from '~/templates';
 import { ProfileOrganizerTemplate } from '~/templates/profile-organizer-template/profile-organizer-template';
 import { MainPage } from './main-page';
+import { ProfileOrganizerEventsCreatePage } from './profile-organizer-events-create-page';
 import { ProfileOrganizerEventsListPage } from './profile-organizer-events-list-page';
 import { ProfileOrganizerInfoPage } from './profile-organizer-info-page';
 import { ProfileVisitorInfoPage } from './profile-visitor-info-page';
@@ -33,9 +34,7 @@ export const Routes = () => (
             <ProfileOrganizerEventsListPage />
         </PrivateRoute>
         <PrivateRoute path='/profile/organizer/events/create'>
-            <ProfileOrganizerTemplate>
-                Создание мероприятия
-            </ProfileOrganizerTemplate>
+            <ProfileOrganizerEventsCreatePage />
         </PrivateRoute>
         <PrivateRoute path='/profile/organizer/events/edit'>
             <ProfileOrganizerTemplate>
