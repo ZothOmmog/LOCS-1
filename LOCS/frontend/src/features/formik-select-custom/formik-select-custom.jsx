@@ -36,6 +36,12 @@ export const FormikSelectCustom = ({ items, wrapperClassName, className, onInput
                     control: (styles, { isFocused }) => ({
                         ...reactSelectStyles.control(styles, { isFocused }),
                         border: meta.touched && meta.error ? '2px solid red' : '2px solid #1d1e22',
+                        ':hover': {
+                            ...reactSelectStyles.control(styles, { isFocused })[':hover'],
+                            border: meta.touched && meta.error 
+                            ? '2px solid red' 
+                            : reactSelectStyles.control(styles, { isFocused })[':hover'].border
+                        }
                     })
                 }}
                 options={items.sort(({ label: labelA }, { label: labelB }) =>
