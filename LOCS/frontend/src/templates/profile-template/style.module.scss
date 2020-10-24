@@ -33,11 +33,9 @@
 .__main {
     display: flex;
     flex-direction: column;
-    align-self: center;
     box-shadow: $box-shadow-offset;
     width: 1000px;
     min-height: 400px;
-    // height: 90%;
     margin: 30px 60px;
     border-radius: 8px;
     background-color: rgba($color: $color-white, $alpha: 0.36);

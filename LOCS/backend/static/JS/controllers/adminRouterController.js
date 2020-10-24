@@ -6,12 +6,14 @@ const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
 
 //адрес
-exports.getAddress = async function(request, response) {
+exports.getAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
+
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
+
                 await DataBase.getaddress().then(function(val) {
                     var tags = []
                     for (i in val) {
@@ -19,10 +21,9 @@ exports.getAddress = async function(request, response) {
                     }
                     response.json(tags);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
+
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -30,12 +31,12 @@ exports.getAddress = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.createAddress = async function(request, response) {
+exports.createAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -54,9 +55,7 @@ exports.createAddress = async function(request, response) {
                 await DataBase.addAddress(street, house, latitude, longitude, id_district, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -65,12 +64,12 @@ exports.createAddress = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.changeAddress = async function(request, response) {
+exports.changeAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -90,9 +89,7 @@ exports.changeAddress = async function(request, response) {
                 await DataBase.updateAddress(id, street, house, latitude, longitude, id_district, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -101,12 +98,12 @@ exports.changeAddress = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.deleteAddress = async function(request, response) {
+exports.deleteAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -121,9 +118,7 @@ exports.deleteAddress = async function(request, response) {
                     tags = val;
                     response.status(200).end("deleted");
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -132,12 +127,12 @@ exports.deleteAddress = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 //район
-exports.getDistrict = async function(request, response) {
+exports.getDistrict = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -150,9 +145,7 @@ exports.getDistrict = async function(request, response) {
                     }
                     response.json(tags);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -161,12 +154,12 @@ exports.getDistrict = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.createDistrict = async function(request, response) {
+exports.createDistrict = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -182,9 +175,7 @@ exports.createDistrict = async function(request, response) {
                 await DataBase.addDistrict(title, id_city, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -193,12 +184,12 @@ exports.createDistrict = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.changeDistrict = async function(request, response) {
+exports.changeDistrict = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -215,9 +206,7 @@ exports.changeDistrict = async function(request, response) {
                 await DataBase.updateDistrict(id, title, id_city, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -226,12 +215,12 @@ exports.changeDistrict = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.deleteDistrict = async function(request, response) {
+exports.deleteDistrict = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -246,9 +235,7 @@ exports.deleteDistrict = async function(request, response) {
                     tags = val;
                     response.status(200).end("deleted");
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -257,13 +244,13 @@ exports.deleteDistrict = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
 //Город
-exports.getCity = async function(request, response) {
+exports.getCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -276,9 +263,7 @@ exports.getCity = async function(request, response) {
                     }
                     response.json(tags);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -287,12 +272,12 @@ exports.getCity = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.createCity = async function(request, response) {
+exports.createCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -307,10 +292,9 @@ exports.createCity = async function(request, response) {
                 await DataBase.addCity(title, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
+
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -318,12 +302,12 @@ exports.createCity = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.changeCity = async function(request, response) {
+exports.changeCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -336,13 +320,13 @@ exports.changeCity = async function(request, response) {
                     response.status(400).end();
                     return;
                 }
+
                 await DataBase.updateCity(id, title, deleted).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
+
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -350,12 +334,12 @@ exports.changeCity = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.deleteCity = async function(request, response) {
+exports.deleteCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -369,9 +353,7 @@ exports.deleteCity = async function(request, response) {
                 await DataBase.deleteCity(id).then(function(val) {
                     response.status(200).end("deleted");
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -380,12 +362,12 @@ exports.deleteCity = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 //теги
-exports.changeTag = async function(request, response) {
+exports.changeTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -403,9 +385,7 @@ exports.changeTag = async function(request, response) {
                 await DataBase.updateTagsAdmin(id, title, deleted, accept, countevents).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
 
             } else {
@@ -415,12 +395,12 @@ exports.changeTag = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.addTag = async function(request, response) {
+exports.addTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -437,9 +417,7 @@ exports.addTag = async function(request, response) {
                 await DataBase.addTagsAdmin(title, deleted, accept, countevents).then(function(val) {
                     response.json(val);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
 
             } else {
@@ -449,17 +427,18 @@ exports.addTag = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.getTag = async function(request, response) {
+exports.getTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
+
                 await DataBase.getTags().then(function(val) {
                     var tags = []
                     for (i in val) {
@@ -467,9 +446,7 @@ exports.getTag = async function(request, response) {
                     }
                     response.json(tags);
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                   next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -478,12 +455,12 @@ exports.getTag = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.deleteTag = async function(request, response) {
+exports.deleteTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -498,9 +475,7 @@ exports.deleteTag = async function(request, response) {
                     tags = val;
                     response.status(200).end("deleted");
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
             } else {
                 response.status(403).end("have not permissions");
@@ -509,12 +484,12 @@ exports.deleteTag = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
 
-exports.acceptTag = async function(request, response) {
+exports.acceptTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
@@ -525,14 +500,14 @@ exports.acceptTag = async function(request, response) {
                     response.status(400).end();
                     return;
                 }
+
                 await DataBase.acceptTag(idTag).then(function(val) {
                     tags = val;
                     response.status(200).end("accept");
                 }).catch(function(val) {
-                    check = false;
-                    console.log(val);
-                    response.status(500).end(val);
+                    next({err : val, code : 500}).end();
                 });
+
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -540,7 +515,7 @@ exports.acceptTag = async function(request, response) {
             response.status(401).end();
         }
     } catch (err) {
-        response.status(500).end(err);
+        next({err : err, code : 500});
     }
 
 };
