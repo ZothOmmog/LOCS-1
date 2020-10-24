@@ -39,21 +39,15 @@ export const CreateEventForm = () => {
     const searchAddresses = (word) => {
         dispatch(searchAddressThunks.fetchSearch(word));
     };
-    const createEvent = (idAddress, name, info, tags, timestamp, price, link) => (console.log('dispatch'), dispatch(
+    const createEvent = (idAddress, name, info, tags, timestamp, price, link) => dispatch(
         organizerEventsThunks.fetchCreate(idAddress, name, info, tags, timestamp, price, link)
-    ));
+    );
 
     const addresses = useSelector(searchAddressSelectors.addressesSelector);
     const addressesForSelect = addresses.map((address) => ({
         value: address.id,
         label: address.street + ' ' + address.house,
     }));
-
-    const dispatch = useDispatch();
-    const searchAddresses = word => { dispatch(searchAddressThunks.fetchSearch(word)); };
-
-    const addresses = useSelector(searchAddressSelectors.addressesSelector);
-    const addressesForSelect = addresses.map(address => ({ value: address.id, label: address.street + ' ' + address.house }));
 
     return (
         <Formik
