@@ -7,7 +7,7 @@ import { FormikInputCustom } from '~/features/formik-input-custom';
 import { FormikTextareaCustom } from '~/features/formik-textarea-custom';
 import { FormikDatePicker } from '~/features/formik-datepicker';
 import { FormikMultiselectCustom } from '~/features/formik-multiselect-custom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { tagsSelectors } from '~/redux/common-slices/tags-slice';
 import { CreateEventFormTemplate } from './create-event-form-template';
 import addDays from 'date-fns/addDays';
@@ -39,9 +39,9 @@ export const CreateEventForm = () => {
     const searchAddresses = (word) => {
         dispatch(searchAddressThunks.fetchSearch(word));
     };
-    const createEvent = (idAddress, name, info, tags, timestamp, price, link) => (console.log('dispatch'), dispatch(
+    const createEvent = (idAddress, name, info, tags, timestamp, price, link) => dispatch(
         organizerEventsThunks.fetchCreate(idAddress, name, info, tags, timestamp, price, link)
-    ));
+    );
 
     const addresses = useSelector(searchAddressSelectors.addressesSelector);
     const addressesForSelect = addresses.map((address) => ({

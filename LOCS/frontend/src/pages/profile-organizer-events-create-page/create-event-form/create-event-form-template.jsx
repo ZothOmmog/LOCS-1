@@ -23,9 +23,9 @@ export const CreateEventFormTemplate = ({ children }) => (
                 </div>
                 <div className={style['__right-bottom']}>
                     {children[7]}
-                <div className={style['__loader']}>
-                    {children[8]}
-                </div>
+                    <div className={style['__loader']}>
+                        {children[8]}
+                    </div>
                 </div>
             </div>
         </div>

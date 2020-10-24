@@ -18,6 +18,8 @@
     }
     
     .__drop-list {
+        position: relative;
+        z-index: 1000;
         border-radius: $border-radius;
         background-color: $color-white;
         padding-left: 16px;
