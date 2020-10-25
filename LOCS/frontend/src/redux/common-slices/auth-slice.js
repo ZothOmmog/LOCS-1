@@ -46,8 +46,8 @@ const thunks = {
     fetchLogin: createAsyncThunk(
         `${SLICE_NAME}/fetchLogin`,
         async ({ login, password }) => {
-            const user = await userAPI.login(login, password);
-            return { isAuth: true, visitor: user };
+            await userAPI.login(login, password);
+            return { isAuth: true };
         }
     ),
     fetchReg: createAsyncThunk(
@@ -149,7 +149,7 @@ const { actions, reducer } = createSlice({
             state.redirectToLoginAfterSuccessReg = true;
             state.errorReg = '';
         },
-        [thunks.fetchReg.rejected]: (state, { error }) => {
+        [thunks.fetchReg.rejected]: (state) => {
             state.isLoadingReg = false;
             state.errorReg = 'Пользователь с такой почтой или никнеймом уже зарегистрирован';
         },
