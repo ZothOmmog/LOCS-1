@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { authSelectors, authThunks } from '~/redux/common-slices/auth-slice';
 import { FormikInputCustom } from '../formik-input-custom';
 import { FormikTextError } from '../formik-text-error';
+import { useOpenLoginWithSuccessReg } from '../registration/index';
 
 const loginSchema = Yup.object().shape({
     login: Yup.string().email('Некорректный email').required('Обязательно для ввода'),
@@ -22,6 +23,8 @@ export const Login = () => {
 
     const dispatch = useDispatch();
     const fetchLogin = (login, password) => dispatch(authThunks.fetchLogin({ login, password }));
+
+    const messageFromReg = useOpenLoginWithSuccessReg(setIsOpenPopup);
 
     return (
         <div>
@@ -50,6 +53,9 @@ export const Login = () => {
                     {({ isSubmitting }) => (
                         <Form>
                             <div className={style['__inner']}>
+                                <div className={style['__message']}>
+                                    {messageFromReg}
+                                </div>
                                 <FormikInputCustom  name='login' placeholder='Логин' />
                                 <FormikInputCustom  name='password' placeholder='Пароль' type='password' className={style['__password']} />
                                 <ButtonBlack type="submit" disabled={isSubmitting} className={style['__submit']}>

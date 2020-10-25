@@ -4,10 +4,11 @@ import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import style from './style.module.scss';
 import { Logo, Navbar, LinkCustom } from '~/ui/atoms';
-import { NavLinkBordered, NavLinkProfile } from '~/ui/molecules';
+import { NavLinkProfile } from '~/ui/molecules';
 import { ToggleTagsMenu } from '~/features/toggle-tags-menu';
 import { Login } from '../login';
 import { authSelectors } from '~/redux/common-slices/auth-slice';
+import { Registration } from '../registration/registration';
 
 const paths = {
     MAIN_PATH: '/',
@@ -56,9 +57,7 @@ export const HeaderDefault = () => {
                             <NavLinkProfile to={paths.PROFILE_PATH} imgPath={urlPicture} name={name} />
                         ): <Login />}
                     </>
-                    <NavLinkBordered to={paths.REGISTRATION_PATH} active={pathname === paths.REGISTRATION_PATH}>
-                        Регистрация
-                    </NavLinkBordered>
+                    <Registration />
                 </Navbar>
             )}
         </HeaderTemplate>
