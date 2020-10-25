@@ -1,0 +1,14 @@
+.__inner {
+    background-color: #ececec;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.__item {
+    & + & {
+        margin-top: 16px;
+    }
+}
