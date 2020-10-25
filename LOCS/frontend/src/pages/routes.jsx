@@ -15,9 +15,6 @@ export const Routes = () => (
         <Route exact path='/'>
             <MainPage />
         </Route>
-        <Route path='/registration'>
-            <div>Страница с регистрацией</div>
-        </Route>
         <PrivateRoute path='/profile/visitor/info'>
             <ProfileVisitorInfoPage />
         </PrivateRoute>
