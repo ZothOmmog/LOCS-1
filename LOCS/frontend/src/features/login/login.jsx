@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import * as Yup from 'yup';
-import classNames from 'classnames';
 import style from './style.module.scss';
 import { ButtonColored } from '~/ui';
 import { PopupWindow } from '../popup-window';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import { ButtonBlack } from '~/ui/molecules';
-import { useDispatch } from 'react-redux';
-import { authThunks } from '~/redux/common-slices/auth-slice';
+import { useDispatch, useSelector } from 'react-redux';
+import { authSelectors, authThunks } from '~/redux/common-slices/auth-slice';
+import { FormikInputCustom } from '../formik-input-custom';
+import { FormikTextError } from '../formik-text-error';
 
 const loginSchema = Yup.object().shape({
     login: Yup.string().email('Некорректный email').required('Обязательно для ввода'),
@@ -16,11 +17,11 @@ const loginSchema = Yup.object().shape({
 
 export const Login = () => {
     const [isOpenPopup, setIsOpenPopup] = useState(false);
+    const isAuth = useSelector(authSelectors.isAuthSelector);
+    const [errorLogin, setErrorLogin] = useState('');
 
     const dispatch = useDispatch();
-    const fetchLogin = (login, password) => {
-        dispatch(authThunks.fetchLogin({ login, password }));
-    };
+    const fetchLogin = (login, password) => dispatch(authThunks.fetchLogin({ login, password }));
 
     return (
         <div>
@@ -39,40 +40,22 @@ export const Login = () => {
                     initialValues={{ login: '', password: '' }}
                     validationSchema={loginSchema}
                     onSubmit={({ login, password }, { setSubmitting }) => {
-                        fetchLogin(login, password);
-                        setSubmitting(false);
+                        setSubmitting(true);
+                        fetchLogin(login, password).then(() => {
+                            if (!isAuth) setErrorLogin('Неверный логин или пароль');
+                            setSubmitting(false);
+                        });
                     }}
                 >
-                    {({ isSubmitting, errors, touched }) => (
+                    {({ isSubmitting }) => (
                         <Form>
                             <div className={style['__inner']}>
-                                <Field 
-                                    type='text'
-                                    name='login'
-                                    className={classNames(
-                                        style['__field'],
-                                        { [style['__field_error']]: errors.login && touched.login }
-                                    )}
-                                    placeholder='Логин'
-                                />
-                                <div className={style['__error-message']}>
-                                    <ErrorMessage name='login' component='div' className={style['__error-message-text']} />
-                                </div>
-                                <Field 
-                                    type='password'
-                                    name='password'
-                                    className={classNames(
-                                        style['__field'],
-                                        { [style['__field_error']]: errors.password && touched.password }
-                                    )}
-                                    placeholder='Пароль'
-                                />
-                                <div className={style['__error-message']}>
-                                    <ErrorMessage name='password' component='div' className={style['__error-message-text']}/>
-                                </div>
+                                <FormikInputCustom  name='login' placeholder='Логин' />
+                                <FormikInputCustom  name='password' placeholder='Пароль' type='password' className={style['__password']} />
                                 <ButtonBlack type="submit" disabled={isSubmitting} className={style['__submit']}>
                                     Войти
                                 </ButtonBlack>
+                                <FormikTextError error={errorLogin} touched={true} />
                             </div>
                         </Form>
                     )}

@@ -75,11 +75,11 @@ export class FetchInstance {
 }
 
 class UserAPI extends FetchInstance {
-    __bodyLogin = (mail, pass) => ({ Login: { mail: mail, pas: pass } });
+    __bodyLogin = (mail, pass) => ({ mail, pas: pass });
     __bodyRegistration = (mail, nick, pass) => ({ Registration: { mail: mail, nick: nick, pas: pass } });
     __bodyGetUser = (id) => ({ user: id });
     
-    __loginRoute = 'user/login/postLogin';
+    __loginRoute = 'user/login';
     __setMeRoute = 'user';
     __logoutMeRoute = 'user/logout';
     __registrationRoute = 'user/registration/postreg';

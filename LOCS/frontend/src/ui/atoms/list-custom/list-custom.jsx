@@ -8,12 +8,12 @@ export const ListCustom = ({ headers, disriptions, listClassName, itemClassName 
         { [listClassName]: listClassName }
     )}>
         {headers.map((header, index) => (
-            <li className={classNames(
+            <li key={header.id || index} className={classNames(
                 style['__record'],
                 { [itemClassName]: itemClassName }
             )}>
                 <div className={style['__label']}>
-                    {header}
+                    {header.label || header}
                 </div>
                 <div className={style['__info']}>
                     {disriptions[index]}
