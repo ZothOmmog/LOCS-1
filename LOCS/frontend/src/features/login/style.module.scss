@@ -17,6 +17,11 @@
     flex-direction: column;
 }
 
+.__message {
+    font-family: $font-main;
+    margin-bottom: 16px;
+}
+
 .__password {
     margin-top: 16px;
 }
