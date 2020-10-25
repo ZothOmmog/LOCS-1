@@ -70,19 +70,30 @@ export class FetchInstance {
                 throw new Error('Ошибка при определении типа запроса');
         }
 
-        return responce.json();
+        if (!responce.ok) throw(new Error('При обращении к серверу произошла ошибка. Код ответа: ' + responce.status));
+
+        let result;
+
+        try {
+            result = await responce.json();
+        }
+        catch(error) {
+            result = true;
+        }
+
+        return result;
     }
 }
 
 class UserAPI extends FetchInstance {
     __bodyLogin = (mail, pass) => ({ mail, pas: pass });
-    __bodyRegistration = (mail, nick, pass) => ({ Registration: { mail: mail, nick: nick, pas: pass } });
+    __bodyRegistration = (mail, nick, pass) => ({ mail, nick, pas: pass });
     __bodyGetUser = (id) => ({ user: id });
     
     __loginRoute = 'user/login';
     __setMeRoute = 'user';
     __logoutMeRoute = 'user/logout';
-    __registrationRoute = 'user/registration/postreg';
+    __registrationRoute = 'user/registration';
     __getUserRoute = 'user/UserAccount';
     
     login = (mail, pass) => this.go(POST, this.__loginRoute,  this.__bodyLogin(mail, pass), true);
