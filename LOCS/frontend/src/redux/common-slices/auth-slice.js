@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { userAPI } from '~/api';
 
 const MOCK_AUTH_TRUE = { 
     Mail: "test@gmail.com",
@@ -8,14 +9,14 @@ const MOCK_AUTH_TRUE = {
     Auth: true
 };
 
-const MOCK_AUTH_FALSE = { 
-    Auth: false
-};
+// const MOCK_AUTH_FALSE = { 
+//     Auth: false
+// };
 
-const MOCK_USER = {
-    login: 'test@gmail.com',
-    password: '123'
-}
+// const MOCK_USER = {
+//     login: 'test@gmail.com',
+//     password: '123'
+// }
 
 const MOCK_ORGANIZER = {
     data: {
@@ -34,7 +35,6 @@ const SLICE_NAME = 'auth';
 //==================================================
 
 //====================thunks====================
-//TODO реальизовать без mock
 const thunks = {
     fetchAuth: createAsyncThunk(
         `${SLICE_NAME}/fetchAuth`,
@@ -46,15 +46,8 @@ const thunks = {
     fetchLogin: createAsyncThunk(
         `${SLICE_NAME}/fetchLogin`,
         async ({ login, password }) => {
-            const { Auth, ...outher } = MOCK_AUTH_TRUE;
-            return (
-                login === MOCK_USER.login && 
-                password === MOCK_USER.password ? (
-                    { isAuth: Auth, visitor: outher }
-                ) : (
-                    { ...MOCK_AUTH_FALSE }
-                )
-            );
+            const user = await userAPI.login(login, password);
+            return { isAuth: true, visitor: user };
         }
     )
 };
@@ -129,6 +122,9 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchLogin.fulfilled]: (state, action) => {
             setMe(state, action.payload);
+            state.isLoadingLogin = false;
+        },
+        [thunks.fetchLogin.rejected]: (state) => {
             state.isLoadingLogin = false;
         }
     }
