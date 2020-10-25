@@ -17,24 +17,12 @@
     flex-direction: column;
 }
 
-.__field {
-    border-radius: 30px;
-    width: 250px;
-    padding: 8px;
-    border: 2px solid $color-black;
-    font-family: $font-main;
-    font-size: $font-size-sm;
-
-    &_error {
-        border-color: $color-red;
-
-        &:focus {
-            outline-color: $color-red;
-        }
-    }
+.__password {
+    margin-top: 16px;
 }
 
 .__submit {
+    margin-top: 16px;
     width: 150px;
     font-size: 14px;
 }
