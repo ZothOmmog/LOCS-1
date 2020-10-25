@@ -49,6 +49,12 @@ const thunks = {
             const user = await userAPI.login(login, password);
             return { isAuth: true, visitor: user };
         }
+    ),
+    fetchReg: createAsyncThunk(
+        `${SLICE_NAME}/fetchReg`,
+        async ({ nick, mail, password }) => {
+            return await userAPI.registration(nick, mail, password);
+        }
     )
 };
 //==============================================
@@ -71,7 +77,10 @@ const initialState = {
     },
     isAuth: false,
     isLoadingAuth: null,
-    isLoadingLogin: null
+    isLoadingLogin: null,
+    isLoadingReg: false,
+    errorReg: '',
+    redirectToLoginAfterSuccessReg: false
 };
 //====================================================
 
@@ -108,6 +117,9 @@ const { actions, reducer } = createSlice({
             state.isAuth = initialState.isAuth;
             state.isLoadingAuth = false;
         },
+        redirectToLoginAfterSuccessRegChanged: (state, action) => {
+            state.redirectToLoginAfterSuccessReg = action.payload;
+        }
     },
     extraReducers: {
         [thunks.fetchAuth.pending]: (state) => {
@@ -117,6 +129,7 @@ const { actions, reducer } = createSlice({
             setMe(state, action.payload);
             state.isLoadingAuth = false;
         },
+
         [thunks.fetchLogin.pending]: (state) => {
             state.isLoadingLogin = true;
         },
@@ -126,7 +139,20 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchLogin.rejected]: (state) => {
             state.isLoadingLogin = false;
-        }
+        },
+
+        [thunks.fetchReg.pending]: state => {
+            state.isLoadingReg = true;
+        },
+        [thunks.fetchReg.fulfilled]: (state) => {
+            state.isLoadingReg = false;
+            state.redirectToLoginAfterSuccessReg = true;
+            state.errorReg = '';
+        },
+        [thunks.fetchReg.rejected]: (state, { error }) => {
+            state.isLoadingReg = false;
+            state.errorReg = 'Пользователь с такой почтой или никнеймом уже зарегистрирован';
+        },
     }
 });
 //=============================================
@@ -150,6 +176,9 @@ const organizationLinkSelector = state => organizerSelector(state).organizationL
 const organizationLogoSelector = state => organizerSelector(state).logo;
 const countSubSelector = state => organizerSelector(state).countSub;
 
+const errorRegSelector = state => sliceSelector(state).errorReg;
+const redirectToLoginAfterSuccessRegSelector = state => sliceSelector(state).redirectToLoginAfterSuccessReg;
+
 const selectors = {
     isAuthSelector,
     isLoadingAuthSelector,
@@ -166,6 +195,9 @@ const selectors = {
     organizationLinkSelector,
     organizationLogoSelector,
     countSubSelector,
+
+    errorReg: errorRegSelector,
+    redirectToLoginAfterSuccessReg: redirectToLoginAfterSuccessRegSelector,
 };
 //=================================================
 
