@@ -1,10 +1,39 @@
 const intiDB = require('./DBinit.js');
 let db = intiDB.db;
 
-//адрес 
-let getaddress = () => {
+
+//организатор
+let getOrganization= (limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select getaddress();')
+        db.manyOrNone('select all_org_admin($1,$2);', [limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: all_org_admin");
+                return;
+            });
+    })
+};
+
+let banStatusOrganization = (id, status) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call ban_unban_org($1,$2);', [id, status])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(val) {
+               // console.log(val);
+                reject("ERROR BD: banStatusOrganization");
+                return;
+            });
+    })
+};
+
+
+
+//адрес 
+let getaddress = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select getaddress($1,$2);',  [limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -234,4 +263,7 @@ module.exports = {
     'updateTagsAdmin': updateTagsAdmin,
     'acceptTag': acceptTag, // подтв. тег
     'deleteTag': deleteTag, //удалить тег
+    //организатор 
+    'getOrganization': getOrganization,
+    'banStatusOrganization' : banStatusOrganization,
 };

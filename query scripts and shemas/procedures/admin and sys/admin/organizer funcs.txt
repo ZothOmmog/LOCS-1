@@ -1,0 +1,28 @@
+--все юзеры
+CREATE OR REPLACE function all_org_admin(limit_ numeric, offset_ numeric)
+RETURNS table (j json) AS
+$$
+BEGIN
+     return query SELECT to_json(a) FROM (select * from organizer LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+CREATE OR REPLACE function all_org_admin()
+RETURNS table (j json) AS
+$$
+BEGIN
+     return query SELECT to_json(a) FROM (select * from organizer)a;
+END;
+$$ LANGUAGE plpgsql;
+
+--бан/разбан по id
+CREATE OR REPLACE PROCEDURE ban_unban_org(id_org_ bigint, status_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update organizer set banned = status_ where id_user = id_org_;
+END;
+$BODY$;

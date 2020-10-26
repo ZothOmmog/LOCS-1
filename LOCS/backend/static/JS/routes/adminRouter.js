@@ -26,14 +26,18 @@ adminRouter.put("/district/:id", adminRouterController.changeDistrict); //изм
 adminRouter.delete("/district/:id", adminRouterController.deleteDistrict); //удалить район 
 
 //адрес
-adminRouter.get("/address$", adminRouterController.getAddress); //все адреса
+adminRouter.get("/address/:limit/:offset$", adminRouterController.getAddress); //все адреса
 adminRouter.post("/address$", adminRouterController.createAddress); //добавить адрес
 adminRouter.put("/address/:id", adminRouterController.changeAddress); //изменить адрес 
 adminRouter.delete("/address/:id", adminRouterController.deleteAddress); //удалить адрес 
 
+//организатор
+adminRouter.get("/organization/:limit/:offset$", adminRouterController.getOrganization); //все организаторы
+adminRouter.post("/organization$", adminRouterController.banOrganization); //забанить
+adminRouter.put("/organization$", adminRouterController.unbanOrganization); //разбанить
 
-//удалить, забанить, разбанить юзера 
-//удалить, забанить, разбанить организатора
+
+// забанить, разбанить юзера 
 //удалить, забанить, разбанить событие
 
 module.exports = adminRouter;

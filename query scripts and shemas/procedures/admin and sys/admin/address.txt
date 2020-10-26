@@ -7,6 +7,14 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
+CREATE OR REPLACE FUNCTION getaddress(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from address  LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
 
 ///////////////////
 CREATE OR REPLACE PROCEDURE AddAddress(street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_district_ bigint, deleted_ bool)

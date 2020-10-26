@@ -5,6 +5,99 @@ const DataBase = require('../scripts/adminDataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
 
+
+//организатор 
+exports.getOrganization = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+
+                await DataBase.getOrganization(limit, offset).then(function(val) {
+                    mas = []
+                    for (i in val) {
+                        mas.push(val[i].all_org_admin);
+                    }
+                    response.json(mas);
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+
+
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.banOrganization = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.body.id ? request.body.id  : 0);
+                console.log(id);
+                await DataBase.banStatusOrganization(id, true).then(function(val) {
+                    response.status(200).end("banned");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+                
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.unbanOrganization = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.body.id ? request.body.id  : 0);
+                await DataBase.banStatusOrganization(id, false).then(function(val) {
+                    response.status(200).end("unbanned");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+                
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+
+
+
 //адрес
 exports.getAddress = async function(request, response, next) {
     try {
@@ -14,7 +107,14 @@ exports.getAddress = async function(request, response, next) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
 
-                await DataBase.getaddress().then(function(val) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+
+                await DataBase.getaddress(limit, offset).then(function(val) {
                     var tags = []
                     for (i in val) {
                         tags.push(val[i].getaddress);
