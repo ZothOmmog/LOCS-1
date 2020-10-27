@@ -1,0 +1,26 @@
+CREATE OR REPLACE FUNCTION events(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from event LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+////
+	
+CREATE OR REPLACE PROCEDURE Delete_event(id_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update event set deleted = true where id = id_;
+END;
+$BODY$;
+
+///
+CREATE OR REPLACE PROCEDURE published_event(id_ bigint, status bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update event set published = status where id = id_;
+END;
+$BODY$;

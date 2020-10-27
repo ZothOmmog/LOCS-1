@@ -1,4 +1,13 @@
 ///////////////////
+CREATE OR REPLACE FUNCTION Citys(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from city LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
 CREATE OR REPLACE FUNCTION Citys() 
 RETURNS table (j json) AS
 $$

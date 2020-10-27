@@ -1,14 +1,43 @@
 const intiDB = require('./DBinit.js');
 let db = intiDB.db;
 
-//адрес 
-let getaddress = () => {
+
+//организатор
+let getOrganization= (limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select getaddress();')
+        db.manyOrNone('select all_org_admin($1,$2);', [limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
-                reject("ERROR BD: getaddress");
+                reject("ERROR admin BD: all_org_admin");
+                return;
+            });
+    })
+};
+
+let banStatusAccount = (id, status, reason = null) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call ban_Status_Account($1,$2,$3);', [id, status, reason])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function(val) {
+               // console.log(val);
+                reject("ERROR admin BD: banStatusAccount");
+                return;
+            });
+    })
+};
+
+
+
+//адрес 
+let getaddress = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select getaddress($1,$2);',  [limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR admin BD: getaddress");
                 return;
             });
     })
@@ -19,7 +48,7 @@ let addAddress = (street, house, latitude, longitude, id_district, deleted) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: AddAddress");
+                reject("ERROR admin BD: AddAddress");
                 return;
             });
     })
@@ -30,7 +59,7 @@ let updateAddress = (id, street, house, latitude, longitude, id_district, delete
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: updateAddress");
+                reject("ERROR admin BD: updateAddress");
                 return;
             });
     })
@@ -42,20 +71,20 @@ let deleteAddress = (id) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: deleteAddress");
+                reject("ERROR admin BD: deleteAddress");
                 return;
             });
     })
 };
 
 //район 
-let districts = () => {
+let districts = (limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select districts();')
+        db.manyOrNone('select districts($1,$2);' , [limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
-                reject("ERROR BD: districts");
+                reject("ERROR admin BD: districts");
                 return;
             });
     })
@@ -66,7 +95,7 @@ let addDistrict = (title, id_city, deleted) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: AddDistrict");
+                reject("ERROR admin BD: AddDistrict");
                 return;
             });
     })
@@ -77,7 +106,7 @@ let updateDistrict = (id, title, id_city, deleted) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: UpdateDistrict");
+                reject("ERROR admin BD: UpdateDistrict");
                 return;
             });
     })
@@ -88,20 +117,20 @@ let deleteDistrict = (id) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: DeleteDistrict");
+                reject("ERROR admin BD: DeleteDistrict");
                 return;
             });
     })
 };
 
 //город
-let сitys = () => {
+let сitys = (limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select Citys();')
+        db.manyOrNone('select Citys($1,$2);', [limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
-                reject("ERROR BD: Citys");
+                reject("ERROR admin BD: Citys");
                 return;
             });
     })
@@ -112,7 +141,7 @@ let addCity = (title, deleted) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: AddCity");
+                reject("ERROR admin BD: AddCity");
                 return;
             });
     })
@@ -123,7 +152,7 @@ let updateCity = (id, title, deleted) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: UpdateCity");
+                reject("ERROR admin BD: UpdateCity");
                 return;
             });
     })
@@ -134,7 +163,7 @@ let deleteCity = (id) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: DeleteCity");
+                reject("ERROR admin BD: DeleteCity");
                 return;
             });
     })
@@ -142,13 +171,13 @@ let deleteCity = (id) => {
 
 //теги
 
-let getTags = () => {
+let getTags = (limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select GetTags();')
+        db.manyOrNone('select GetTags($1,$2);', [limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function(e) {
-                reject("ERROR BD: GetTags");
+                reject("ERROR admin BD: GetTags");
                 return;
             });
     })
@@ -159,7 +188,7 @@ let addTagsAdmin = (title, deleted, accept, countevents) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: AddTagsAdmin");
+                reject("ERROR admin BD: AddTagsAdmin");
                 return;
             });
     })
@@ -170,7 +199,7 @@ let updateTagsAdmin = (id, title, deleted, accept, countevents) => {
             .then(function(data) {
                 resolve(true);
             }).catch(function() {
-                reject("ERROR BD: UpdateTagsAdmin");
+                reject("ERROR admin BD: UpdateTagsAdmin");
                 return;
             });
     })
@@ -186,7 +215,7 @@ let acceptTag = (id) => {
                 resolve(data);
             }).catch(function(e) {
                 console.log(e);
-                reject("ERROR BD: acceptTag");
+                reject("ERROR admin BD: acceptTag");
                 return;
             });
     })
@@ -201,15 +230,52 @@ let deleteTag = (id) => {
                 resolve(data);
             }).catch(function(e) {
                 console.log(e);
-                reject("ERROR BD: deleteTag");
+                reject("ERROR admin BD: deleteTag");
                 return;
             });
     })
 
 };
 
-////
+//ивент
 
+let getEvents = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select events($1,$2);', [limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                reject("ERROR admin BD:  getEvents");
+                return;
+            });
+    })
+};
+
+let deleteEvent = (id) => {
+    return new Promise((resolve, reject) => {
+        db.result('call Delete_event($1);', [id])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR admin BD: deleteEvent");
+                return;
+            });
+    })
+};
+
+let publishEvent = (id, status) => {
+    return new Promise((resolve, reject) => {
+        db.result('call published_event($1,$2);', [id,status])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function(e) {
+                console.log(e);
+                reject("ERROR admin BD: publishEvent");
+                return;
+            });
+    })
+};
 
 
 module.exports = {
@@ -234,4 +300,11 @@ module.exports = {
     'updateTagsAdmin': updateTagsAdmin,
     'acceptTag': acceptTag, // подтв. тег
     'deleteTag': deleteTag, //удалить тег
+    //организатор 
+    'getOrganization': getOrganization,
+    'banStatusAccount' : banStatusAccount,
+    //ивент
+    'deleteEvent' : deleteEvent,
+    'publishEvent' : publishEvent,
+    'getEvents' : getEvents,
 };

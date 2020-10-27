@@ -1,5 +1,4 @@
---1 - user; 0 - admin; 2 - organizer
-
+--1 - user; 0 - admin; 2 - organizer 
 CREATE OR REPLACE function RoleUser(id_ bigint)
 	RETURNS int
     LANGUAGE 'plpgsql'

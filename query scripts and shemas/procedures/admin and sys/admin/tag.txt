@@ -1,6 +1,16 @@
 //удалить и подтв. тег находятся в events
 
 //////////////////
+CREATE OR REPLACE FUNCTION GetTags(limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select * from topic LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
 CREATE OR REPLACE FUNCTION GetTags() 
 RETURNS table (j json) AS
 $$

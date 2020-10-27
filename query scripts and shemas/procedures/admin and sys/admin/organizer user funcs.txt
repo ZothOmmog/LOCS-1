@@ -1,0 +1,58 @@
+--все юзеры
+CREATE OR REPLACE function all_user_admin(limit_ numeric, offset_ numeric)
+RETURNS table (j json) AS
+$$
+BEGIN
+     return query SELECT to_json(a) FROM (select * from visitor LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+--все орги
+CREATE OR REPLACE function all_org_admin(limit_ numeric, offset_ numeric)
+RETURNS table (j json) AS
+$$
+BEGIN
+     return query SELECT to_json(a) FROM (select * from organizer LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+--блокировка аккаунта (или разблокировка), добавление причины блокировки и удаление мероприятий
+CREATE OR REPLACE PROCEDURE ban_Status_Account(id_ bigint, status_ bool, reason_ text)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update organizer set banned = status_ where id_user = id_;
+	update meta_data set deleted  = status_ where id_user = id_;
+	update event set deleted = status_ where id_organizer = id_;
+	if status_ = true then 
+		INSERT INTO public.reason_to_ban(creation, reason, deleted)
+	VALUES ((SELECT CURRENT_TIMESTAMP), reason_, false);
+	end if;
+	
+END; 
+$BODY$;
+
+
+////старое
+--бан/разбан по id переделать на общего пользователя 
+CREATE OR REPLACE PROCEDURE ban_unban_org(id_org_ bigint, status_ bool)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+    update organizer set banned = status_ where id_user = id_org_;
+END;
+$BODY$;
+
+
+
+CREATE OR REPLACE function all_org_admin()
+RETURNS table (j json) AS
+$$
+BEGIN
+     return query SELECT to_json(a) FROM (select * from organizer)a;
+END;
+$$ LANGUAGE plpgsql;
+

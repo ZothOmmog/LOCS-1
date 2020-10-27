@@ -5,6 +5,98 @@ const DataBase = require('../scripts/adminDataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
 
+
+//организатор юзер
+exports.getOrganization = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+
+                await DataBase.getOrganization(limit, offset).then(function(val) {
+                    mas = []
+                    for (i in val) {
+                        mas.push(val[i].all_org_admin);
+                    }
+                    response.json(mas);
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+
+
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.banUser = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.body.id ? request.body.id  : 0);
+                let reason = request.body.reason ? request.body.reason : "";
+                await DataBase.banStatusAccount(id, true, reason).then(function(val) {
+
+                    //TO DO : высылается письмо на почту 
+                    
+                    response.status(200).end("banned");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+                
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.unbanUser = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.body.id ? request.body.id  : 0);
+                await DataBase.banStatusAccount(id, false).then(function(val) {
+                    response.status(200).end("unbanned");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+                
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
 //адрес
 exports.getAddress = async function(request, response, next) {
     try {
@@ -14,7 +106,14 @@ exports.getAddress = async function(request, response, next) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
 
-                await DataBase.getaddress().then(function(val) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+
+                await DataBase.getaddress(limit, offset).then(function(val) {
                     var tags = []
                     for (i in val) {
                         tags.push(val[i].getaddress);
@@ -131,6 +230,7 @@ exports.deleteAddress = async function(request, response, next) {
     }
 
 };
+
 //район
 exports.getDistrict = async function(request, response, next) {
     try {
@@ -138,7 +238,13 @@ exports.getDistrict = async function(request, response, next) {
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
-                await DataBase.districts().then(function(val) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+                await DataBase.districts(limit, offset).then(function(val) {
                     var tags = []
                     for (i in val) {
                         tags.push(val[i].districts);
@@ -256,7 +362,13 @@ exports.getCity = async function(request, response, next) {
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
-                await DataBase.сitys().then(function(val) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+                await DataBase.сitys(limit, offset).then(function(val) {
                     var tags = []
                     for (i in val) {
                         tags.push(val[i].citys);
@@ -366,6 +478,7 @@ exports.deleteCity = async function(request, response, next) {
     }
 
 };
+
 //теги
 exports.changeTag = async function(request, response, next) {
     try {
@@ -438,8 +551,13 @@ exports.getTag = async function(request, response, next) {
         if (userId) {
             const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
             if (Role == 0) {
-
-                await DataBase.getTags().then(function(val) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+                await DataBase.getTags(limit, offset).then(function(val) {
                     var tags = []
                     for (i in val) {
                         tags.push(val[i].gettags);
@@ -508,6 +626,127 @@ exports.acceptTag = async function(request, response, next) {
                     next({err : val, code : 500}).end();
                 });
 
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+
+};
+
+//ивент
+exports.getEvents = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+                await DataBase.getEvents(limit, offset).then(function(val) {
+                    var events = []
+                    for (i in val) {
+                        events.push(val[i].events);
+                    }
+                    response.json(events);
+                }).catch(function(val) {
+                   next({err : val, code : 500}).end();
+                });
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+
+};
+
+exports.publishEvent = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.params.id);
+
+                if (id == null) {
+                    response.status(400).end();
+                    return;
+                }
+                await DataBase.publishEvent(id, true).then(function(val) {
+                    tags = val;
+                    response.status(200).end("publish");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.unpublishEvent = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.params.id);
+
+                if (id == null) {
+                    response.status(400).end();
+                    return;
+                }
+                await DataBase.publishEvent(id, false).then(function(val) {
+                    tags = val;
+                    response.status(200).end("unpublish");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.deleteEvent = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+                let id = Number(request.params.id);
+                if (id == null) {
+                    response.status(400).end();
+                    return;
+                }
+                await DataBase.deleteEvent(id).then(function(val) {
+                    tags = val;
+                    response.status(200).end("deleted");
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
             } else {
                 response.status(403).end("have not permissions");
             }

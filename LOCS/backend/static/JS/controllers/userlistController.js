@@ -29,7 +29,6 @@ exports.postRegistration = async function(request, response, next) {
         }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
         if (CheckMail == true && CheckNick == true) {
-            console.log("123112");
             await DataBase.TimeNow().then(function(val) {
                 CreateTime = val;
             }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
@@ -37,20 +36,16 @@ exports.postRegistration = async function(request, response, next) {
             if (!CreateTime) {
                 response.status(500).end("time error");
             }
-            console.log("12311");
             var hash = crypt.hash(request.body.pas, CreateTime);
             var hashToMail = crypt.hash(request.body.mail, CreateTime);
             let checkAdd = false;
-            console.log("1234");
             await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, CreateTime).then(function(val) {
                 checkAdd = val;
             }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-            console.log("1232");
             if (!checkAdd) {
                 response.status(500).end("dont added");
             }
-            console.log("123");
             if (checkAdd != -1) {
                 var hashToMail = crypt.hash(request.body.mail, CreateTime);
                 await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
