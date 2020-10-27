@@ -1,3 +1,14 @@
+CREATE OR REPLACE FUNCTION datauserlistwithlimit(text_ text, count_ numeric, start_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (SELECT visitor.id_user, visitor.nickname FROM visitor WHERE visitor.nickname ILIKE text_
+										  and (select deleted FROM meta_data where meta_data.id_user = visitor.id_user) = false
+										  LIMIT count_ OFFSET start_ ) a;
+END;
+$$ LANGUAGE plpgsql;
+
+//////////
 --Функция, которая по id пользователя возвращает данные пользователей, поиск c заданной выборкой 
 CREATE OR REPLACE FUNCTION datauserlistwithlimit(text_ text, count_ numeric, start_ numeric) 
 RETURNS table (j json) AS

@@ -8,6 +8,28 @@ AS $BODY$
 DECLARE
 	result_record DataAccount;
 BEGIN
+	select into result_record.confirmed mail_confirmed from meta_data where id_user = UserId_ and deleted = false;
+	if result_record.confirmed is null then 
+	return null;
+	end if;
+	select into result_record.loginAcc, idcity login,id_city from userlist where UserId_ = id;
+	select into result_record.nicknameAcc,result_record.pictureAcc nickname, profile_picture from visitor where UserId_ = id_user;
+	select into result_record.cityAcc title from city where idcity = id;
+	return result_record;
+END;
+$BODY$;
+
+
+
+
+///старая версия
+CREATE OR REPLACE function DataUserAccount(UserId_ bigint, idcity  bigint = null)
+	RETURNS DataAccount
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+	result_record DataAccount;
+BEGIN
 	select into result_record.loginAcc, idcity login,id_city from userlist where UserId_ = id;
 	select into result_record.nicknameAcc,result_record.pictureAcc nickname, profile_picture from visitor where UserId_ = id_user;
 	select into result_record.cityAcc title from city where idcity = id;
