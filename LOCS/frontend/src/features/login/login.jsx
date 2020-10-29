@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import * as Yup from 'yup';
 import style from './style.module.scss';
 import { ButtonColored } from '~/ui';
@@ -17,12 +17,17 @@ const loginSchema = Yup.object().shape({
 });
 
 export const Login = () => {
+    const isLogin = useSelector(authSelectors.isLogin);
     const [isOpenPopup, setIsOpenPopup] = useState(false);
-    const isAuth = useSelector(authSelectors.isAuthSelector);
     const [errorLogin, setErrorLogin] = useState('');
 
     const dispatch = useDispatch();
     const fetchLogin = (login, password) => dispatch(authThunks.fetchLogin({ login, password }));
+    const fetchAuth = useCallback(() => dispatch(authThunks.fetchAuth()), [dispatch]);
+
+    useEffect(() => {
+        if (isLogin) fetchAuth();
+    }, [isLogin, fetchAuth]);
 
     const messageFromReg = useOpenLoginWithSuccessReg(setIsOpenPopup);
 
@@ -45,7 +50,7 @@ export const Login = () => {
                     onSubmit={({ login, password }, { setSubmitting }) => {
                         setSubmitting(true);
                         fetchLogin(login, password).then(() => {
-                            if (!isAuth) setErrorLogin('Неверный логин или пароль');
+                            if (!isLogin) setErrorLogin('Неверный логин или пароль');
                             setSubmitting(false);
                         });
                     }}

@@ -1,34 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { userAPI } from '~/api';
 
-const MOCK_AUTH_TRUE = { 
-    Mail: "test@gmail.com",
-    Nick: "tuser",
-    City: "test_city",
-    UrlPicture: null,
-    Auth: true
-};
-
-// const MOCK_AUTH_FALSE = { 
-//     Auth: false
-// };
-
-// const MOCK_USER = {
-//     login: 'test@gmail.com',
-//     password: '123'
-// }
-
-const MOCK_ORGANIZER = {
-    data: {
-        id_user: 1,
-        info: "Тестовая информация об организации с большим количеством текста для того, чтобы можно было проверить, как это будет выглядеть в верстке и убедиться, что ничего не плывёт, а если плывёт, то поравить, чтобы не плыло, вот, как-то так, надеюсь такого объема хватит, а то ещё больше придумывать мне будет точно лень.",
-        organization_name: "Тестовая организация",
-        organization_link: "https://github.com/ZothOmmog",
-        logo: null,
-        countSub: 0
-    
-    }
-}
 
 //====================slice-name====================
 const SLICE_NAME = 'auth';
@@ -38,22 +10,37 @@ const SLICE_NAME = 'auth';
 const thunks = {
     fetchAuth: createAsyncThunk(
         `${SLICE_NAME}/fetchAuth`,
-        async () => {
-            const { Auth, ...outher } = MOCK_AUTH_TRUE;
-            return { isAuth: Auth, visitor: outher, organizer: MOCK_ORGANIZER.data };
+        async (_payload, thunkApi) => {
+            try {
+                const visitor = await userAPI.setMe();
+                return { visitor, isAuth: true };
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue('Ошибка');
+            }
         }
     ),
     fetchLogin: createAsyncThunk(
         `${SLICE_NAME}/fetchLogin`,
-        async ({ login, password }) => {
-            const user = await userAPI.login(login, password);
-            return { isAuth: true, visitor: user };
+        async ({ login, password }, thunkApi) => {
+            try {
+                await userAPI.login(login, password);
+                return { isLogin: true };
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue(e);
+            }
         }
     ),
     fetchReg: createAsyncThunk(
         `${SLICE_NAME}/fetchReg`,
-        async ({ nick, mail, password }) => {
-            return await userAPI.registration(nick, mail, password);
+        async ({ nick, mail, password }, thunkApi) => {
+            try {
+                return await userAPI.registration(nick, mail, password);
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue(e);
+            }
         }
     )
 };
@@ -76,8 +63,11 @@ const initialState = {
         countSub: null
     },
     isAuth: false,
+    isLogin: false,
+    isLoadingAuthFirst: null, //Для первоначальной загрузки приложения, чтобы всё не размонтировалось при смене одного флага
     isLoadingAuth: null,
     isLoadingLogin: null,
+
     isLoadingReg: false,
     errorReg: '',
     redirectToLoginAfterSuccessReg: false
@@ -91,8 +81,8 @@ const setMe = (state, payload) => {
     if(isAuth) {
         const { visitor } = payload;
         if(visitor) {
-            const { Mail: mail, Nick: nick, City: city, UrlPicture: urlPicture } = visitor;
-            state.visitor = { mail, nick, city, urlPicture };
+            const { mail, nick, city, urlPicture } = visitor;
+            state.visitor = { mail, nick, city, urlPicture: urlPicture === '-1' ? null : urlPicture };
         }
 
         const { organizer } = payload;
@@ -115,6 +105,7 @@ const { actions, reducer } = createSlice({
             state.visitor = initialState.visitor;
             state.organizer = initialState.organizer;
             state.isAuth = initialState.isAuth;
+            state.isLogin = false;
             state.isLoadingAuth = false;
         },
         redirectToLoginAfterSuccessRegChanged: (state, action) => {
@@ -123,18 +114,24 @@ const { actions, reducer } = createSlice({
     },
     extraReducers: {
         [thunks.fetchAuth.pending]: (state) => {
-            state.isLoadingAuth = true;
+            if (state.isLoadingAuthFirst === null) state.isLoadingAuthFirst = true;
+            else state.isLoadingAuth = true;
         },
         [thunks.fetchAuth.fulfilled]: (state, action) => {
             setMe(state, action.payload);
+            if (state.isLoadingAuthFirst === true) state.isLoadingAuthFirst = false;
+            else state.isLoadingAuth = false;
+        },
+        [thunks.fetchAuth.rejected]: (state, _error) => {
             state.isLoadingAuth = false;
+            state.isLogin = false;
         },
 
         [thunks.fetchLogin.pending]: (state) => {
             state.isLoadingLogin = true;
         },
-        [thunks.fetchLogin.fulfilled]: (state, action) => {
-            setMe(state, action.payload);
+        [thunks.fetchLogin.fulfilled]: (state, _action) => {
+            state.isLogin = true;
             state.isLoadingLogin = false;
         },
         [thunks.fetchLogin.rejected]: (state) => {
@@ -149,7 +146,7 @@ const { actions, reducer } = createSlice({
             state.redirectToLoginAfterSuccessReg = true;
             state.errorReg = '';
         },
-        [thunks.fetchReg.rejected]: (state, { error }) => {
+        [thunks.fetchReg.rejected]: (state) => {
             state.isLoadingReg = false;
             state.errorReg = 'Пользователь с такой почтой или никнеймом уже зарегистрирован';
         },
@@ -160,7 +157,9 @@ const { actions, reducer } = createSlice({
 //====================selectors====================
 const sliceSelector = state => state.auth;
 const isAuthSelector = state => sliceSelector(state).isAuth;
+const isLoginSelector = state => sliceSelector(state).isLogin;
 const isLoadingAuthSelector = state => sliceSelector(state).isLoadingAuth;
+const isLoadingAuthFirstSelector = state => sliceSelector(state).isLoadingAuthFirst;
 
 const visitorSelector = state => sliceSelector(state).visitor;
 const visitorNickSelector = state => visitorSelector(state).nick;
@@ -181,7 +180,9 @@ const redirectToLoginAfterSuccessRegSelector = state => sliceSelector(state).red
 
 const selectors = {
     isAuthSelector,
+    isLogin: isLoginSelector,
     isLoadingAuthSelector,
+    isLoadingAuthFirst: isLoadingAuthFirstSelector,
 
     visitorSelector,
     visitorNickSelector,
