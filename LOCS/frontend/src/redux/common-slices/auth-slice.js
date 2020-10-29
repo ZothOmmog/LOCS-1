@@ -121,6 +121,7 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchAuth.rejected]: (state, _error) => {
             state.isLoadingAuth = false;
+            state.isLogin = false;
         },
 
         [thunks.fetchLogin.pending]: (state) => {
