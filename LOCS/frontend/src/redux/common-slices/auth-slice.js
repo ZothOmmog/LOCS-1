@@ -64,6 +64,7 @@ const initialState = {
     },
     isAuth: false,
     isLogin: false,
+    isLoadingAuthFirst: null, //Для первоначальной загрузки приложения, чтобы всё не размонтировалось при смене одного флага
     isLoadingAuth: null,
     isLoadingLogin: null,
 
@@ -113,11 +114,13 @@ const { actions, reducer } = createSlice({
     },
     extraReducers: {
         [thunks.fetchAuth.pending]: (state) => {
-            state.isLoadingAuth = true;
+            if (state.isLoadingAuthFirst === null) state.isLoadingAuthFirst = true;
+            else state.isLoadingAuth = true;
         },
         [thunks.fetchAuth.fulfilled]: (state, action) => {
             setMe(state, action.payload);
-            state.isLoadingAuth = false;
+            if (state.isLoadingAuthFirst === true) state.isLoadingAuthFirst = false;
+            else state.isLoadingAuth = false;
         },
         [thunks.fetchAuth.rejected]: (state, _error) => {
             state.isLoadingAuth = false;
@@ -156,6 +159,7 @@ const sliceSelector = state => state.auth;
 const isAuthSelector = state => sliceSelector(state).isAuth;
 const isLoginSelector = state => sliceSelector(state).isLogin;
 const isLoadingAuthSelector = state => sliceSelector(state).isLoadingAuth;
+const isLoadingAuthFirstSelector = state => sliceSelector(state).isLoadingAuthFirst;
 
 const visitorSelector = state => sliceSelector(state).visitor;
 const visitorNickSelector = state => visitorSelector(state).nick;
@@ -178,6 +182,7 @@ const selectors = {
     isAuthSelector,
     isLogin: isLoginSelector,
     isLoadingAuthSelector,
+    isLoadingAuthFirst: isLoadingAuthFirstSelector,
 
     visitorSelector,
     visitorNickSelector,
