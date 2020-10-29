@@ -17,7 +17,7 @@ function AppView({ isLoading }) {
 export const App = () => {
     const dispath = useDispatch();
 
-    const isLoading = useSelector(authSelectors.isLoadingAuthSelector);
+    const isLoading = useSelector(authSelectors.isLoadingAuthFirst);
 
     useEffect(() => {
         dispath(authThunks.fetchAuth());
