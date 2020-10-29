@@ -104,6 +104,7 @@ const { actions, reducer } = createSlice({
             state.visitor = initialState.visitor;
             state.organizer = initialState.organizer;
             state.isAuth = initialState.isAuth;
+            state.isLogin = false;
             state.isLoadingAuth = false;
         },
         redirectToLoginAfterSuccessRegChanged: (state, action) => {
@@ -152,6 +153,7 @@ const { actions, reducer } = createSlice({
 //====================selectors====================
 const sliceSelector = state => state.auth;
 const isAuthSelector = state => sliceSelector(state).isAuth;
+const isLoginSelector = state => sliceSelector(state).isLogin;
 const isLoadingAuthSelector = state => sliceSelector(state).isLoadingAuth;
 
 const visitorSelector = state => sliceSelector(state).visitor;
@@ -173,6 +175,7 @@ const redirectToLoginAfterSuccessRegSelector = state => sliceSelector(state).red
 
 const selectors = {
     isAuthSelector,
+    isLogin: isLoginSelector,
     isLoadingAuthSelector,
 
     visitorSelector,
