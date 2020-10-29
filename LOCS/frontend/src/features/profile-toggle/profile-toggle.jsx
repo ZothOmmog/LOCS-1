@@ -25,5 +25,5 @@ export const ProfileToggle = () => {
                 Организатор
             </NavLinkCustom>
         </div>
-    ) : <NavLinkCustom to>Регистрация аккаута организатора</NavLinkCustom>;
+    ) : <NavLinkCustom to=''>Регистрация аккаута организатора</NavLinkCustom>;
 };
