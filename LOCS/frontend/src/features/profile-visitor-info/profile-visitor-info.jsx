@@ -10,7 +10,7 @@ export const ProfileVisitorInfo = () => {
     return (
         <ListCustom
             headers={['Email', 'Город']}
-            disriptions={[email, city]}
+            disriptions={[email, city || 'Неизвестно']}
         />
     );
 }
