@@ -12,8 +12,8 @@ const thunks = {
         `${SLICE_NAME}/fetchAuth`,
         async (_payload, thunkApi) => {
             try {
-                const { Auth, ...outher } = await userAPI.setMe();
-                return { isAuth: Auth, visitor: outher };
+                const visitor = await userAPI.setMe();
+                return { visitor, isAuth: true };
             }
             catch(e) {
                 return thunkApi.rejectWithValue('Ошибка');
@@ -81,8 +81,8 @@ const setMe = (state, payload) => {
     if(isAuth) {
         const { visitor } = payload;
         if(visitor) {
-            const { Mail: mail, Nick: nick, City: city, UrlPicture: urlPicture } = visitor;
-            state.visitor = { mail, nick, city, urlPicture };
+            const { mail, nick, city, urlPicture } = visitor;
+            state.visitor = { mail, nick, city, urlPicture: urlPicture === '-1' ? null : urlPicture };
         }
 
         const { organizer } = payload;
