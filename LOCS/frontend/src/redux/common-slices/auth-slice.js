@@ -16,7 +16,7 @@ const thunks = {
                 return { isAuth: Auth, visitor: outher };
             }
             catch(e) {
-                return thunkApi.rejectWithValue(e);
+                return thunkApi.rejectWithValue('Ошибка');
             }
         }
     ),
@@ -25,7 +25,7 @@ const thunks = {
         async ({ login, password }, thunkApi) => {
             try {
                 await userAPI.login(login, password);
-                return { isAuth: true };
+                return { isLogin: true };
             }
             catch(e) {
                 return thunkApi.rejectWithValue(e);
@@ -63,6 +63,7 @@ const initialState = {
         countSub: null
     },
     isAuth: false,
+    isLogin: false,
     isLoadingAuth: null,
     isLoadingLogin: null,
 
@@ -124,8 +125,8 @@ const { actions, reducer } = createSlice({
         [thunks.fetchLogin.pending]: (state) => {
             state.isLoadingLogin = true;
         },
-        [thunks.fetchLogin.fulfilled]: (state, action) => {
-            setMe(state, action.payload);
+        [thunks.fetchLogin.fulfilled]: (state, _action) => {
+            state.isLogin = true;
             state.isLoadingLogin = false;
         },
         [thunks.fetchLogin.rejected]: (state) => {
