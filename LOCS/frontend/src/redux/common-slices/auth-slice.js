@@ -1,34 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { userAPI } from '~/api';
 
-const MOCK_AUTH_TRUE = { 
-    Mail: "test@gmail.com",
-    Nick: "tuser",
-    City: "test_city",
-    UrlPicture: null,
-    Auth: true
-};
-
-// const MOCK_AUTH_FALSE = { 
-//     Auth: false
-// };
-
-// const MOCK_USER = {
-//     login: 'test@gmail.com',
-//     password: '123'
-// }
-
-const MOCK_ORGANIZER = {
-    data: {
-        id_user: 1,
-        info: "Тестовая информация об организации с большим количеством текста для того, чтобы можно было проверить, как это будет выглядеть в верстке и убедиться, что ничего не плывёт, а если плывёт, то поравить, чтобы не плыло, вот, как-то так, надеюсь такого объема хватит, а то ещё больше придумывать мне будет точно лень.",
-        organization_name: "Тестовая организация",
-        organization_link: "https://github.com/ZothOmmog",
-        logo: null,
-        countSub: 0
-    
-    }
-}
 
 //====================slice-name====================
 const SLICE_NAME = 'auth';
@@ -38,22 +10,37 @@ const SLICE_NAME = 'auth';
 const thunks = {
     fetchAuth: createAsyncThunk(
         `${SLICE_NAME}/fetchAuth`,
-        async () => {
-            const { Auth, ...outher } = MOCK_AUTH_TRUE;
-            return { isAuth: Auth, visitor: outher, organizer: MOCK_ORGANIZER.data };
+        async (_payload, thunkApi) => {
+            try {
+                const { Auth, ...outher } = await userAPI.setMe();
+                return { isAuth: Auth, visitor: outher };
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue(e);
+            }
         }
     ),
     fetchLogin: createAsyncThunk(
         `${SLICE_NAME}/fetchLogin`,
-        async ({ login, password }) => {
-            await userAPI.login(login, password);
-            return { isAuth: true };
+        async ({ login, password }, thunkApi) => {
+            try {
+                await userAPI.login(login, password);
+                return { isAuth: true };
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue(e);
+            }
         }
     ),
     fetchReg: createAsyncThunk(
         `${SLICE_NAME}/fetchReg`,
-        async ({ nick, mail, password }) => {
-            return await userAPI.registration(nick, mail, password);
+        async ({ nick, mail, password }, thunkApi) => {
+            try {
+                return await userAPI.registration(nick, mail, password);
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue(e);
+            }
         }
     )
 };
@@ -78,6 +65,7 @@ const initialState = {
     isAuth: false,
     isLoadingAuth: null,
     isLoadingLogin: null,
+
     isLoadingReg: false,
     errorReg: '',
     redirectToLoginAfterSuccessReg: false
@@ -127,6 +115,9 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchAuth.fulfilled]: (state, action) => {
             setMe(state, action.payload);
+            state.isLoadingAuth = false;
+        },
+        [thunks.fetchAuth.rejected]: (state, _error) => {
             state.isLoadingAuth = false;
         },
 
