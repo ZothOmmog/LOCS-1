@@ -10,6 +10,7 @@ import { authSelectors, authThunks } from '~/redux/common-slices/auth-slice';
 import { FormikInputCustom } from '../formik-input-custom';
 import { FormikTextError } from '../formik-text-error';
 import { useOpenLoginWithSuccessReg } from '../registration/index';
+import { useAuthIfLoginSuccess } from './useAuthIfLoginSucces';
 
 const loginSchema = Yup.object().shape({
     login: Yup.string().email('Некорректный email').required('Обязательно для ввода'),
@@ -17,19 +18,14 @@ const loginSchema = Yup.object().shape({
 });
 
 export const Login = () => {
-    const isLogin = useSelector(authSelectors.isLogin);
     const [isOpenPopup, setIsOpenPopup] = useState(false);
-    const [errorLogin, setErrorLogin] = useState('');
+    const isLogin = useSelector(authSelectors.isLogin);
 
     const dispatch = useDispatch();
     const fetchLogin = (login, password) => dispatch(authThunks.fetchLogin({ login, password }));
-    const fetchAuth = useCallback(() => dispatch(authThunks.fetchAuth()), [dispatch]);
-
-    useEffect(() => {
-        if (isLogin) fetchAuth();
-    }, [isLogin, fetchAuth]);
 
     const messageFromReg = useOpenLoginWithSuccessReg(setIsOpenPopup);
+    const { errorLogin, setTryLogin } = useAuthIfLoginSuccess(isLogin);
 
     return (
         <div>
@@ -50,7 +46,7 @@ export const Login = () => {
                     onSubmit={({ login, password }, { setSubmitting }) => {
                         setSubmitting(true);
                         fetchLogin(login, password).then(() => {
-                            if (!isLogin) setErrorLogin('Неверный логин или пароль');
+                            setTryLogin(true);
                             setSubmitting(false);
                         });
                     }}
