@@ -7,6 +7,7 @@ import { MainPage } from './main-page';
 import { ProfileOrganizerEventsCreatePage } from './profile-organizer-events-create-page';
 import { ProfileOrganizerEventsListPage } from './profile-organizer-events-list-page';
 import { ProfileOrganizerInfoPage } from './profile-organizer-info-page';
+import { ProfileOrganizerRegistrationPage } from './profile-organizer-registration-page';
 import { ProfileVisitorInfoPage } from './profile-visitor-info-page';
 import { ProfileVisitorSubscribesPage } from './profile-visitor-subscribes-page';
 
@@ -23,6 +24,9 @@ export const Routes = () => (
         </PrivateRoute>
         <PrivateRoute path='/profile/visitor/friends'>
             <ProfileVisitorInfoPage />
+        </PrivateRoute>
+        <PrivateRoute path='/profile/organizer/registration'>
+            <ProfileOrganizerRegistrationPage />
         </PrivateRoute>
         <PrivateRoute path='/profile/organizer/info'>
             <ProfileOrganizerInfoPage />
