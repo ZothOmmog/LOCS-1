@@ -1,0 +1,1 @@
+export { RegistrationOrganizerForm } from './registration-organizer-form';
