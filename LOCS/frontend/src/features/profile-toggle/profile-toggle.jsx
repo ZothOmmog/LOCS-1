@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './style.module.scss';
+import style from './profile-toggle.module.scss';
 import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
 import { NavLinkCustom } from '~/ui/atoms';
