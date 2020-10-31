@@ -2,7 +2,7 @@ import React from 'react';
 import style from './style.module.scss';
 import { ButtonCustom, NavLinkCustom } from '~/ui/atoms';
 import { useDispatch } from 'react-redux';
-import { authActions } from '~/redux/common-slices/auth-slice';
+import { authThunks } from '~/redux/common-slices/auth-slice';
 
 
 const ProfileVisitorNavbarView = ({ logoutCallback }) => (
@@ -24,7 +24,7 @@ const ProfileVisitorNavbarView = ({ logoutCallback }) => (
 
 export const ProfileVisitorNavbar = () => {
     const dispatch = useDispatch();
-    const logoutCallback = () => dispatch(authActions.logout());
+    const logoutCallback = () => dispatch(authThunks.logout());
 
     return (
         <ProfileVisitorNavbarView logoutCallback={logoutCallback} />

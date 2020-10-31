@@ -3,7 +3,7 @@ import style from './style.module.scss';
 import classNames from 'classnames';
 import { ButtonCustom, LinkCustom, NavLinkCustom } from '~/ui/atoms';
 import { useDispatch } from 'react-redux';
-import { authActions } from '~/redux/common-slices/auth-slice';
+import { authThunks } from '~/redux/common-slices/auth-slice';
 import { ButtonWithDropList } from '~/ui/molecules';
 import { useLocation } from 'react-router-dom';
 
@@ -46,7 +46,7 @@ const ProfileOrganizerNavbarView = ({ logoutCallback, eventsPages, currentEventP
 
 export const ProfileOrganizerNavbar = () => {
     const dispatch = useDispatch();
-    const logoutCallback = () => dispatch(authActions.logout());
+    const logoutCallback = () => dispatch(authThunks.logout());
     const { pathname } = useLocation();
 
     const eventsPages = [

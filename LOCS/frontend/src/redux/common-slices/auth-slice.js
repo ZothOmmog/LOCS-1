@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { userAPI } from '~/api';
+import { USER_ID, USER_ROLE } from '~/helpers/cookie-constants';
 
 
 //====================slice-name====================
@@ -41,6 +42,13 @@ const thunks = {
             catch(e) {
                 return thunkApi.rejectWithValue(e);
             }
+        }
+    ),
+    logout: createAsyncThunk(
+        `${SLICE_NAME}/logout`,
+        () => {
+            document.cookie = `${encodeURIComponent(USER_ROLE)}=${encodeURIComponent('')}; max-age=-1`;
+            document.cookie = `${encodeURIComponent(USER_ID)}=${encodeURIComponent('')}; max-age=-1`;
         }
     )
 };
@@ -101,13 +109,6 @@ const { actions, reducer } = createSlice({
     name: SLICE_NAME,
     initialState: initialState,
     reducers: {
-        logout: state => {
-            state.visitor = initialState.visitor;
-            state.organizer = initialState.organizer;
-            state.isAuth = initialState.isAuth;
-            state.isLogin = false;
-            state.isLoadingAuth = false;
-        },
         redirectToLoginAfterSuccessRegChanged: (state, action) => {
             state.redirectToLoginAfterSuccessReg = action.payload;
         }
@@ -151,6 +152,13 @@ const { actions, reducer } = createSlice({
             state.isLoadingReg = false;
             state.errorReg = 'Пользователь с такой почтой или никнеймом уже зарегистрирован';
         },
+        [thunks.logout.fulfilled]: (state) => {
+            state.visitor = initialState.visitor;
+            state.organizer = initialState.organizer;
+            state.isAuth = initialState.isAuth;
+            state.isLogin = false;
+            state.isLoadingAuth = false;
+        }
     }
 });
 //=============================================
