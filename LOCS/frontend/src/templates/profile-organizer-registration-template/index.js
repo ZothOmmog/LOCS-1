@@ -1,0 +1,1 @@
+export { ProfileOrganizerRegistrationTemplate } from './profile-organizer-registration-template';
