@@ -4,7 +4,7 @@ import ClassNames from 'classnames';
 import style from './style.module.scss';
 import { LinkCustom } from '~/ui/atoms';
 
-export const NavLinkColored = ({ to, active, className, children, ...outherProps}) => (
+export const NavLinkColored = ({ to, active, className, children, ...outherProps}) => (console.error('Компонент NavLinkColored устарел, надо заменить его на NavLinkColoredLocs'),
     <LinkCustom 
         to={to}
         className={ClassNames(
