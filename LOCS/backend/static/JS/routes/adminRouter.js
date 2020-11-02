@@ -14,7 +14,7 @@ adminRouter.put("/tag/:id", adminRouterController.changeTag); //изменить
 
 
 //Город
-adminRouter.get("/city/:limit/:offset$", adminRouterController.getCity); //все город
+adminRouter.get("/city/:limit/:offset$", adminRouterController.getCity); //все города
 adminRouter.post("/city$", adminRouterController.createCity); //добавить город
 adminRouter.put("/city/:id", adminRouterController.changeCity); //изменить город 
 adminRouter.delete("/city/:id", adminRouterController.deleteCity); //удалить город 
@@ -33,6 +33,7 @@ adminRouter.delete("/address/:id", adminRouterController.deleteAddress); //уд�
 
 //юзер/организаторы 
 adminRouter.get("/organization/:limit/:offset$", adminRouterController.getOrganization); //все организаторы
+adminRouter.get("/users/:limit/:offset$", adminRouterController.getUsers); //все юзеры
 adminRouter.post("/ban$", adminRouterController.banUser); //забанить + добавление причины и удаление всех ивентов
 adminRouter.post("/unban$", adminRouterController.unbanUser); //разбанить
 

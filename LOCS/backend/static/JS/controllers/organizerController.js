@@ -686,14 +686,24 @@ exports.searchAddress = async function(request, response, next) {
     try {
         let word = request.body.word;
         let data;
-        await DataBase.searchAddress(word).then(function(val) {
-            data = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
+        var splitWords = word.split(' ').filter(n => n);
+        if(splitWords.length == 1) {
+            await DataBase.searchAddress(word).then(function(val) {
+                data = val;
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+        } else {
+            let endWord = splitWords[splitWords.length - 1];
+            splitWords.splice(splitWords.length - 1, 1);
+            let halfWord = splitWords.join(' ');
+            await DataBase.searchAddressWithHouse(halfWord, endWord).then(function(val) {
+                data = val;
+            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+        }
+
         let address = [];
         for (i in data) {
             address.push(data[i].searchaddress);
         }
-
         response.json(address);
     } catch (err) {
         next({err : err, code : 500});
