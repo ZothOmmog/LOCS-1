@@ -15,6 +15,18 @@ let getOrganization= (limit, offset) => {
     })
 };
 
+let getUsers = (limit, offset) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone('select all_user_admin($1,$2);', [limit, offset])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR admin BD: all_user_admin");
+                return;
+            });
+    })
+};
+
 let banStatusAccount = (id, status, reason = null) => {
     return new Promise((resolve, reject) => {
         db.result('Call ban_Status_Account($1,$2,$3);', [id, status, reason])
@@ -302,6 +314,7 @@ module.exports = {
     'deleteTag': deleteTag, //удалить тег
     //организатор 
     'getOrganization': getOrganization,
+    'getUsers' : getUsers,
     'banStatusAccount' : banStatusAccount,
     //ивент
     'deleteEvent' : deleteEvent,

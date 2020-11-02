@@ -1025,6 +1025,18 @@ const searchAddress = (word) => {
     });
 };
 
+//получение id адреса, поиск по адресу и дому
+const searchAddressWithHouse = (word, house) => {
+    return new Promise((resolve, reject) => {
+        db.manyOrNone("select searchAddress($1,$2);", [("%" + word + "%"), ("%" + house + "%")])
+            .then(function(data) {
+                resolve(data);
+            }).catch(function() {
+                reject("ERROR BD: searchAddressWithHouse");
+                return;
+            });
+    });
+};
 
 ////загрузка фото
 //загрузка фото лк
@@ -1164,6 +1176,7 @@ module.exports = {
 
     'getIdAddress': getIdAddress, //получение id адреса
     'searchAddress': searchAddress, //получение id адреса, поиск
+    'searchAddressWithHouse' : searchAddressWithHouse, //получение id адреса, поиск по адресу и дому
 
     //работа с организаторами
     'subList': subList, //Список подписок

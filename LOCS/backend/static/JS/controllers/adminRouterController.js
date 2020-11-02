@@ -7,6 +7,43 @@ const takeObj = funcs.takeObj;
 
 
 //организатор юзер
+exports.getUsers = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+
+            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            if (Role == 0) {
+
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+        
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+
+                await DataBase.getUsers(limit, offset).then(function(val) {
+                    mas = []
+                    for (i in val) {
+                        mas.push(val[i].all_user_admin);
+                    }
+                    response.json(mas);
+                }).catch(function(val) {
+                    next({err : val, code : 500}).end();
+                });
+
+
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
 exports.getOrganization = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
@@ -152,7 +189,7 @@ exports.createAddress = async function(request, response, next) {
                     return;
                 }
                 await DataBase.addAddress(street, house, latitude, longitude, id_district, deleted).then(function(val) {
-                    response.json(val);
+                    response.status(200).end();
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -186,7 +223,7 @@ exports.changeAddress = async function(request, response, next) {
                     return;
                 }
                 await DataBase.updateAddress(id, street, house, latitude, longitude, id_district, deleted).then(function(val) {
-                    response.json(val);
+                    response.status(200).end();
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -279,7 +316,7 @@ exports.createDistrict = async function(request, response, next) {
                     return;
                 }
                 await DataBase.addDistrict(title, id_city, deleted).then(function(val) {
-                    response.json(val);
+                    response.status(200).end();
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -310,7 +347,7 @@ exports.changeDistrict = async function(request, response, next) {
                     return;
                 }
                 await DataBase.updateDistrict(id, title, id_city, deleted).then(function(val) {
-                    response.json(val);
+                    response.status(200).end();
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -402,7 +439,8 @@ exports.createCity = async function(request, response, next) {
                     return;
                 }
                 await DataBase.addCity(title, deleted).then(function(val) {
-                    response.json(val);
+                    response.status(200).end(val);
+                    //response.json(val);
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -432,9 +470,8 @@ exports.changeCity = async function(request, response, next) {
                     response.status(400).end();
                     return;
                 }
-
                 await DataBase.updateCity(id, title, deleted).then(function(val) {
-                    response.json(val);
+                    esponse.status(200).end(val);
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -496,7 +533,8 @@ exports.changeTag = async function(request, response, next) {
                     return;
                 }
                 await DataBase.updateTagsAdmin(id, title, deleted, accept, countevents).then(function(val) {
-                    response.json(val);
+                    response.status(200).end(val);
+                    //response.json(val);
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
@@ -522,17 +560,17 @@ exports.addTag = async function(request, response, next) {
                 let title = request.body.title;
                 let deleted = request.body.deleted;
                 let accept = request.body.accept;
-                let countevents = request.body.countevents;
-                if (countevents == null || title == null || accept == null || deleted == null) {
+                let countEvents = request.body.countEvents;
+                if (countEvents == null || title == null || accept == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.addTagsAdmin(title, deleted, accept, countevents).then(function(val) {
-                    response.json(val);
+                await DataBase.addTagsAdmin(title, deleted, accept, countEvents).then(function(val) {
+                    response.status(200).end(val);
+                    //response.json(val);
                 }).catch(function(val) {
                     next({err : val, code : 500}).end();
                 });
-
             } else {
                 response.status(403).end("have not permissions");
             }
