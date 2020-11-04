@@ -1,7 +1,10 @@
+@import '~/styles/variables.scss';
+
 ._ {
     display: flex;
     flex-direction: column;
     height: 100%;
+    font-family: $font-main;
 }
 
 .__name-link {

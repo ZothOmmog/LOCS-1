@@ -12,6 +12,7 @@ export const RegistrationOrganizerFormTemplate = ({ children }) => {
             </div>
             {children[2]}
             <div className={style['__submit']}>{children[3]}</div>
+            {children[4]}
         </Form>
     );
 };

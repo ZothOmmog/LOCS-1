@@ -25,13 +25,22 @@ export const RegistrationOrganizerForm = () => {
                 logo: ''
             }}
             validationSchema={regOrgShema}
+            onSubmit={({ organizationName, info, organizationLink, logo }, { setSubmitting }) => {
+                setSubmitting(true);
+                setTimeout(() => {
+                    setSubmitting(false);
+                }, 2000);
+            }}
         >
-            <RegistrationOrganizerFormTemplate>
-                <FormikInputCustom name='organizationName' wrapperClassName={style['__organizationName']} placeholder='Название организатора' />
-                <FormikInputCustom name='organizationLink' wrapperClassName={style['__organizationLink']} placeholder='Ссылка на сайт организатора (не обязательно)' />
-                <FormikTextareaCustom name='info' wrapperClassName={style['__info']} placeholder='Описание организатора (макс. 400 символов)' />
-                <ButtonColored type='submit'>Зарегистрировать</ButtonColored>
-            </RegistrationOrganizerFormTemplate>
+            {({ isSubmitting }) => (
+                <RegistrationOrganizerFormTemplate>
+                    <FormikInputCustom name='organizationName' wrapperClassName={style['__organizationName']} placeholder='Название организатора' />
+                    <FormikInputCustom name='organizationLink' wrapperClassName={style['__organizationLink']} placeholder='Ссылка на сайт организатора (не обязательно)' />
+                    <FormikTextareaCustom name='info' wrapperClassName={style['__info']} placeholder='Описание организатора (макс. 400 символов)' />
+                    <ButtonColored type='submit' disabled={isSubmitting}>Зарегистрировать</ButtonColored>
+                    <div style={{ opacity: isSubmitting ? 100 : 0 }}>Идёт регистрация...</div>
+                </RegistrationOrganizerFormTemplate>
+            )}
         </Formik>
     );
 };
