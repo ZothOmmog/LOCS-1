@@ -1,0 +1,1 @@
+export const REQUIRED_HINT = 'Обязательно для ввода';

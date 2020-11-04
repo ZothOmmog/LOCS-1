@@ -18,8 +18,7 @@ import {
     searchAddressThunks,
 } from '~/redux/common-slices/search-address-slice';
 import { organizerEventsThunks } from '~/redux/common-slices/organizer-events-slice';
-
-const REQUIRED_HINT = 'Обязательно для ввода';
+import { REQUIRED_HINT } from '~/helpers/common-hints';
 
 const loginSchema = Yup.object().shape({
     idAddress: Yup.string().required(REQUIRED_HINT),

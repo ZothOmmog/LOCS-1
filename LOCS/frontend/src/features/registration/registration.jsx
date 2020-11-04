@@ -10,9 +10,7 @@ import { RegistrationTemplate } from './registration-template';
 import { authSelectors, authThunks } from '~/redux/common-slices/auth-slice';
 import { FormikTextError } from '../formik-text-error';
 import { useEffect } from 'react';
-// import { FormikTextError } from '../formik-text-error';
-
-const REQUIRED_HINT = 'Обязательно для ввода';
+import { REQUIRED_HINT } from '~/helpers/common-hints';
 
 const regSchema = Yup.object().shape({
     nick: Yup

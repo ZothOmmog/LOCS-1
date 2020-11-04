@@ -5,6 +5,13 @@ import { FormikTextareaCustom } from '~/features/formik-textarea-custom';
 import { ButtonColored } from '~/ui';
 import { RegistrationOrganizerFormTemplate } from './registration-organizer-form-template';
 import style from './registration-organizer-form.module.scss';
+import * as Yup from 'yup';
+
+
+
+const regOrgShema = Yup.object().shape({
+    organizationName: Yup.string().required('')
+});
 
 export const RegistrationOrganizerForm = () => {
 
