@@ -21,7 +21,7 @@ export const RegistrationOrganizerForm = () => {
                 <FormikInputCustom name='organizationName' wrapperClassName={style['__organizationName']} placeholder='Название организатора' />
                 <FormikInputCustom name='organizationLink' wrapperClassName={style['__organizationLink']} placeholder='Ссылка на сайт организатора' />
                 <FormikTextareaCustom name='info' wrapperClassName={style['__info']} placeholder='Описание организатора' />
-                <ButtonColored type='submit'>Зарегистрироваться</ButtonColored>
+                <ButtonColored type='submit'>Зарегистрировать</ButtonColored>
             </RegistrationOrganizerFormTemplate>
         </Formik>
     );
