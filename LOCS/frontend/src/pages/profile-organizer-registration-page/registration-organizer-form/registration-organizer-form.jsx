@@ -1,4 +1,4 @@
-import { Form, Formik } from 'formik';
+import { Formik } from 'formik';
 import React from 'react';
 import { FormikInputCustom } from '~/features/formik-input-custom';
 import { FormikTextareaCustom } from '~/features/formik-textarea-custom';
@@ -17,7 +17,6 @@ export const RegistrationOrganizerForm = () => {
                 logo: ''
             }}
         >
-            
             <RegistrationOrganizerFormTemplate>
                 <FormikInputCustom name='organizationName' wrapperClassName={style['__organizationName']} placeholder='Название организатора' />
                 <FormikInputCustom name='organizationLink' wrapperClassName={style['__organizationLink']} placeholder='Ссылка на сайт организатора' />

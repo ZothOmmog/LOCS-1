@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import * as Yup from 'yup';
 import style from './style.module.scss';
 import { ButtonColored } from '~/ui';

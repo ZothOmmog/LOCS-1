@@ -4,20 +4,23 @@ import ClassNames from 'classnames';
 import style from './style.module.scss';
 import { LinkCustom } from '~/ui/atoms';
 
-export const NavLinkColored = ({ to, active, className, children, ...outherProps}) => (console.error('Компонент NavLinkColored устарел, надо заменить его на NavLinkColoredLocs'),
-    <LinkCustom 
-        to={to}
-        className={ClassNames(
-            style['nav-link-colored'],
-            { [style['nav-link-colored_active']]: active },
-            { [style['nav-link-colored_inactive']]: !active },
-            { [className]: className }
-        )}
-        {...outherProps}
-    >
-        {children}
-    </LinkCustom>
-);
+export const NavLinkColored = ({ to, active, className, children, ...outherProps}) => {
+    console.error('Компонент NavLinkColored устарел, надо заменить его на NavLinkColoredLocs');
+    return (
+        <LinkCustom 
+            to={to}
+            className={ClassNames(
+                style['nav-link-colored'],
+                { [style['nav-link-colored_active']]: active },
+                { [style['nav-link-colored_inactive']]: !active },
+                { [className]: className }
+            )}
+            {...outherProps}
+        >
+            {children}
+        </LinkCustom>
+    );
+};
 
 NavLinkColored.propTypes = {
     to: PropTypes.string.isRequired,
