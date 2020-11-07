@@ -1,7 +1,11 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { userAPI } from '~/api';
+import { organizerApi, userAPI } from '~/api';
 import { USER_ID, USER_ROLE } from '~/helpers/cookie-constants';
 
+const FETCH_ORG_REG_REJECT_TYPES = {
+    registration: 0,
+    getOrganizer: 1
+}
 
 //====================slice-name====================
 const SLICE_NAME = 'auth';
@@ -44,6 +48,24 @@ const thunks = {
             }
         }
     ),
+    fetchOrgReg: createAsyncThunk(
+        `${SLICE_NAME}/fetchOrgReg`,
+        async ({ info, orgName, orgLink, logoLink }, thunkApi) => {
+            try {
+                await organizerApi.signUp(info, orgName, orgLink, logoLink)
+            }
+            catch {
+                return thunkApi.rejectWithValue(FETCH_ORG_REG_REJECT_TYPES.registration);
+            }
+
+            try {
+                return await organizerApi.getMeOrg();
+            }
+            catch {
+                return thunkApi.rejectWithValue(FETCH_ORG_REG_REJECT_TYPES.getOrganizer);
+            }
+        }
+    ),
     logout: createAsyncThunk(
         `${SLICE_NAME}/logout`,
         () => {
@@ -72,12 +94,15 @@ const initialState = {
     },
     isAuth: false,
     isLogin: false,
+
     isLoadingAuthFirst: null, //Для первоначальной загрузки приложения, чтобы всё не размонтировалось при смене одного флага
     isLoadingAuth: null,
     isLoadingLogin: null,
-
     isLoadingReg: false,
+
     errorReg: '',
+    errorRegOrg: '',
+
     redirectToLoginAfterSuccessReg: false
 };
 //====================================================
@@ -152,6 +177,27 @@ const { actions, reducer } = createSlice({
             state.isLoadingReg = false;
             state.errorReg = 'Пользователь с такой почтой или никнеймом уже зарегистрирован';
         },
+
+        [thunks.fetchOrgReg.fulfilled]: (state, action) => {
+            if (state.errorRegOrg) state.errorRegOrg = '';
+            console.log(action);
+        },
+        [thunks.fetchOrgReg.rejected]: (state, action) => {
+            const rejectType = action.payload;
+
+            switch (rejectType) {
+                case FETCH_ORG_REG_REJECT_TYPES.getOrganizer:
+                    state.errorRegOrg = 'Ошибка при получении данных об организаторе, обратитесь в поддержку';
+                    break;
+                case FETCH_ORG_REG_REJECT_TYPES.registration:
+                    state.errorRegOrg = 'Такое название организатора уже используется';
+                    break; 
+                default:
+                    state.errorRegOrg = 'Неизвестный тип ошибки, обратитесь в поддержку';
+                    break;
+            }
+        },
+        
         [thunks.logout.fulfilled]: (state) => {
             state.visitor = initialState.visitor;
             state.organizer = initialState.organizer;
@@ -185,6 +231,8 @@ const organizationLogoSelector = state => organizerSelector(state).logo;
 const countSubSelector = state => organizerSelector(state).countSub;
 
 const errorRegSelector = state => sliceSelector(state).errorReg;
+const errorRegOrgSelector = state => sliceSelector(state).errorRegOrg;
+
 const redirectToLoginAfterSuccessRegSelector = state => sliceSelector(state).redirectToLoginAfterSuccessReg;
 
 const selectors = {
@@ -207,6 +255,8 @@ const selectors = {
     countSubSelector,
 
     errorReg: errorRegSelector,
+    errorRegOrg: errorRegOrgSelector,
+
     redirectToLoginAfterSuccessReg: redirectToLoginAfterSuccessRegSelector,
 };
 //=================================================
