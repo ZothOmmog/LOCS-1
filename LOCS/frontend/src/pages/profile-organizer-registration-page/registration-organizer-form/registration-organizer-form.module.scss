@@ -14,4 +14,8 @@
 .__info {
     margin-top: 16px;
     flex-grow: 1;
+
+    &-input {
+        flex-shrink: 0;
+    }
 }
