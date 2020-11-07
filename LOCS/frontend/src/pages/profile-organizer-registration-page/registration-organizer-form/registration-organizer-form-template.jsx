@@ -6,13 +6,16 @@ export const RegistrationOrganizerFormTemplate = ({ children }) => {
 
     return (
         <Form className={style['_']}>
-            <div className={style['__name-link']}>
-                    {children[0]}
-                    {children[1]}
+            <div className={style['__server-error']}>
+                {children[0]}
             </div>
-            {children[2]}
-            <div className={style['__submit']}>{children[3]}</div>
-            {children[4]}
+            <div className={style['__name-link']}>
+                    {children[1]}
+                    {children[2]}
+            </div>
+            {children[3]}
+            <div className={style['__submit']}>{children[4]}</div>
+            {children[5]}
         </Form>
     );
 };
