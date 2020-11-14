@@ -16,13 +16,24 @@ const thunks = {
     fetchAuth: createAsyncThunk(
         `${SLICE_NAME}/fetchAuth`,
         async (_payload, thunkApi) => {
+            let visitor;
+            let organizer;
+
             try {
-                const visitor = await userAPI.setMe();
-                return { visitor, isAuth: true };
+                visitor = await userAPI.setMe();
             }
             catch(e) {
                 return thunkApi.rejectWithValue('Ошибка');
             }
+            
+            try {
+                organizer = await organizerApi.getMeOrg();
+            }
+            catch(e) {
+                return thunkApi.rejectWithValue('Ошибка получения данных организатора');
+            }
+
+            return { visitor, organizer, isAuth: true };
         }
     ),
     fetchLogin: createAsyncThunk(
@@ -120,7 +131,7 @@ const setMe = (state, payload) => {
 
         const { organizer } = payload;
         if(organizer) {
-            const { id_user: idUser, info, organization_name: organizationName, organization_link: organizationLink, logo, countSub } = organizer;
+            const { id_user: idUser, info, organization_name: organizationName, organization_link: organizationLink, logo, countSub } = organizer.data;
             state.organizer = { idUser, info, organizationName, organizationLink, logo, countSub };
         }
 
@@ -134,6 +145,9 @@ const { actions, reducer } = createSlice({
     name: SLICE_NAME,
     initialState: initialState,
     reducers: {
+        errorRegOrgChanged: (state, action) => {
+            state.errorRegOrg = action.payload;
+        },
         redirectToLoginAfterSuccessRegChanged: (state, action) => {
             state.redirectToLoginAfterSuccessReg = action.payload;
         }
