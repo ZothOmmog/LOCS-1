@@ -117,7 +117,7 @@ const DataUserAccount = (userId, cityId = null) => {
 //ID и ник по поиску 
 const datauserlist = (nick) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select datauserlist($1) as User;", "%" + nick + "%")
+        db.manyOrNone("select datauserlist($1) as User;",  nick )
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -130,7 +130,7 @@ const datauserlist = (nick) => {
 //count(ID и ник по поиску )
 const Countdatauserlist = (nick) => {
     return new Promise((resolve, reject) => {
-        db.oneOrNone("select count(*) from ( select datauserlist($1) )a;", ["%" + nick + "%"])
+        db.oneOrNone("select count(*) from ( select datauserlist($1) )a;", [nick])
             .then(function(data) {
                 resolve(data.count);
             }).catch(function() {
@@ -143,7 +143,7 @@ const Countdatauserlist = (nick) => {
 //ID и ник по поиску с ограничениями 
 const datauserlistLimit = (nick, limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select datauserlistwithlimit($1,$2,$3) as User;", ["%" + nick + "%", limit, offset])
+        db.manyOrNone("select datauserlistwithlimit($1,$2,$3) as User;", [nick , limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -624,7 +624,7 @@ let tagsLim = (limit, offset) => {
     // поиск евентов 
 let searchEvent = (word, limit, offset) => {
         return new Promise((resolve, reject) => {
-            db.manyOrNone('select searchEvent($1,$2,$3);', ["%" + word + "%", limit, offset])
+            db.manyOrNone('select searchEvent($1,$2,$3);', [word, limit, offset])
                 .then(function(data) {
                     resolve(data);
                 }).catch(function(e) {
@@ -637,7 +637,7 @@ let searchEvent = (word, limit, offset) => {
     //кол поиск евентов 
 let countSearchEvent = (word) => {
     return new Promise((resolve, reject) => {
-        db.oneOrNone('select countSearchEvent($1);', ["%" + word + "%"])
+        db.oneOrNone('select countSearchEvent($1);', [ word ])
             .then(function(data) {
                 resolve(data.countsearchevent.count);
             }).catch(function(e) {
@@ -720,6 +720,22 @@ let addEventTag = (idEvent, tag) => {
     })
 }
 
+//добавить массив тегов евенту 
+let addEventTagsArray = (idEvent, arrayTagId) => {
+    return new Promise((resolve, reject) => {
+        db.result('Call add_event_tags($1,$2);', [idEvent, arrayTagId])
+            .then(function(data) {
+                resolve(true);
+            }).catch(function() {
+                reject("ERROR BD: add_event_tags");
+                return;
+            });
+    })
+}
+
+
+
+
 //Изменение мероприятия (без тегов)
 let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
     idAddress, datatime, publish = true) => {
@@ -776,7 +792,7 @@ let organizerEvents = (id) => {
 //Поиск организаторов странично
 let searchOrglimit = (word, limit, offset) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone('select  searchOrg($1,$2,$3);', ["%" + word + "%", limit, offset])
+        db.manyOrNone('select  searchOrg($1,$2,$3);', [word , limit, offset])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -789,7 +805,7 @@ let searchOrglimit = (word, limit, offset) => {
 //Поиск организаторов 
 let searchOrg = (word) => {
         return new Promise((resolve, reject) => {
-            db.manyOrNone('select   searchOrg($1);', ["%" + word + "%"])
+            db.manyOrNone('select   searchOrg($1);', [ word])
                 .then(function(data) {
                     resolve(data);
                 }).catch(function() {
@@ -801,7 +817,7 @@ let searchOrg = (word) => {
     //кол Поиск организаторов 
 let countSearchOrg = (word) => {
     return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from  searchOrg($1);', ["%" + word + "%"])
+        db.oneOrNone('select count(*) from  searchOrg($1);', [ word ])
             .then(function(data) {
                 resolve(data.count);
             }).catch(function() {
@@ -1015,7 +1031,7 @@ const getIdAddress = (street, house) => {
 //получение id адреса, поиск
 const searchAddress = (word) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select searchAddress($1);", ["%" + word + "%"])
+        db.manyOrNone("select searchAddress($1);", [ word ])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -1028,7 +1044,7 @@ const searchAddress = (word) => {
 //получение id адреса, поиск по адресу и дому
 const searchAddressWithHouse = (word, house) => {
     return new Promise((resolve, reject) => {
-        db.manyOrNone("select searchAddress($1,$2);", [("%" + word + "%"), ("%" + house + "%")])
+        db.manyOrNone("select searchAddress($1,$2);", [ word,  house ])
             .then(function(data) {
                 resolve(data);
             }).catch(function() {
@@ -1147,6 +1163,7 @@ module.exports = {
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
+    'addEventTagsArray':addEventTagsArray, ////добавить массив тегов евенту
 
     'addTokenToAccept': addTokenToAccept, //добавить токен для создания ссылки подтверждения аккаунта
 
