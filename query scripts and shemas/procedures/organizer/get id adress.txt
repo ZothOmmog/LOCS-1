@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION getAddress(street_ text, house_ text)
 RETURNS table (j json) AS
 $$
 BEGIN
-    RETURN QUERY  SELECT to_json(a) FROM (select id from address where street like street_ and house like house_ and deleted = false)a;
+    RETURN QUERY  SELECT to_json(a) FROM (select id from address where street like street_ and house ~* house_ and deleted = false)a;
 END;
 $$ LANGUAGE plpgsql;
 

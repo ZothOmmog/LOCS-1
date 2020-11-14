@@ -3,8 +3,8 @@ CREATE OR REPLACE PROCEDURE acceptMail(tok_ text)
 AS $BODY$
 BEGIN
     update meta_data set mail_confirmed = true 
-	where id_user = (select userid from tokentoacceptaccount where token like tok_ limit 1);
-	delete from tokentoacceptaccount where token like tok_;
+	where id_user = (select userid from tokentoacceptaccount where token = tok_ limit 1);
+	delete from tokentoacceptaccount where token = tok_;
 END;
 $BODY$;
 

@@ -1,7 +1,18 @@
+--добавление массива тегов мероприятия по id
+CREATE OR REPLACE PROCEDURE add_event_tags( id_Event bigint, ids BIGINT[] )
+LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	FOR i IN 1..array_length( ids,1) LOOP
+	 	call addeventtag(id_Event,ids[i]);
+   	END LOOP;
+END;
+$BODY$;
+
+
+
+
 --добавление тега мероприятия по id
---drop PROCEDURE AddEventTag;
-
-
 CREATE OR REPLACE PROCEDURE public.addeventtag(
 	id_event_ bigint,
 	id_tag_ bigint)

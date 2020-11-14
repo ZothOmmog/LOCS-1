@@ -4,6 +4,6 @@ CREATE OR REPLACE FUNCTION datauserlist(text_ text)
 RETURNS table (j json) AS
 $$
 BEGIN
-    RETURN QUERY  SELECT to_json(a) FROM (SELECT id_user,nickname FROM visitor WHERE nickname ILIKE text_) a;
+    RETURN QUERY  SELECT to_json(a) FROM (SELECT id_user,nickname FROM visitor WHERE nickname ~* text_) a;
 END;
 $$ LANGUAGE plpgsql;

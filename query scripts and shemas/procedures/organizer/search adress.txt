@@ -6,7 +6,7 @@ $$
 BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (
 		select id,street,house from address where deleted = false 
-		and street ilike word_ and house ilike house_ LIMIT 15)a;
+		and street ~* word_ and house ~* house_ LIMIT 15)a;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -16,7 +16,7 @@ CREATE OR REPLACE FUNCTION searchAddress(word_ text)
 RETURNS table (j json) AS
 $$
 BEGIN
-    RETURN QUERY  SELECT to_json(a) FROM (select id,street,house from address where deleted = false and (street ilike word_ or house ilike word_) LIMIT 15)a;
+    RETURN QUERY  SELECT to_json(a) FROM (select id,street,house from address where deleted = false and (street ~* word_ or house ~* word_) LIMIT 15)a;
 END;
 $$ LANGUAGE plpgsql;
 

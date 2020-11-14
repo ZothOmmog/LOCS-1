@@ -656,19 +656,19 @@ exports.createEvent = async function(request, response, next) {
 
                 if (idEvent) {
                     let tags = request.body.tags;
+                    console.log(tags);
                     let check;
-                    for (i in tags) {
-                        await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
+                        await DataBase.addEventTagsArray(idEvent, tags).then(function(val) {
                             check = val;
                         }).catch(function(err) {  next({err : err, code : 500}).end(); });
-                    }
+
                     if (check) {
                         response.status(200).end("has been created");
                     } else {
-                        response.status(500).end("create failed");
+                        response.status(500).end("create add tags failed");
                     }
                 } else {
-                    response.status(500).end("create failed");
+                    response.status(500).end("create event failed");
                 }
             } else {
                 response.status(403).end("have not permissions");
@@ -735,11 +735,11 @@ exports.changeEvent = async function(request, response, next) {
                     await DataBase.deleteEventTag(idEvent).then(function(val) {
                         check = val;
                     }).catch(function(err) {  next({err : err, code : 500}).end(); });
-                    for (i in tags) {
-                        await DataBase.addEventTag(idEvent, tags[i].id).then(function(val) {
-                            check = val;
-                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-                    }
+
+                    await DataBase.addEventTagsArray(idEvent, tags).then(function(val) {
+                        check = val;
+                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
+                    
                     if (check) {
                         response.status(200).end("has been change");
                     } else {

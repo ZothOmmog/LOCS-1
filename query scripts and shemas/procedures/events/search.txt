@@ -5,6 +5,6 @@ RETURNS table (j json) AS
 $$
 BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (select id, name, info, image FROM event where published=true and deleted=false and 
-										  (name ILIKE word_ or info ILIKE word_ ) LIMIT limit_ OFFSET offset_ )a;
+										  (name ~* word_ or info ~* word_ ) LIMIT limit_ OFFSET offset_ )a;
 END;
 $$ LANGUAGE plpgsql;

@@ -277,13 +277,9 @@
           "info": string,
           "price": string,
           "link": string,
-          "tags":[
-              	{
-              		"id":int
-              	},
-          	]
-			"timestamp" :int 
-          }
+          "tags": [int],
+		  "timestamp" :int 
+        }
  
 - ***Ответ на корректность данных***
  Формат http status ***Сервер->React***
@@ -302,13 +298,9 @@
             "info": string,
             "price": string,
             "link": string,
-            "tags":[
-              	{
-              		"id":int
-              	},
-          	]
+            "tags":[int],
 			"timestamp" :int 
-          }
+        }
  
 - ***Ответ на корректность данных***
  Формат http status ***Сервер->React***
