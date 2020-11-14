@@ -1,10 +1,11 @@
 import React from 'react';
-import style from './style.module.scss';
+import style from './profile-toggle.module.scss';
 import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
 import { NavLinkCustom } from '~/ui/atoms';
 import { useSelector } from 'react-redux';
 import { authSelectors } from '~/redux/common-slices/auth-slice';
+import { NavLinkColoredLocs } from '~/ui/molecules';
 
 export const ProfileToggle = () => {
     const { pathname } = useLocation();
@@ -25,5 +26,5 @@ export const ProfileToggle = () => {
                 Организатор
             </NavLinkCustom>
         </div>
-    ) : <NavLinkCustom to=''>Регистрация аккаута организатора</NavLinkCustom>;
+    ) : <NavLinkColoredLocs to='/profile/organizer/registration'>Стать организатором!</NavLinkColoredLocs>;
 };

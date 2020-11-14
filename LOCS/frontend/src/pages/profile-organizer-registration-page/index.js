@@ -1,0 +1,1 @@
+export { ProfileOrganizerRegistrationPage } from './profile-organizer-registration-page';

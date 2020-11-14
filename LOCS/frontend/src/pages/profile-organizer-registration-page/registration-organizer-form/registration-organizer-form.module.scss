@@ -1,0 +1,21 @@
+.__form {
+    height: 100%;
+}
+
+.__organizationName {
+    flex-grow: 0.35;
+}
+
+.__organizationLink {
+    margin-left: 16px;
+    flex-grow: 1;
+}
+
+.__info {
+    margin-top: 16px;
+    flex-grow: 1;
+
+    &-input {
+        flex-shrink: 0;
+    }
+}

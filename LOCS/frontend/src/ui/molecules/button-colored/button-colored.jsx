@@ -20,7 +20,6 @@ export const ButtonColored = ({ onClick, active, className, children, ...outherP
 );
 
 ButtonColored.propTypes = {
-    onClick: PropTypes.func.isRequired,
     active: PropTypes.bool,
     className: PropTypes.string,
     children: PropTypes.node.isRequired

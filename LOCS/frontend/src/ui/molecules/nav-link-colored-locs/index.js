@@ -1,0 +1,1 @@
+export { NavLinkColoredLocs } from './nav-link-colored-locs';
