@@ -7,9 +7,8 @@ import { RegistrationOrganizerFormTemplate } from './registration-organizer-form
 import style from './registration-organizer-form.module.scss';
 import * as Yup from 'yup';
 import { MAX_HINT, REQUIRED_HINT } from '~/helpers/common-hints';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { authActions, authSelectors, authThunks } from '~/redux/common-slices/auth-slice';
-import { FormikTextError } from '~/features/formik-text-error';
 import { FormikServerError } from '~/features/formik-server-error';
 
 const regOrgShema = Yup.object().shape({
