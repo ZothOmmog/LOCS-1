@@ -57,12 +57,22 @@ const SLICE_NAME = 'eventsListMain';
 const thunks = {
     fetchEvents: createAsyncThunk(
         `${SLICE_NAME}/fetchEventsStatus`,
-        async (_arg, thunkAPI) => {
+        async (addEvents = 0, thunkAPI) => {
             const state = thunkAPI.getState();
             const onePageSize = onePageSizeSelector(state);
             const currentPage = currentPageSelector(state);
 
-            return await eventAPI.getEvents(currentPage, onePageSize);
+            const oldEvents = addEvents ? eventsSelector(state) : [];
+            const newCurrentPage = addEvents === 1 ? currentPage + 1 : currentPage;
+            const newEvents = await eventAPI.getEvents(newCurrentPage, onePageSize)
+
+            return {
+                events: [ 
+                    ...oldEvents,
+                    ...newEvents
+                ],
+                newCurrentPage
+            };
         }
     )
 };
@@ -92,7 +102,7 @@ const { actions, reducer } = createSlice({
         byId: null,
         allIds: null,
         onePageSize: 12,
-        currentPage: 0,
+        currentPage: 1,
         isLoading: null
     },
     reducers: {
@@ -104,7 +114,9 @@ const { actions, reducer } = createSlice({
         },
         [thunks.fetchEvents.fulfilled]: (state, action) => {
             const { payload, ...outher } = action;
-            const events = payload;
+            const { events, newCurrentPage } = payload;
+
+            state.currentPage = newCurrentPage;
             eventsChange(state, {
                 ...outher, 
                 payload: { events }
@@ -131,7 +143,7 @@ function sliceSelector (state) { return state.eventsListMain; }
 
 const eventsObjectSelector = state => sliceSelector(state).byId;
 
-const eventsSelector = state => {
+function eventsSelector (state) {
     const events = eventsObjectSelector(state);
     
     if(!events) return null;
