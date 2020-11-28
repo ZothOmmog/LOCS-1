@@ -6,21 +6,27 @@ import { Loader } from '~/features/loader';
 import { useEffect } from 'react';
 import { eventProfileMockImg } from '~/assets';
 import { useFilterEvents } from './use-filter-events';
+import { ButtonBlack } from '~/ui/molecules';
+import style from './events-list-main.module.scss';
 
-
-const EventListMainView = ({ eventsData }) => (
-    <EventList>
-        {eventsData.map(event => (
-            <LinkCustom to={`/events/${event.id}`} key={event.id}>
-                <EventProfileShort
-                    date={'Когда-то'}
-                    img={event.img ? event.img : eventProfileMockImg}
-                    location={'Где-то'}
-                    name={event.name}
-                />
-            </LinkCustom>
-        ))}
-    </EventList>
+const EventListMainView = ({ eventsData, onAddEvents }) => (
+    <>
+        <EventList>
+            {eventsData.map(event => (
+                <LinkCustom to={`/events/${event.id}`} key={event.id}>
+                    <EventProfileShort
+                        date={'Когда-то'}
+                        img={event.img ? event.img : eventProfileMockImg}
+                        location={'Где-то'}
+                        name={event.name}
+                    />
+                </LinkCustom>
+            ))}
+        </EventList>
+        <div className={style['button-container']}>
+            <ButtonBlack onClick={onAddEvents} className={style['button']}>Загрузить ещё</ButtonBlack>
+        </div>
+    </>
 );
 
 export const EventListMain = () => {
@@ -33,9 +39,11 @@ export const EventListMain = () => {
         dispatch(eventsListMainThunks.fetchEvents());
     }, [dispatch]);
 
+    const onAddEvents = () => dispatch(eventsListMainThunks.fetchEvents(1));
+
     return (
         <Loader isLoading={isLoading} >
-            <EventListMainView eventsData={filteredEvents} />
+            <EventListMainView onAddEvents={onAddEvents} eventsData={filteredEvents} />
         </Loader>
     );
 }
