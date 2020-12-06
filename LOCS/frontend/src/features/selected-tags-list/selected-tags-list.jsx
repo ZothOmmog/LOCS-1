@@ -27,8 +27,8 @@ const ListTags = ({ tags, onClickTagToggle }) => (
                         onClick={onClickTagToggle(tag.id)}
                     >
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M1.38464 1.96143L10.2693 10.9614" stroke="#4F4F4F" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
-                            <path d="M10.2693 1.96143L1.38464 10.9614" stroke="#4F4F4F" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round"/>
+                            <path d="M1.38464 1.96143L10.2693 10.9614" stroke="#4F4F4F" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round"/>
+                            <path d="M10.2693 1.96143L1.38464 10.9614" stroke="#4F4F4F" strokeWidth="2" strokeMiterlimit="10" strokeLinecap="round"/>
                         </svg>
                     </ButtonCustom>
                 </li>

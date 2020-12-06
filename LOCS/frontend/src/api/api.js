@@ -104,7 +104,7 @@ class UserAPI extends FetchInstance {
 }
 
 class EventAPI extends FetchInstance {
-    __getTagsRoute = 'event/tags';
+    __getTagsRoute = 'event/tag';
     __getEventRoute = 'event/info';
     __searchEventsRoute = (pageSize, currentPage) => `event/search/${pageSize}/${currentPage}`;
 

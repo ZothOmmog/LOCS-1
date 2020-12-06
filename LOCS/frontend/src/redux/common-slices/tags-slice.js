@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { eventAPI, organizerApi } from '~/api';
 
 const MOCK_TAGS = [
     {id: 1, name: 'Театры'},
@@ -24,7 +25,12 @@ const thunks = {
     fetchTags: createAsyncThunk(
         `${SLICE_NAME}/fetchTagsStatus`,
         async () => {
-            return { tags: MOCK_TAGS };
+            const serverTags = await eventAPI.getTags();
+            const tags = serverTags.map(tag => {
+                const { title: name, ...other } = tag;
+                return { ...other, name };
+            });
+            return { tags: tags };
         }
     )
 };
