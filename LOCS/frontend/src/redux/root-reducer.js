@@ -5,6 +5,7 @@ import { authReducer } from './common-slices/auth-slice';
 import { organizerEventsReducer } from './common-slices/organizer-events-slice';
 import { searchAddressReducer } from './common-slices/search-address-slice';
 import { eventsListMainReducer } from "~/pages/main-page/event-list-main";
+import { myEventsListReducer } from "~/pages/profile-organizer-events-list-page/my-events-list-slice";
 
 export const rootReducer = combineReducers({
     tags: tagsReducer,
@@ -12,5 +13,6 @@ export const rootReducer = combineReducers({
     auth: authReducer,
     organizerEvents: organizerEventsReducer,
     searchAddress: searchAddressReducer,
-    eventsListMain: eventsListMainReducer
+    eventsListMain: eventsListMainReducer,
+    myEventsList: myEventsListReducer
 });
