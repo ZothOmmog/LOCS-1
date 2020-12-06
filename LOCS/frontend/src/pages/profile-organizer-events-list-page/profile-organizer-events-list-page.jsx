@@ -1,8 +1,9 @@
 import React from 'react';
-import { ProfileOrganizerInfoTemplate } from '~/templates/profile-organizer-info-template';
+import { ProfileOrganizerEventsListTemplate } from '~/templates/profile-organizer-events-list-template';
+import { MyEventsList } from './my-events-list';
 
 export const ProfileOrganizerEventsListPage = () => (
-    <ProfileOrganizerInfoTemplate>
-        Список мероприятий организатора
-    </ProfileOrganizerInfoTemplate>
+    <ProfileOrganizerEventsListTemplate>
+        <MyEventsList />
+    </ProfileOrganizerEventsListTemplate>
 );
