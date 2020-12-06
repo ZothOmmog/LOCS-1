@@ -7,3 +7,4 @@ export { NavLinkCustom } from './nav-link-custom';
 export { ListCustom } from './list-custom';
 export { TextWithLabel } from './text-with-label';
 export { CustomInput } from './custom-input';
+export { EventProfileSearch } from './event-profile-search';

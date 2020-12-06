@@ -1,0 +1,1 @@
+export { EventProfileSearch } from './event-profile-search';

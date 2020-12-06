@@ -1,0 +1,85 @@
+@import '~/styles/variables.scss';
+
+._ {
+    display: flex;
+    border: 4px solid $color-gray;
+    border-radius: $border-radius;
+    padding: 8px;
+    max-height: 110px;
+    transition-duration: $transition-duration;
+
+    &:hover {
+        background-color: $color-orange-white;
+        cursor: pointer;
+        .img {
+            transform: scale(1.15);
+        }
+    }
+}
+
+.img-wrapper {
+    width: 150px;
+    height: 85px;
+    overflow: hidden;
+    position: relative;
+    border-radius: 10px;
+}
+
+.img {
+    position: absolute;
+    width: 100%;
+    min-height: 100%;
+    transition-duration: 0.4s;
+    
+    &-overlay {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background-color: rgba($color: #000000, $alpha: 0.1);
+    }
+}
+
+.main {
+    flex-grow: 1;
+    flex-shrink: 10;
+    margin-left: 64px;
+
+    &-header {
+        font-size: 16px;
+        font-weight: bold;
+    }
+    &-section {
+        display: flex;
+        margin-top: 8px;
+
+        &-label {
+            color: $color-gray;
+            &::after {
+                content: ':';
+            }
+        }
+        &-value {
+            margin-left: 4px;
+        }
+    }
+}
+.tags {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap-reverse;
+
+    &-item {
+        color: $color-white;
+        background-color: $color-gray;
+        padding: 2px 4px;
+        border-radius: 4px;
+        margin-left: 8px;
+
+        & + & {
+            margin-top: 4px;
+        }
+        &:nth-child(4n) {
+            margin-top: 0;
+        }
+    }
+}
