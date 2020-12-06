@@ -39,7 +39,7 @@ export const CreateEventForm = () => {
         dispatch(searchAddressThunks.fetchSearch(word));
     };
     const createEvent = (idAddress, name, info, tags, timestamp, price, link) => dispatch(
-        organizerEventsThunks.fetchCreate(idAddress, name, info, tags, timestamp, price, link)
+        organizerEventsThunks.fetchCreate({ idAddress, name, info, tags: tags.map(tag => tag.id), timestamp, price, link })
     );
 
     const addresses = useSelector(searchAddressSelectors.addressesSelector);
@@ -61,7 +61,7 @@ export const CreateEventForm = () => {
                 date: null,
             }}
             validationSchema={loginSchema}
-            onSubmit={({ idAddress, name, info, price, link, tags, date }, { setSubmitting }) => {
+            onSubmit={({ idAddress, name, info, price, link, tags, date }, { setSubmitting, resetForm }) => {
                 setSubmitting(true);
                 createEvent(
                     idAddress,
@@ -72,6 +72,7 @@ export const CreateEventForm = () => {
                     price,
                     link
                 ).then(() => {
+                    resetForm();
                     setSubmitting(false);
                 });
             }}

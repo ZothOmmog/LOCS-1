@@ -23,14 +23,16 @@ const thunks = {
                 visitor = await userAPI.setMe();
             }
             catch(e) {
-                return thunkApi.rejectWithValue('Ошибка');
+                return thunkApi.rejectWithValue(e.message);
             }
             
             try {
-                organizer = await organizerApi.getMeOrg();
+                organizer = await organizerApi.getMeOrg()
             }
             catch(e) {
-                return thunkApi.rejectWithValue('Ошибка получения данных организатора');
+                if (!e.message.includes('403')) {
+                    return thunkApi.rejectWithValue(e.message);
+                }
             }
 
             return { visitor, organizer, isAuth: true };

@@ -9,8 +9,8 @@ const SLICE_NAME = 'organizerEvents';
 const thunks = {
     fetchCreate: createAsyncThunk(
         `${SLICE_NAME}/fetchCreate`,
-        async (idAddress, name, info, tags, timestamp, price, link) => {
-            return await organizerApi.createEvent(idAddress, name, info, price, link, tags, timestamp);
+        async ({idAddress, name, info, tags, timestamp, price, link}) => {
+            return await organizerApi.createEvent(idAddress, name, info, +price, link, tags, timestamp);
         }
     )
 }
