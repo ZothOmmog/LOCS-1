@@ -4,7 +4,7 @@ function timeConvert(timestamp) {
 
     // Create a new JavaScript Date object based on the timestamp
     // multiplied by 1000 so that the argument is in milliseconds, not seconds.
-    var a = new Date(timestamp * 1000);
+    var a = new Date(timestamp);
 
     var year = a.getFullYear();
     var month = a.getMonth();
