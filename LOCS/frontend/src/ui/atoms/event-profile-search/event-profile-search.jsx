@@ -3,8 +3,8 @@ import style from './event-profile-search.module.scss';
 import { eventProfileMockImg } from '~/assets/images';
 import classNames from 'classnames';
 
-export const EventProfileSearch = ({ name, date, location, tags, className }) => (
-    <div className={classNames(style['_'], { [className]: className })}>
+export const EventProfileSearch = ({ name, date, location, tags, className, onClick }) => (
+    <div onClick={onClick} className={classNames(style['_'], { [className]: className })}>
         <div className={style['img-wrapper']}>
             <img className={style['img']} src={eventProfileMockImg} alt='Изображение события' />
             <div className={style['img-overlay']}></div>
@@ -22,7 +22,7 @@ export const EventProfileSearch = ({ name, date, location, tags, className }) =>
         </div>
         <div className={style['tags']}>
             {tags.map(tag => (
-                <div className={style['tags-item']}>{tag.name}</div>
+                <div key={tag.id} className={style['tags-item']}>{tag.name}</div>
             ))}
         </div>
     </div>
