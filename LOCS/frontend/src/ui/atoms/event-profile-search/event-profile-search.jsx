@@ -1,9 +1,10 @@
 import React from 'react';
 import style from './event-profile-search.module.scss';
 import { eventProfileMockImg } from '~/assets/images';
+import classNames from 'classnames';
 
-export const EventProfileSearch = ({ name, date, location, tags }) => (
-    <div className={style['_']}>
+export const EventProfileSearch = ({ name, date, location, tags, className }) => (
+    <div className={classNames(style['_'], { [className]: className })}>
         <div className={style['img-wrapper']}>
             <img className={style['img']} src={eventProfileMockImg} alt='Изображение события' />
             <div className={style['img-overlay']}></div>
