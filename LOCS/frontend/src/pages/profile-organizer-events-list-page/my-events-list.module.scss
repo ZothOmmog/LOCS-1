@@ -1,0 +1,12 @@
+.item {
+    & + & {
+        margin-top: 8px;
+    }
+}
+.pagination-wrapper {
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
+    position: relative;
+    bottom: 0;
+}
