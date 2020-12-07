@@ -33,14 +33,25 @@ const selectors = {
     }),
 };
 
+const fetchMyEvents = (newPageNumber = 1, required = false) => async (dispatch, getState) => {
+    const { pageSize, pageNumber } = selectors.pageInfo(getState());
+    
+    if (newPageNumber === pageNumber && !required) return;
+    
+    const { events, count } = await organizerApi.getMyEvents(pageSize, newPageNumber);
+    dispatch(actions.eventsChanged({ events, count, newPageNumber }));
+}
+
 const thunks = {
-    fetchMyEvents: (newPageNumber = 1) => async (dispatch, getState) => {
-        const { pageSize, pageNumber } = selectors.pageInfo(getState());
-        
-        if (newPageNumber === pageNumber) return;
-        
-        const { events, count } = await organizerApi.getMyEvents(pageSize, newPageNumber);
-        dispatch(actions.eventsChanged({ events, count, newPageNumber }));
+    fetchMyEvents,
+    fetchRemoveEvent: eventId => async (dispatch) => {
+        const result = await organizerApi.deleteEvent(eventId);
+        if (result) {
+           dispatch(fetchMyEvents(1, true));
+        }
+        else {
+            throw new Error('ошибка при удалении события');
+        }
     }
 };
 
