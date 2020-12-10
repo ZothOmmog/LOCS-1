@@ -75,7 +75,11 @@
                     "eventorglist": {
                         "id": int,
                         "name": string,
-                        "image": string
+                        "image": string,
+						"datatime": string,
+						"id_address": 4,
+						"address": string,
+						"tags": [int]
                     }
                 },
              ]
