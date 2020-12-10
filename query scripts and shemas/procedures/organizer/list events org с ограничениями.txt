@@ -4,6 +4,23 @@ CREATE OR REPLACE FUNCTION eventOrgListLimit(idOrg bigint, limit_ numeric, offse
 RETURNS table (j json) AS
 $$
 BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, name, image, datatime, id_address, 
+										  (select (street || ' '|| house) from address where address.id = id_address) as address 
+										  , ARRAY(SELECT id_topic FROM public.event_topic where event.id = id_event) as tags
+										  FROM event where published=true and deleted=false and id_organizer=idOrg LIMIT limit_ OFFSET offset_)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+
+/////
+CREATE OR REPLACE FUNCTION eventOrgListLimit(idOrg bigint, limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (select id, name, image FROM event where published=true and deleted=false and id_organizer=idOrg  LIMIT limit_ OFFSET offset_)a;
 END;
 $$ LANGUAGE plpgsql;
