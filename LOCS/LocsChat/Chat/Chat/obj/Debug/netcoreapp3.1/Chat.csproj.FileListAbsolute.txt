@@ -1,0 +1,88 @@
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csprojAssemblyReference.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.AssemblyInfoInputs.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.AssemblyInfo.cs
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csproj.CoreCompileInputs.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\appsettings.Development.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\appsettings.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\libman.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.exe
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.deps.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.runtimeconfig.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.runtimeconfig.dev.json
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.dll
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.pdb
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.RazorTargetAssemblyInfo.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\staticwebassets\Chat.StaticWebAssets.Manifest.cache
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\staticwebassets\Chat.StaticWebAssets.xml
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.dll
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.pdb
+C:\Users\ni_po\Desktop\signalr test\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.genruntimeconfig.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\appsettings.Development.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\appsettings.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\libman.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.exe
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.deps.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.runtimeconfig.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.runtimeconfig.dev.json
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Chat.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.AssemblyInfoInputs.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.AssemblyInfo.cs
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.RazorTargetAssemblyInfo.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\staticwebassets\Chat.StaticWebAssets.Manifest.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\staticwebassets\Chat.StaticWebAssets.xml
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.genruntimeconfig.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Abstractions.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Abstractions.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Caching.Memory.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Logging.Abstractions.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.Identity.Client.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.ComponentModel.Annotations.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.Configuration.ConfigurationManager.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.Runtime.Caching.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\System.Security.Cryptography.ProtectedData.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp3.1\Microsoft.Data.SqlClient.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-arm\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.pdb
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csproj.CopyComplete
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Relational.Design.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.SqlServer.Design.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Humanizer.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFrameworkCore.Design.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Npgsql.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Npgsql.EntityFrameworkCore.PostgreSQL.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csproj.CoreCompileInputs.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.MvcApplicationPartsAssemblyInfo.cache

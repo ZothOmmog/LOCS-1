@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Chat</title>
+</head>
+<body>
+
+    <div id="header"></div><br />
+
+    <div id="inputForm">
+        <input type="text" id="message" />
+        <input type="button" id="sendBtn" value="Отправить" />
+        <input type="button" id="AAA" value="AAA" />
+    </div>
+    <div id="chatroom"></div>
+    <script src="signalr/dist/browser/signalr.min.js"></script>
+    <script>
+
+        const hubConnection = new signalR.HubConnectionBuilder()
+            .withUrl("http://localhost:53266/chat", {
+                transport: signalR.HttpTransportType.WebSockets | signalR.HttpTransportType.LongPolling
+            })
+            .build();
+
+        hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10;
+
+
+        hubConnection.on('SendMessage', function (message) {
+
+
+            // создает элемент <p> для сообщения пользователя
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(message));
+
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+
+        });
+        hubConnection.on('AAA1', function (message) {
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(message));
+
+            var firstElem = document.getElementById("chatroom").firstChild;
+            document.getElementById("chatroom").insertBefore(elem, firstElem);
+        });
+
+
+
+
+        hubConnection.on("connect", function (message) {
+            let elem = document.createElement("p");
+            elem.appendChild(document.createTextNode(message));
+            document.getElementById("chatroom").appendChild(elem);
+        });
+
+
+        // отправка сообщения на сервер
+        document.getElementById("sendBtn").addEventListener("click", function (e) {
+            let message = document.getElementById("message").value;
+            hubConnection.invoke("SendMessage", message);
+        });
+
+        document.getElementById("AAA").addEventListener("click", function (e) {
+            hubConnection.invoke("Send");
+        });
+
+        hubConnection.start();
+    </script>
+</body>
+</html>

@@ -169,3 +169,12 @@ create table reason_to_ban(
 	reason text default null,
 	deleted bool default false
 )
+
+create table chat_message(
+	id bigserial primary key,
+	sender_id bigint,
+  	FOREIGN KEY (sender_id) REFERENCES userlist (id),
+	recipient_id bigint,
+  	FOREIGN KEY (recipient_id) REFERENCES userlist (id),
+	message text
+);
