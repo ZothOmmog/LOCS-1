@@ -6,16 +6,24 @@
 </head>
 <body>
 
-    <div id="header"></div><br />
+    <div id="header"></div>
+
+    <div id="loginBlock">
+        <p>Token:<input id="token" type="text" /> </p>
+        <input id="loginBtn" type="button" value="Войти" />
+    </div>
+
 
     <div id="inputForm">
-        <input type="text" id="message" />
+        <p> Message: <input type="text" id="message" /> </p>
+        <p> Recipient <input type="text" id="recipientId" />  </p>
         <input type="button" id="sendBtn" value="Отправить" />
-        <input type="button" id="AAA" value="AAA" />
     </div>
     <div id="chatroom"></div>
     <script src="signalr/dist/browser/signalr.min.js"></script>
     <script>
+
+       
 
         const hubConnection = new signalR.HubConnectionBuilder()
             .withUrl("http://localhost:53266/chat", {
@@ -25,19 +33,20 @@
 
         hubConnection.serverTimeoutInMilliseconds = 1000 * 60 * 10;
 
-
-        hubConnection.on('SendMessage', function (message) {
-
-
+        //Получение ошибок
+        hubConnection.on('Error', function (message) {
             // создает элемент <p> для сообщения пользователя
             let elem = document.createElement("p");
             elem.appendChild(document.createTextNode(message));
 
             var firstElem = document.getElementById("chatroom").firstChild;
             document.getElementById("chatroom").insertBefore(elem, firstElem);
-
         });
-        hubConnection.on('AAA1', function (message) {
+
+
+        //получение статуса отправки сообщения
+        hubConnection.on('SendMessageResult', function (message) {
+            // создает элемент <p> для сообщения пользователя
             let elem = document.createElement("p");
             elem.appendChild(document.createTextNode(message));
 
@@ -46,9 +55,8 @@
         });
 
 
-
-
-        hubConnection.on("connect", function (message) {
+        //результат после подключения
+        hubConnection.on("EnterResult", function (message) {
             let elem = document.createElement("p");
             elem.appendChild(document.createTextNode(message));
             document.getElementById("chatroom").appendChild(elem);
@@ -58,14 +66,22 @@
         // отправка сообщения на сервер
         document.getElementById("sendBtn").addEventListener("click", function (e) {
             let message = document.getElementById("message").value;
-            hubConnection.invoke("SendMessage", message);
+            let recipientId = Number(document.getElementById("recipientId").value);
+            hubConnection.invoke("SendMessage", message, recipientId);
         });
 
-        document.getElementById("AAA").addEventListener("click", function (e) {
-            hubConnection.invoke("Send");
-        });
 
-        hubConnection.start();
+        document.getElementById("loginBtn").addEventListener("click", function (e) {
+            let token = document.getElementById("token").value;
+            document.cookie = "userId=" + token;
+
+            hubConnection.start().then(() => {
+                //вызов метода для получения истории отправленных сообщений из брокера
+                hubConnection.invoke("Enter");
+            }).catch(err => {
+                console.error(err.toString());
+            });
+        });
     </script>
 </body>
 </html>

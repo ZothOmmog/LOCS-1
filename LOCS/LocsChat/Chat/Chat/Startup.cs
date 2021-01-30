@@ -26,9 +26,13 @@ namespace Chat
         {
             services.AddSignalR();
 
-            services.AddCors(); 
-            
-            services.AddDbContext<LocsBD_DevContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddCors();
+
+            services.AddTransient<ChatRepository>();
+
+            services.AddSingleton(s => new MessageBrokerClient(Configuration.GetConnectionString("BrokerConnectionStrings")));
+
+            services.AddDbContext<LocsBD_DevContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,7 +45,6 @@ namespace Chat
             app.UseRouting();
             app.UseDefaultFiles();
             app.UseStaticFiles();
-
             app.UseCors();
 
             app.UseEndpoints(endpoints =>
