@@ -21,7 +21,7 @@ namespace Chat
         /// <param name="to">кому</param>
         /// <param name="message">содержание сообщения</param>
         /// <returns></returns>
-        public long CreateMessage(long from, long to, string message)
+        public ChatMessage CreateMessage(long from, long to, string message)
         {
             var result = context.ChatMessages.Add(new ChatMessage()
             {
@@ -30,7 +30,13 @@ namespace Chat
                 RecipientId = to
             }).Entity;
             context.SaveChanges();
-            return result.Id;
+
+            return new ChatMessage() {
+                Id = result.Id,
+                Message = message,
+                SenderId = from,
+                RecipientId = to
+            };
         }
 
         /// <summary>

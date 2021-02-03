@@ -33,27 +33,65 @@ namespace Chat
             {
                 return Clients.Caller.SendAsync("Error", "bad token (SendMessage)");
             }
-            var messageId = repository.CreateMessage(from: (long)userId, to : recipientId, message: message);
+            var messageResult = repository.CreateMessage(from: (long)userId, to: recipientId, message: message);
             var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to: {recipientId}";
+
+
+            try
+            {
+                broker.SendMessage(messageResult);
+
+                System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"{ex.Message}");
+                return Clients.Caller.SendAsync("Error", $"{ex.Message}");
+            }
 
             return Clients.Caller.SendAsync("SendMessageResult", stringTest);
         }
 
 
-        public Task Enter()
+
+        public async Task Enter()
         {
+            try
+            {
+                var userId = getUserId(Context.GetHttpContext());
+
+                if (userId != null)
+                {
+
+                    var tag = broker.Connect((long)userId, Context.UserIdentifier, async (route, message, clientId) =>
+                   {
+                       await hubContext.Clients.User(clientId).SendAsync("EnterResult", message);
+                   });
+
+                    //await Clients.Caller.SendAsync("EnterResult", $"CONNECT USERID - {userId}");
+                }
+                else
+                {
+                    await Clients.Caller.SendAsync("Error", "bad token (Enter)");
+                }
+            } catch(Exception e)
+            {
+
+            }
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            // await Clients.All.SendAsync("Notify", $"{Context.UserIdentifier} покинул в чат");
+            await base.OnDisconnectedAsync(exception);
+
             var userId = getUserId(Context.GetHttpContext());
 
             if (userId != null)
             {
-                return Clients.Caller.SendAsync("EnterResult", $"CONNECT USERID - {userId}");
-            }
-            else
-            {
-                return Clients.Caller.SendAsync("Error", "bad token (Enter)");
+                broker.CancelOnDisconect((long)userId);
             }
         }
-
 
         /// <summary>
         /// получение id юзера из куки

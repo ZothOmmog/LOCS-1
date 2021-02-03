@@ -178,3 +178,5 @@ create table chat_message(
   	FOREIGN KEY (recipient_id) REFERENCES userlist (id),
 	message text
 );
+
+	alter table public.chat_message add column isread bool

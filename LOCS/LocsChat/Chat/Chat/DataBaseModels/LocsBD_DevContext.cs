@@ -54,6 +54,8 @@ namespace Chat.DataBaseModels
 
                 entity.Property(e => e.SenderId).HasColumnName("sender_id");
 
+                entity.Property(e => e.isRead).HasColumnName("isread");
+
                 entity.HasOne(d => d.Recipient)
                     .WithMany(p => p.ChatMessageRecipients)
                     .HasForeignKey(d => d.RecipientId)
