@@ -6,6 +6,8 @@ using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Chat.DataBaseModels;
 using System.Text.Json;
+using System.Text;
+using Newtonsoft.Json;
 
 namespace Chat
 {
@@ -39,8 +41,11 @@ namespace Chat
             }
             catch (Exception e) { }
 
-            var json = JsonSerializer.Serialize(message);
-            var body = System.Text.Encoding.Unicode.GetBytes(json);
+            //var json = System.Text.Json.JsonSerializer.Serialize(message);
+            //var body = System.Text.Encoding.Unicode.GetBytes(json);
+
+            var json = JsonConvert.SerializeObject(message);
+            var body = Encoding.UTF8.GetBytes(json);
 
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
@@ -52,13 +57,22 @@ namespace Chat
         }
 
 
-        public string Connect(long clientId, string connectionId, Action<string, TEST, string> messageCallback)
+        public string Connect(long clientId, string connectionId, Action<string, ChatMessage, string> messageCallback)
         {
             // var queueName = _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null).QueueName;
+           
             try
             {
                 _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
-                _channel.QueueBind(queue: clientId.ToString(), exchange: "amq.topic", routingKey: clientId.ToString());
+               
+            }
+            catch (Exception ex)
+            {
+
+            }
+            try
+            {
+                _channel.QueueBind(queue: clientId.ToString(), exchange: "2", routingKey: clientId.ToString());
             }
             catch (Exception ex)
             {
@@ -68,15 +82,14 @@ namespace Chat
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (model, ea) =>
             {
-                ///TODO problem with json
-                var body = ea.Body.ToArray();
-                var serializer = new JSONSerializer();
-                var message = serializer.Deserialize<TEST>(body);
+
+                var content = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var message = JsonConvert.DeserializeObject<ChatMessage>(content);
 
                 var routingKey = ea.RoutingKey;
                 messageCallback.Invoke(routingKey, message, connectionId);
 
-                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+              _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
             };
 
             var consumerTag = _channel.BasicConsume(queue: clientId.ToString(), autoAck: false, consumer: consumer);

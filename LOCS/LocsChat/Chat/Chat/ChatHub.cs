@@ -65,7 +65,7 @@ namespace Chat
 
                     var tag = broker.Connect((long)userId, Context.UserIdentifier, async (route, message, clientId) =>
                    {
-                       await hubContext.Clients.User(clientId).SendAsync("EnterResult", message);
+                       await hubContext.Clients.User(clientId).SendAsync("EnterResult", message.Message);
                    });
 
                     //await Clients.Caller.SendAsync("EnterResult", $"CONNECT USERID - {userId}");
