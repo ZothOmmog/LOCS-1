@@ -17,8 +17,7 @@ namespace Chat
         private IModel _channel;
         public MessageBrokerClient(string host)
         {
-
-            _factory = new ConnectionFactory();//{ HostName = host };
+            _factory = new ConnectionFactory() { HostName = host };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();
         }
@@ -55,10 +54,10 @@ namespace Chat
 
         public string Connect(long clientId, string connectionId, Action<string, TEST, string> messageCallback)
         {
-
             // var queueName = _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null).QueueName;
             try
             {
+                _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
                 _channel.QueueBind(queue: clientId.ToString(), exchange: "amq.topic", routingKey: clientId.ToString());
             }
             catch (Exception ex)
@@ -93,6 +92,8 @@ namespace Chat
 
         public void Dispose()
         {
+            _channel.Close();
+            _connection.Close();
             _channel.Dispose();
             _connection.Dispose();
         }
