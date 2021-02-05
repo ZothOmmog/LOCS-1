@@ -178,5 +178,11 @@ create table chat_message(
   	FOREIGN KEY (recipient_id) REFERENCES userlist (id),
 	message text
 );
+alter table public.chat_message add column isread bool
 
-	alter table public.chat_message add column isread bool
+create table consumers(
+	id bigserial primary key,
+	userid bigint,
+  	FOREIGN KEY (userid) REFERENCES userlist (id),
+	tag text
+);

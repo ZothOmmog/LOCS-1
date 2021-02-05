@@ -29,7 +29,10 @@ namespace Chat.DataBaseModels
         /// </summary>
         public virtual DbSet<Userlist> Userlists { get; set; }
 
-
+        /// <summary>
+        ///  подписчики на брокера
+        /// </summary>
+        public virtual DbSet<Consumers> Consumers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -41,6 +44,16 @@ namespace Chat.DataBaseModels
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Russian_Russia.1251");
+
+            modelBuilder.Entity<Consumers>(entity =>
+            {
+                entity.ToTable("consumers");
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.userId).HasColumnName("userid");
+                entity.Property(e => e.tag).HasColumnName("tag");
+            });
+
 
             modelBuilder.Entity<ChatMessage>(entity =>
             {

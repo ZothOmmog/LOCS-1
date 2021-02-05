@@ -14,6 +14,7 @@ namespace Chat
         private ChatRepository repository;
         private IHubContext<ChatHub> hubContext;
         private MessageBrokerClient broker;
+       // private Dictionary<long, string> idTagCollection = new Dictionary<long, string>();
         public ChatHub(ChatRepository repository, IHubContext<ChatHub> hubContext, MessageBrokerClient broker)
         {
             this.repository = repository;
@@ -67,7 +68,11 @@ namespace Chat
                    {
                        await hubContext.Clients.User(clientId).SendAsync("EnterResult", message.Message);
                    });
-
+                    if (tag != null)
+                    {
+                        repository.CreateOrUpdateTag((long)userId, tag);
+                       // idTagCollection.Add((long)userId, tag);
+                    }
                     //await Clients.Caller.SendAsync("EnterResult", $"CONNECT USERID - {userId}");
                 }
                 else
@@ -89,8 +94,14 @@ namespace Chat
 
             if (userId != null)
             {
-                broker.CancelOnDisconect((long)userId);
+                // var tag = idTagCollection[(long)userId];
+                var tag = repository.GetTag((long)userId);
+                //broker.CancelConsumer(tag);
+
+                broker.CancelOnDisconect(tag);
+                //broker.Dispose();
             }
+            await Clients.All.SendAsync("Notify", $"{Context.UserIdentifier} покинул в чат");
         }
 
         /// <summary>
@@ -104,6 +115,15 @@ namespace Chat
             return repository.GetUserId(userIdCookie);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            //if (disposing)
+            //{
+            //    broker.Dispose();
+            //}
+
+            base.Dispose(disposing);
+        }
     }
 }
 

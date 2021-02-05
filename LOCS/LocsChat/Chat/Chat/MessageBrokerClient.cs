@@ -60,11 +60,11 @@ namespace Chat
         public string Connect(long clientId, string connectionId, Action<string, ChatMessage, string> messageCallback)
         {
             // var queueName = _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null).QueueName;
-           
+
             try
             {
                 _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
-               
+
             }
             catch (Exception ex)
             {
@@ -89,16 +89,25 @@ namespace Chat
                 var routingKey = ea.RoutingKey;
                 messageCallback.Invoke(routingKey, message, connectionId);
 
-              _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+                _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);
+
             };
 
             var consumerTag = _channel.BasicConsume(queue: clientId.ToString(), autoAck: false, consumer: consumer);
+
             return consumerTag;
+
+
         }
 
-        public void CancelOnDisconect(long userId)
+        public void CancelConsumer(string consumerTag)
         {
-            _channel.BasicCancel(userId.ToString());
+            _channel.BasicCancel(consumerTag);
+        }
+
+        public void CancelOnDisconect(string tag)
+        {
+            _channel.BasicCancel(tag);
             Dispose();
         }
 
