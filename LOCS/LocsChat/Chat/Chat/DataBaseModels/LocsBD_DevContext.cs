@@ -134,7 +134,7 @@ namespace Chat.DataBaseModels
 
                 entity.Property(e => e.Obj).HasColumnName("obj");
 
-                entity.Property(e => e.Token1).HasColumnName("token");
+                entity.Property(e => e.token).HasColumnName("token");
             });
 
             modelBuilder.Entity<Userlist>(entity =>

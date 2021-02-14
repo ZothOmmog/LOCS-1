@@ -64,16 +64,16 @@ namespace Chat
 
         public void CreateOrUpdateTag(long userId, string tag)
         {
-            var consumer = context.Consumers.FirstOrDefault(x => x.userId == userId);
+            var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
             if(consumer != null)
             {
-                consumer.tag = tag;
+                consumer.Tag = tag;
             } else
             {
-                context.Consumers.Add(new Consumers()
+                context.Consumers.Add(new Consumer()
                 {
-                    userId = userId,
-                    tag = tag
+                    Userid = userId,
+                    Tag = tag
                 });
             }
             context.SaveChanges();
@@ -81,8 +81,8 @@ namespace Chat
 
         public string GetTag(long userId)
         {
-            var consumer = context.Consumers.FirstOrDefault(x => x.userId == userId);
-            return consumer == null ? "" : consumer.tag;
+            var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
+            return consumer == null ? "" : consumer.Tag;
         }
 
         //добавить место для хравнения тегов подключения, удаления и создания, чтобы после отключания брокер не высылал сообщения 
