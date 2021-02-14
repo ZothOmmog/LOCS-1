@@ -186,3 +186,24 @@ create table consumers(
   	FOREIGN KEY (userid) REFERENCES userlist (id),
 	tag text
 );
+alter table public.chat_message add column deleted bool default false;
+
+drop table public.group_member_list;
+drop  table  public.group_list;
+
+create table groups(
+	id bigserial primary key,
+	creator_id bigint,
+  	FOREIGN KEY (creator_id) REFERENCES userlist (id),
+	title text default null
+); 
+
+create table group_users(
+	id bigserial primary key,
+	group_id bigint,
+  	FOREIGN KEY (group_id) REFERENCES groups (id),
+	user_id bigint,
+  	FOREIGN KEY (user_id) REFERENCES userlist (id)
+);
+
+ALTER TABLE public.chat_message ADD COLUMN group_id bigint REFERENCES groups (id) default null;

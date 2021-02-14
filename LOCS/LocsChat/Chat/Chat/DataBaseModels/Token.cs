@@ -7,7 +7,7 @@ namespace Chat.DataBaseModels
 {
     public partial class Token
     {
-        public string token { get; set; }
+        public string Token1 { get; set; }
         public string Obj { get; set; }
     }
 }

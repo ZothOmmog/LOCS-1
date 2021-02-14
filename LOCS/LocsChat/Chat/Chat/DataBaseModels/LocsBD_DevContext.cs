@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.Extensions.Configuration;
+
+#nullable disable
 
 namespace Chat.DataBaseModels
 {
@@ -16,23 +17,14 @@ namespace Chat.DataBaseModels
         {
         }
 
-        /// <summary>
-        /// модель сообщения
-        /// </summary>
+
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
-        /// <summary>
-        /// модель хранения токена- значения (для определения юзера)
-        /// </summary>
+        public virtual DbSet<Consumer> Consumers { get; set; }
+        public virtual DbSet<Group> Groups { get; set; }
+        public virtual DbSet<GroupUser> GroupUsers { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
-        /// <summary>
-        /// модель юзера
-        /// </summary>
         public virtual DbSet<Userlist> Userlists { get; set; }
 
-        /// <summary>
-        ///  подписчики на брокера
-        /// </summary>
-        public virtual DbSet<Consumers> Consumers { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
@@ -45,39 +37,93 @@ namespace Chat.DataBaseModels
         {
             modelBuilder.HasAnnotation("Relational:Collation", "Russian_Russia.1251");
 
-            modelBuilder.Entity<Consumers>(entity =>
+            modelBuilder.Entity<ChatMessage>(entity =>
+       {
+           entity.ToTable("chat_message");
+
+           entity.Property(e => e.Id).HasColumnName("id");
+
+           entity.Property(e => e.Deleted)
+               .HasColumnName("deleted")
+               .HasDefaultValueSql("false");
+
+           entity.Property(e => e.GroupId).HasColumnName("group_id");
+
+           entity.Property(e => e.Isread).HasColumnName("isread");
+
+           entity.Property(e => e.Message).HasColumnName("message");
+
+           entity.Property(e => e.RecipientId).HasColumnName("recipient_id");
+
+           entity.Property(e => e.SenderId).HasColumnName("sender_id");
+
+           entity.HasOne(d => d.Group)
+               .WithMany(p => p.ChatMessages)
+               .HasForeignKey(d => d.GroupId)
+               .HasConstraintName("chat_message_group_id_fkey");
+
+           entity.HasOne(d => d.Recipient)
+               .WithMany(p => p.ChatMessageRecipients)
+               .HasForeignKey(d => d.RecipientId)
+               .HasConstraintName("chat_message_recipient_id_fkey");
+
+           entity.HasOne(d => d.Sender)
+               .WithMany(p => p.ChatMessageSenders)
+               .HasForeignKey(d => d.SenderId)
+               .HasConstraintName("chat_message_sender_id_fkey");
+       });
+
+            modelBuilder.Entity<Consumer>(entity =>
             {
                 entity.ToTable("consumers");
+
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.userId).HasColumnName("userid");
-                entity.Property(e => e.tag).HasColumnName("tag");
+                entity.Property(e => e.Tag).HasColumnName("tag");
+
+                entity.Property(e => e.Userid).HasColumnName("userid");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.Consumers)
+                    .HasForeignKey(d => d.Userid)
+                    .HasConstraintName("consumers_userid_fkey");
             });
 
-
-            modelBuilder.Entity<ChatMessage>(entity =>
+            modelBuilder.Entity<Group>(entity =>
             {
-                entity.ToTable("chat_message");
+                entity.ToTable("groups");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.Message).HasColumnName("message");
+                entity.Property(e => e.CreatorId).HasColumnName("creator_id");
 
-                entity.Property(e => e.RecipientId).HasColumnName("recipient_id");
+                entity.Property(e => e.Title).HasColumnName("title");
 
-                entity.Property(e => e.SenderId).HasColumnName("sender_id");
+                entity.HasOne(d => d.Creator)
+                    .WithMany(p => p.Groups)
+                    .HasForeignKey(d => d.CreatorId)
+                    .HasConstraintName("groups_creator_id_fkey");
+            });
 
-                entity.Property(e => e.isRead).HasColumnName("isread");
+            modelBuilder.Entity<GroupUser>(entity =>
+            {
+                entity.ToTable("group_users");
 
-                entity.HasOne(d => d.Recipient)
-                    .WithMany(p => p.ChatMessageRecipients)
-                    .HasForeignKey(d => d.RecipientId)
-                    .HasConstraintName("chat_message_recipient_id_fkey");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.HasOne(d => d.Sender)
-                    .WithMany(p => p.ChatMessageSenders)
-                    .HasForeignKey(d => d.SenderId)
-                    .HasConstraintName("chat_message_sender_id_fkey");
+                entity.Property(e => e.GroupId).HasColumnName("group_id");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.Group)
+                    .WithMany(p => p.GroupUsers)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("group_users_group_id_fkey");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.GroupUsers)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("group_users_user_id_fkey");
             });
 
             modelBuilder.Entity<Token>(entity =>
@@ -88,7 +134,7 @@ namespace Chat.DataBaseModels
 
                 entity.Property(e => e.Obj).HasColumnName("obj");
 
-                entity.Property(e => e.token).HasColumnName("token");
+                entity.Property(e => e.Token1).HasColumnName("token");
             });
 
             modelBuilder.Entity<Userlist>(entity =>
