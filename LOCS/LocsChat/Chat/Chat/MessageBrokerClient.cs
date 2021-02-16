@@ -37,6 +37,12 @@ namespace Chat
             //_channel.ExchangeDeclare(exchange: message.SenderId.ToString(), type: "topic");
             try
             {
+                _channel.ExchangeDeclare(exchange: message.SenderId.ToString(), type: "topic");
+            }
+            catch (Exception e) { }
+
+            try
+            {
                 _channel.QueueDeclare(queue: message.RecipientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
             }
             catch (Exception e) { }
@@ -60,6 +66,11 @@ namespace Chat
         public string Connect(long clientId, string connectionId, Action<string, ChatMessage, string> messageCallback)
         {
             // var queueName = _channel.QueueDeclare(queue: clientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null).QueueName;
+            try
+            {
+                _channel.ExchangeDeclare(exchange: clientId.ToString(), type: "topic");
+            }
+            catch (Exception e) { }
 
             try
             {
@@ -72,7 +83,7 @@ namespace Chat
             }
             try
             {
-                _channel.QueueBind(queue: clientId.ToString(), exchange: "2", routingKey: clientId.ToString());
+                _channel.QueueBind(queue: clientId.ToString(), exchange: clientId.ToString(), routingKey: clientId.ToString());
             }
             catch (Exception ex)
             {
@@ -85,7 +96,6 @@ namespace Chat
 
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<ChatMessage>(content);
-
                 var routingKey = ea.RoutingKey;
                 messageCallback.Invoke(routingKey, message, connectionId);
 
@@ -108,7 +118,7 @@ namespace Chat
         public void CancelOnDisconect(string tag)
         {
             _channel.BasicCancel(tag);
-            Dispose();
+          //  Dispose();
         }
 
 

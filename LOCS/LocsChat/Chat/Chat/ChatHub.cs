@@ -14,7 +14,7 @@ namespace Chat
         private ChatRepository repository;
         private IHubContext<ChatHub> hubContext;
         private MessageBrokerClient broker;
-       // private Dictionary<long, string> idTagCollection = new Dictionary<long, string>();
+
         public ChatHub(ChatRepository repository, IHubContext<ChatHub> hubContext, MessageBrokerClient broker)
         {
             this.repository = repository;
@@ -63,17 +63,15 @@ namespace Chat
 
                 if (userId != null)
                 {
-
-                    var tag = broker.Connect((long)userId, Context.UserIdentifier, async (route, message, clientId) =>
+                    System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
+                    var tag = broker.Connect((long)userId, Context.ConnectionId, async (route, message, clientId) =>
                    {
-                       await hubContext.Clients.User(clientId).SendAsync("EnterResult", message.Message);
+                       await hubContext.Clients.Client(clientId).SendAsync("EnterResult", message.Message);
                    });
                     if (tag != null)
                     {
                         repository.CreateOrUpdateTag((long)userId, tag);
-                       // idTagCollection.Add((long)userId, tag);
                     }
-                    //await Clients.Caller.SendAsync("EnterResult", $"CONNECT USERID - {userId}");
                 }
                 else
                 {
