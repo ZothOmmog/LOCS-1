@@ -3,8 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Chat.DataBaseModels;
+using Chat.Models;
+
 namespace Chat
 {
+    /// <summary>
+    /// класс для работы с бд
+    /// </summary>
     public class ChatRepository
     {
         private LocsBD_DevContext context;
@@ -13,7 +18,6 @@ namespace Chat
             this.context = context;
         }
 
-
         /// <summary>
         /// добавление сообщения в бд
         /// </summary>
@@ -21,22 +25,17 @@ namespace Chat
         /// <param name="to">кому</param>
         /// <param name="message">содержание сообщения</param>
         /// <returns></returns>
-        public ChatMessage CreateMessage(long from, long to, string message)
+        public void CreateMessage(MessageModel message)
         {
             var result = context.ChatMessages.Add(new ChatMessage()
             {
-                Message = message,
-                SenderId = from,
-                RecipientId = to
+                Message = message.Message,
+                SenderId = message.SenderId,
+                RecipientId = message.RecipientId,
+                GroupId = message.GroupId
             }).Entity;
             context.SaveChanges();
-
-            return new ChatMessage() {
-                Id = result.Id,
-                Message = message,
-                SenderId = from,
-                RecipientId = to
-            };
+            message.Id = result.Id;
         }
 
         /// <summary>
@@ -62,6 +61,12 @@ namespace Chat
             }
         }
 
+
+        /// <summary>
+        /// Создание (или обновление) привязки тега и id подписки брокера сообщения
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="tag"></param>
         public void CreateOrUpdateTag(long userId, string tag)
         {
             var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
@@ -79,43 +84,15 @@ namespace Chat
             context.SaveChanges();
         }
 
+        /// <summary>
+        /// получение тега подписки брокера сообщения
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
         public string GetTag(long userId)
         {
             var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
             return consumer == null ? "" : consumer.Tag;
         }
-
-        //добавить место для хравнения тегов подключения, удаления и создания, чтобы после отключания брокер не высылал сообщения 
-
-        //public async Task AddСonsumer(int userId, string client, string tag)
-        //{
-        //    if (!string.IsNullOrEmpty(client) && !string.IsNullOrEmpty(tag))
-        //    {
-        //        var exist = await _context.Сonsumers.FirstOrDefaultAsync(x => x.Client == client && x.UserId == userId);
-
-        //        if (exist != null)
-        //        {
-        //            exist.СonsumerTag = tag;
-        //        }
-        //        else
-        //        {
-        //            await _context.Сonsumers.AddAsync(new Сonsumers()
-        //            {
-        //                Client = client,
-        //                UserId = userId,
-        //                СonsumerTag = tag
-        //            });
-        //        }
-
-        //        await _context.SaveChangesAsync();
-        //    }
-        //}
-        //public async Task<string> GetConsumerTag(int userId, string client)
-        //{
-        //    return await _context.Сonsumers.Where(x => x.Client == client && x.UserId == userId).Select(x => x.СonsumerTag).FirstOrDefaultAsync();
-        //}
-
-
-
     }
 }

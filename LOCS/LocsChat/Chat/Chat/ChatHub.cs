@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using Chat.DataBaseModels;
 using Microsoft.AspNetCore.Http;
-
+using Chat.Models;
 
 namespace Chat
 {
@@ -21,26 +21,30 @@ namespace Chat
             this.hubContext = hubContext;
             this.broker = broker;
         }
+
         /// <summary>
         /// Отправка сообщения
         /// </summary>
         /// <param name="message">содержание сообщения</param>
         /// <param name="recipientId">id получателя</param>
         /// <returns></returns>
-        public Task SendMessage(string message, long recipientId)
+        public Task SendMessage(MessageModel message)
         {
             var userId = getUserId(Context.GetHttpContext());
             if (userId == null)
             {
                 return Clients.Caller.SendAsync("Error", "bad token (SendMessage)");
             }
-            var messageResult = repository.CreateMessage(from: (long)userId, to: recipientId, message: message);
-            var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to: {recipientId}";
 
+            message.SenderId = userId;
+
+            repository.CreateMessage(message);
+
+            var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to: {message.RecipientId}";
 
             try
             {
-                broker.SendMessage(messageResult);
+                broker.SendMessage(message);
 
                 System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
             }
@@ -55,6 +59,10 @@ namespace Chat
 
 
 
+        /// <summary>
+        /// метод для получения сообщений (в т.ч. из брокера)
+        /// </summary>
+        /// <returns></returns>
         public async Task Enter()
         {
             try
@@ -66,7 +74,8 @@ namespace Chat
                     System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
                     var tag = broker.Connect((long)userId, Context.ConnectionId, async (route, message, clientId) =>
                    {
-                       await hubContext.Clients.Client(clientId).SendAsync("EnterResult", message.Message);
+                       await hubContext.Clients.Client(clientId)
+                        .SendAsync("EnterResult", message.Message);
                    });
                     if (tag != null)
                     {
@@ -77,29 +86,25 @@ namespace Chat
                 {
                     await Clients.Caller.SendAsync("Error", "bad token (Enter)");
                 }
-            } catch(Exception e)
-            {
-
-            }
+            } catch(Exception e) { }
         }
 
+        /// <summary>
+        /// при отключение юзера - отписка от брокера сообщений 
+        /// </summary>
+        /// <param name="exception"></param>
+        /// <returns></returns>
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            // await Clients.All.SendAsync("Notify", $"{Context.UserIdentifier} покинул в чат");
             await base.OnDisconnectedAsync(exception);
 
             var userId = getUserId(Context.GetHttpContext());
 
             if (userId != null)
             {
-                // var tag = idTagCollection[(long)userId];
                 var tag = repository.GetTag((long)userId);
-                //broker.CancelConsumer(tag);
-
                 broker.CancelOnDisconect(tag);
-                //broker.Dispose();
             }
-            await Clients.All.SendAsync("Notify", $"{Context.UserIdentifier} покинул в чат");
         }
 
         /// <summary>
@@ -115,11 +120,6 @@ namespace Chat
 
         protected override void Dispose(bool disposing)
         {
-            //if (disposing)
-            //{
-            //    broker.Dispose();
-            //}
-
             base.Dispose(disposing);
         }
     }

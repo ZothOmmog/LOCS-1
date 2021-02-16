@@ -65,9 +65,14 @@
 
         // отправка сообщения на сервер
         document.getElementById("sendBtn").addEventListener("click", function (e) {
-            let message = document.getElementById("message").value;
+            let messageText = document.getElementById("message").value;
             let recipientId = Number(document.getElementById("recipientId").value);
-            hubConnection.invoke("SendMessage", message, recipientId);
+            let message = {
+                RecipientId: recipientId,
+                Message: messageText,
+                GroupId: 1
+            }
+            hubConnection.invoke("SendMessage", message);
         });
 
 
