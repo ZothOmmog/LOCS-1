@@ -39,6 +39,25 @@ namespace Chat
         }
 
         /// <summary>
+        /// проверка, что юзер состоит в группе
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public bool CheckUserOnGroup(long? userId, long? groupId)
+        {
+            var result = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
+            if(result != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Получение id юзера по токену 
         /// </summary>
         /// <param name="token"></param>

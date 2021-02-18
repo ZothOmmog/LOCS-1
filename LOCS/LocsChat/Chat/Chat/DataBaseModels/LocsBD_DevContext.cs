@@ -104,6 +104,8 @@ namespace Chat.DataBaseModels
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.IsPersonal).HasColumnName("is_personal");
+
                 entity.Property(e => e.GroupId).HasColumnName("group_id");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");

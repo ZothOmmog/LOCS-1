@@ -36,11 +36,15 @@ namespace Chat
                 return Clients.Caller.SendAsync("Error", "bad token (SendMessage)");
             }
 
-            message.SenderId = userId;
+            if(!repository.CheckUserOnGroup(userId, message.GroupId))
+            {
+                return Clients.Caller.SendAsync("Error", "not have permissions on group");
+            }
 
+            message.SenderId = userId;
             repository.CreateMessage(message);
 
-            var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to group: {message.GroupId}";
+           // var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to group: {message.GroupId}";
 
             var usersInGroup = repository.GerUsersId(message.GroupId);
 
@@ -48,15 +52,15 @@ namespace Chat
             {
                 broker.SendMessage(message, usersInGroup);
 
-                System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
+               // System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"{ex.Message}");
+               // System.Diagnostics.Debug.WriteLine($"{ex.Message}");
                 return Clients.Caller.SendAsync("Error", $"{ex.Message}");
             }
 
-            return Clients.Caller.SendAsync("SendMessageResult", stringTest);
+            return Clients.Caller.SendAsync("SendMessageResult", true);
         }
 
 
@@ -73,7 +77,7 @@ namespace Chat
 
                 if (userId != null)
                 {
-                    System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
+                    //System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
                     var tag = broker.Connect((long)userId, Context.ConnectionId, async (route, message, clientId) =>
                    {
                        if (userId != message.SenderId && repository.CheckoToDelete(message.Id))

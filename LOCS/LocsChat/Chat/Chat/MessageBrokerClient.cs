@@ -21,6 +21,11 @@ namespace Chat
             _channel = _connection.CreateModel();
         }
 
+        /// <summary>
+        /// отправка сообщения в чат
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="groupsId"></param>
         public void SendMessage(MessageModel message, List<long?> groupsId)
         {
             try
@@ -50,7 +55,13 @@ namespace Chat
             }
         }
 
-
+        /// <summary>
+        /// получение сообщений из брокера
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="connectionId"></param>
+        /// <param name="messageCallback"></param>
+        /// <returns></returns>
         public string Connect(long clientId, string connectionId, Action<string, MessageModel, string> messageCallback)
         {
             try
