@@ -5,6 +5,7 @@ using Chat.DataBaseModels;
 using System.Text;
 using Newtonsoft.Json;
 using Chat.Models;
+using System.Collections.Generic;
 
 namespace Chat
 {
@@ -20,17 +21,11 @@ namespace Chat
             _channel = _connection.CreateModel();
         }
 
-        public void SendMessage(MessageModel message)
+        public void SendMessage(MessageModel message, List<long?> groupsId)
         {
             try
             {
                 _channel.ExchangeDeclare(exchange: message.SenderId.ToString(), type: "topic");
-            }
-            catch (Exception e) { }
-
-            try
-            {
-                _channel.QueueDeclare(queue: message.RecipientId.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
             }
             catch (Exception e) { }
 
@@ -40,10 +35,19 @@ namespace Chat
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
-            _channel.BasicPublish(exchange: "",
-                                    routingKey: message.RecipientId.ToString(),
-                                    basicProperties: properties,
-                                    body: body);
+
+            foreach (var id in groupsId) {
+                try
+                {
+                    _channel.QueueDeclare(queue: id.ToString(), durable: true, exclusive: false, autoDelete: false, arguments: null);
+                }
+                catch (Exception e) { }
+
+                _channel.BasicPublish(exchange: "",
+                                        routingKey: id.ToString(),
+                                        basicProperties: properties,
+                                        body: body); 
+            }
         }
 
 
@@ -76,6 +80,7 @@ namespace Chat
                 var content = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<MessageModel>(content);
                 var routingKey = ea.RoutingKey;
+
                 messageCallback.Invoke(routingKey, message, connectionId);
 
                 _channel.BasicAck(deliveryTag: ea.DeliveryTag, multiple: false);

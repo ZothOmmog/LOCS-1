@@ -17,7 +17,6 @@ namespace Chat.DataBaseModels
         {
         }
 
-
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
         public virtual DbSet<Consumer> Consumers { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
@@ -25,11 +24,12 @@ namespace Chat.DataBaseModels
         public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<Userlist> Userlists { get; set; }
 
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=123");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=23028");
             }
         }
 
@@ -38,40 +38,33 @@ namespace Chat.DataBaseModels
             modelBuilder.HasAnnotation("Relational:Collation", "Russian_Russia.1251");
 
             modelBuilder.Entity<ChatMessage>(entity =>
-       {
-           entity.ToTable("chat_message");
+            {
+                entity.ToTable("chat_message");
 
-           entity.Property(e => e.Id).HasColumnName("id");
+                entity.Property(e => e.Id).HasColumnName("id");
 
-           entity.Property(e => e.Deleted)
-               .HasColumnName("deleted")
-               .HasDefaultValueSql("false");
+                entity.Property(e => e.Deleted)
+                    .HasColumnName("deleted")
+                    .HasDefaultValueSql("false");
 
-           entity.Property(e => e.GroupId).HasColumnName("group_id");
+                entity.Property(e => e.GroupId).HasColumnName("group_id");
 
-           entity.Property(e => e.Isread).HasColumnName("isread");
+                entity.Property(e => e.Isread).HasColumnName("isread");
 
-           entity.Property(e => e.Message).HasColumnName("message");
+                entity.Property(e => e.Message).HasColumnName("message");
 
-           entity.Property(e => e.RecipientId).HasColumnName("recipient_id");
+                entity.Property(e => e.SenderId).HasColumnName("sender_id");
 
-           entity.Property(e => e.SenderId).HasColumnName("sender_id");
+                entity.HasOne(d => d.Group)
+                    .WithMany(p => p.ChatMessages)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("chat_message_group_id_fkey");
 
-           entity.HasOne(d => d.Group)
-               .WithMany(p => p.ChatMessages)
-               .HasForeignKey(d => d.GroupId)
-               .HasConstraintName("chat_message_group_id_fkey");
-
-           entity.HasOne(d => d.Recipient)
-               .WithMany(p => p.ChatMessageRecipients)
-               .HasForeignKey(d => d.RecipientId)
-               .HasConstraintName("chat_message_recipient_id_fkey");
-
-           entity.HasOne(d => d.Sender)
-               .WithMany(p => p.ChatMessageSenders)
-               .HasForeignKey(d => d.SenderId)
-               .HasConstraintName("chat_message_sender_id_fkey");
-       });
+                entity.HasOne(d => d.Sender)
+                    .WithMany(p => p.ChatMessages)
+                    .HasForeignKey(d => d.SenderId)
+                    .HasConstraintName("chat_message_sender_id_fkey");
+            });
 
             modelBuilder.Entity<Consumer>(entity =>
             {
@@ -157,7 +150,12 @@ namespace Chat.DataBaseModels
                     .HasMaxLength(40)
                     .HasColumnName("role");
 
+                //entity.HasOne(d => d.IdCityNavigation)
+                //    .WithMany(p => p.Userlists)
+                //    .HasForeignKey(d => d.IdCity)
+                //    .HasConstraintName("userlist_id_city_fkey");
             });
+
 
             OnModelCreatingPartial(modelBuilder);
         }

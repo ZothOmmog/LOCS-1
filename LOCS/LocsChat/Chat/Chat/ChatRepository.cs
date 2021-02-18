@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Chat.DataBaseModels;
 using Chat.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chat
 {
@@ -31,7 +32,6 @@ namespace Chat
             {
                 Message = message.Message,
                 SenderId = message.SenderId,
-                RecipientId = message.RecipientId,
                 GroupId = message.GroupId
             }).Entity;
             context.SaveChanges();
@@ -61,6 +61,39 @@ namespace Chat
             }
         }
 
+        /// <summary>
+        /// список пользователей в группе
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public List<long?> GerUsersId(long? groupId)
+        {
+            return context.GroupUsers.Where(x => x.GroupId == groupId).Select(x => x.UserId).ToList();
+        }
+
+
+
+        /// <summary>
+        /// проверка сообщения на удаление 
+        /// </summary>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public bool CheckoToDelete(long? messageId)
+        {
+            // var result = await context.ChatMessages.FirstOrDefaultAsync(x => x.Id == messageId);
+            using (var newRep = new LocsBD_DevContext())
+            {
+                var result = newRep.ChatMessages.FirstOrDefault(x => x.Id == messageId);
+                if (result != null)
+                {
+                    return !result.Deleted;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
 
         /// <summary>
         /// Создание (или обновление) привязки тега и id подписки брокера сообщения
@@ -70,10 +103,11 @@ namespace Chat
         public void CreateOrUpdateTag(long userId, string tag)
         {
             var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
-            if(consumer != null)
+            if (consumer != null)
             {
                 consumer.Tag = tag;
-            } else
+            }
+            else
             {
                 context.Consumers.Add(new Consumer()
                 {

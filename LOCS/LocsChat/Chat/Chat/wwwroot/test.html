@@ -16,7 +16,7 @@
 
     <div id="inputForm">
         <p> Message: <input type="text" id="message" /> </p>
-        <p> Recipient <input type="text" id="recipientId" />  </p>
+        <p> Group <input type="text" id="groupId" />  </p>
         <input type="button" id="sendBtn" value="Отправить" />
     </div>
     <div id="chatroom"></div>
@@ -66,11 +66,10 @@
         // отправка сообщения на сервер
         document.getElementById("sendBtn").addEventListener("click", function (e) {
             let messageText = document.getElementById("message").value;
-            let recipientId = Number(document.getElementById("recipientId").value);
+            let groupId = Number(document.getElementById("groupId").value);
             let message = {
-                RecipientId: recipientId,
                 Message: messageText,
-                GroupId: 1
+                GroupId: groupId
             }
             hubConnection.invoke("SendMessage", message);
         });

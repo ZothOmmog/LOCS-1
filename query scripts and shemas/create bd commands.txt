@@ -207,3 +207,4 @@ create table group_users(
 );
 
 ALTER TABLE public.chat_message ADD COLUMN group_id bigint REFERENCES groups (id) default null;
+alter table  public.chat_message drop column recipient_id;

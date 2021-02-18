@@ -40,11 +40,13 @@ namespace Chat
 
             repository.CreateMessage(message);
 
-            var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to: {message.RecipientId}";
+            var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to group: {message.GroupId}";
+
+            var usersInGroup = repository.GerUsersId(message.GroupId);
 
             try
             {
-                broker.SendMessage(message);
+                broker.SendMessage(message, usersInGroup);
 
                 System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
             }
@@ -74,8 +76,11 @@ namespace Chat
                     System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
                     var tag = broker.Connect((long)userId, Context.ConnectionId, async (route, message, clientId) =>
                    {
-                       await hubContext.Clients.Client(clientId)
-                        .SendAsync("EnterResult", message.Message);
+                       if (userId != message.SenderId && repository.CheckoToDelete(message.Id))
+                       {
+                           await hubContext.Clients.Client(clientId)
+                            .SendAsync("EnterResult", message.Message);
+                       }
                    });
                     if (tag != null)
                     {
@@ -86,7 +91,8 @@ namespace Chat
                 {
                     await Clients.Caller.SendAsync("Error", "bad token (Enter)");
                 }
-            } catch(Exception e) { }
+            }
+            catch (Exception e) { }
         }
 
         /// <summary>

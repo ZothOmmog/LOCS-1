@@ -32,7 +32,7 @@ namespace Chat
 
             services.AddSingleton(s => new MessageBrokerClient(Configuration.GetConnectionString("BrokerConnectionStrings")));
 
-            services.AddDbContext<LocsBD_DevContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<LocsBD_DevContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
