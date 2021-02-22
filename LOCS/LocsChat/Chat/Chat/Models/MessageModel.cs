@@ -13,5 +13,15 @@ namespace Chat.Models
         public bool? Isread { get; set; } = false;
         public bool? Deleted { get; set; } = false;
         public long? GroupId { get; set; }
+        public DateTime? dateTime { get; set; } 
     }
+
+
+    public class ErrorChat
+    {
+        public SendingErrorEnum code { get; set; }
+        public string error { get; set; }
+    }
+
+
 }

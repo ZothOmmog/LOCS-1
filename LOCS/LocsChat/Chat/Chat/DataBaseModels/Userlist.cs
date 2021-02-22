@@ -13,6 +13,7 @@ namespace Chat.DataBaseModels
             Consumers = new HashSet<Consumer>();
             GroupUsers = new HashSet<GroupUser>();
             Groups = new HashSet<Group>();
+            UserLastActivities = new HashSet<UserLastActivity>();
         }
 
         public long Id { get; set; }
@@ -21,9 +22,11 @@ namespace Chat.DataBaseModels
         public string Role { get; set; }
         public long? IdCity { get; set; }
 
+
         public virtual ICollection<ChatMessage> ChatMessages { get; set; }
         public virtual ICollection<Consumer> Consumers { get; set; }
         public virtual ICollection<GroupUser> GroupUsers { get; set; }
         public virtual ICollection<Group> Groups { get; set; }
+        public virtual ICollection<UserLastActivity> UserLastActivities { get; set; }
     }
 }

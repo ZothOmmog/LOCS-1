@@ -5,14 +5,13 @@ using System.Collections.Generic;
 
 namespace Chat.DataBaseModels
 {
-    public partial class GroupUser
+    public partial class UserLastActivity
     {
         public long Id { get; set; }
-        public long? GroupId { get; set; }
         public long? UserId { get; set; }
-        public bool? IsPersonal { get; set; }
+        public DateTime? LastActivity { get; set; }
+        public bool? IsOnline { get; set; }
 
-        public virtual Group Group { get; set; }
         public virtual Userlist User { get; set; }
     }
 }

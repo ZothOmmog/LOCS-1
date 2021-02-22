@@ -22,6 +22,7 @@ namespace Chat.DataBaseModels
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<GroupUser> GroupUsers { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
+        public virtual DbSet<UserLastActivity> UserLastActivity { get; set; }
         public virtual DbSet<Userlist> Userlists { get; set; }
 
 
@@ -29,19 +30,26 @@ namespace Chat.DataBaseModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=123");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=23028");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "Russian_Russia.1251");
+            modelBuilder.HasPostgresExtension("pg_prewarm")
+                .HasAnnotation("Relational:Collation", "Russian_Russia.1251");
 
             modelBuilder.Entity<ChatMessage>(entity =>
             {
                 entity.ToTable("chat_message");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Datatime)
+                    .HasColumnType("timestamp with time zone")
+                    .HasColumnName("datatime")
+                    .HasDefaultValueSql("timezone('utc'::text, now())");
 
                 entity.Property(e => e.Deleted)
                     .HasColumnName("deleted")
@@ -104,9 +112,11 @@ namespace Chat.DataBaseModels
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
-                entity.Property(e => e.IsPersonal).HasColumnName("is_personal");
-
                 entity.Property(e => e.GroupId).HasColumnName("group_id");
+
+                entity.Property(e => e.IsPersonal)
+                    .HasColumnName("is_personal")
+                    .HasDefaultValueSql("false");
 
                 entity.Property(e => e.UserId).HasColumnName("user_id");
 
@@ -132,6 +142,29 @@ namespace Chat.DataBaseModels
                 entity.Property(e => e.token).HasColumnName("token");
             });
 
+            modelBuilder.Entity<UserLastActivity>(entity =>
+            {
+                entity.ToTable("user_last_activity");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.IsOnline)
+                    .HasColumnName("is_online")
+                    .HasDefaultValueSql("false");
+
+                entity.Property(e => e.LastActivity)
+                    .HasColumnType("timestamp with time zone")
+                    .HasColumnName("last_activity")
+                    .HasDefaultValueSql("timezone('utc'::text, now())");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserLastActivities)
+                    .HasForeignKey(d => d.UserId)
+                    .HasConstraintName("user_last_activity_user_id_fkey");
+            });
+
             modelBuilder.Entity<Userlist>(entity =>
             {
                 entity.ToTable("userlist");
@@ -151,13 +184,7 @@ namespace Chat.DataBaseModels
                 entity.Property(e => e.Role)
                     .HasMaxLength(40)
                     .HasColumnName("role");
-
-                //entity.HasOne(d => d.IdCityNavigation)
-                //    .WithMany(p => p.Userlists)
-                //    .HasForeignKey(d => d.IdCity)
-                //    .HasConstraintName("userlist_id_city_fkey");
             });
-
 
             OnModelCreatingPartial(modelBuilder);
         }

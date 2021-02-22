@@ -207,5 +207,16 @@ create table group_users(
 );
 
 ALTER TABLE public.chat_message ADD COLUMN group_id bigint REFERENCES groups (id) default null;
-alter table  public.chat_message drop column recipient_id;
+alter table public.chat_message drop column recipient_id;
 alter table public.group_users add column is_personal bool default false;
+alter table public.chat_message add column datatime timestamp with time zone default (now() at time zone 'utc');
+
+create table user_last_activity(
+	id bigserial primary key,
+	user_id bigint,
+	FOREIGN KEY (user_id) REFERENCES userlist (id),
+	last_activity timestamp with time zone default (now() at time zone 'utc')
+);
+
+alter table public.user_last_activity add column is_online bool default false;
+	

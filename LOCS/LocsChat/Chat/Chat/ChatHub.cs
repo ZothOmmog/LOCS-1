@@ -28,39 +28,63 @@ namespace Chat
         /// <param name="message">содержание сообщения</param>
         /// <param name="recipientId">id получателя</param>
         /// <returns></returns>
-        public Task SendMessage(MessageModel message)
+        public async Task SendMessage(MessageModel message)
         {
-            var userId = getUserId(Context.GetHttpContext());
-            if (userId == null)
-            {
-                return Clients.Caller.SendAsync("Error", "bad token (SendMessage)");
-            }
-
-            if(!repository.CheckUserOnGroup(userId, message.GroupId))
-            {
-                return Clients.Caller.SendAsync("Error", "not have permissions on group");
-            }
-
-            message.SenderId = userId;
-            repository.CreateMessage(message);
-
-           // var stringTest = $"{DateTime.Now} Send message - {message}, from: {userId} to group: {message.GroupId}";
-
-            var usersInGroup = repository.GerUsersId(message.GroupId);
-
             try
             {
-                broker.SendMessage(message, usersInGroup);
+                var userId = getUserId(Context.GetHttpContext());
+                if (userId == null)
+                {
+                    await Clients.Caller.SendAsync("Error", new ErrorChat()
+                    {
+                        code = SendingErrorEnum.token,
+                        error = ErrorsString.token
+                    });
+                    return;
+                }
 
-               // System.Diagnostics.Debug.WriteLine($"{DateTime.Now} Send to broker");
+                if (!repository.CheckUserOnGroup(userId, message.GroupId))
+                {
+                    await Clients.Caller.SendAsync("Error", new ErrorChat()
+                    {
+                        code = SendingErrorEnum.permissionsGroup,
+                        error = ErrorsString.permissionsGroup
+                    });
+                    return;
+                }
+
+                message.SenderId = userId;
+                repository.CreateMessage(message);
+
+                var usersInGroup = repository.GerUsersId(message.GroupId);
+
+                try
+                {
+                    broker.SendMessage(message, usersInGroup);
+                }
+                catch (Exception e)
+                {
+                    // System.Diagnostics.Debug.WriteLine($"{ex.Message}");
+                    await Clients.Caller.SendAsync("Error", new ErrorChat()
+                    {
+                        code = SendingErrorEnum.broker,
+                        error = ErrorsString.broker
+                    });
+                    return;
+                }
+
+                await Clients.Caller.SendAsync("SendMessageResult", true);
+                return;
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-               // System.Diagnostics.Debug.WriteLine($"{ex.Message}");
-                return Clients.Caller.SendAsync("Error", $"{ex.Message}");
+                await Clients.Caller.SendAsync("Error", new ErrorChat()
+                {
+                    code = SendingErrorEnum.serverError,
+                    error = e.Message
+                });
+                return;
             }
-
-            return Clients.Caller.SendAsync("SendMessageResult", true);
         }
 
 
@@ -77,13 +101,14 @@ namespace Chat
 
                 if (userId != null)
                 {
+                    repository.UserIsOnline((long)userId);
                     //System.Diagnostics.Debug.WriteLine($"ID CONNECT - {Context.ConnectionId}");
                     var tag = broker.Connect((long)userId, Context.ConnectionId, async (route, message, clientId) =>
                    {
                        if (userId != message.SenderId && repository.CheckoToDelete(message.Id))
                        {
                            await hubContext.Clients.Client(clientId)
-                            .SendAsync("EnterResult", message.Message);
+                            .SendAsync("EnterResult", message);
                        }
                    });
                     if (tag != null)
@@ -93,10 +118,21 @@ namespace Chat
                 }
                 else
                 {
-                    await Clients.Caller.SendAsync("Error", "bad token (Enter)");
+                    await Clients.Caller.SendAsync("Error", new ErrorChat()
+                    {
+                        code = SendingErrorEnum.token,
+                        error = ErrorsString.token
+                    });
                 }
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+                await Clients.Caller.SendAsync("Error", new ErrorChat()
+                {
+                    code = SendingErrorEnum.serverError,
+                    error = e.Message
+                });
+            }
         }
 
         /// <summary>
@@ -104,17 +140,19 @@ namespace Chat
         /// </summary>
         /// <param name="exception"></param>
         /// <returns></returns>
-        public override async Task OnDisconnectedAsync(Exception exception)
+        public override Task OnDisconnectedAsync(Exception exception)
         {
-            await base.OnDisconnectedAsync(exception);
 
             var userId = getUserId(Context.GetHttpContext());
 
             if (userId != null)
             {
+                repository.UpdateLastUserActivity((long)userId);
                 var tag = repository.GetTag((long)userId);
                 broker.CancelOnDisconect(tag);
             }
+            return base.OnDisconnectedAsync(exception);
+
         }
 
         /// <summary>

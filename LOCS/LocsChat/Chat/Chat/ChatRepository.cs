@@ -36,6 +36,7 @@ namespace Chat
             }).Entity;
             context.SaveChanges();
             message.Id = result.Id;
+            message.dateTime = result.Datatime;
         }
 
         /// <summary>
@@ -47,7 +48,7 @@ namespace Chat
         public bool CheckUserOnGroup(long? userId, long? groupId)
         {
             var result = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
-            if(result != null)
+            if (result != null)
             {
                 return true;
             }
@@ -146,6 +147,49 @@ namespace Chat
         {
             var consumer = context.Consumers.FirstOrDefault(x => x.Userid == userId);
             return consumer == null ? "" : consumer.Tag;
+        }
+
+
+        public void UserIsOnline(long userId)
+        {
+            var user = context.UserLastActivity.FirstOrDefault(x => x.UserId == userId);
+            if (user != null)
+            {
+                user.IsOnline = true;
+            }
+            else
+            {
+                context.UserLastActivity.Add(new UserLastActivity()
+                {
+                    UserId = userId,
+                    IsOnline = true
+                });
+            }
+            context.SaveChanges();
+        }
+
+        /// <summary>
+        /// обнолвение даты времени последней активности пользователя
+        /// </summary>
+        /// <param name="userId"></param>
+        public void UpdateLastUserActivity(long userId)
+        {
+            var user = context.UserLastActivity.FirstOrDefault(x => x.UserId == userId);
+            if (user != null)
+            {
+                user.LastActivity = DateTime.UtcNow;
+                user.IsOnline = false;
+            }
+            else
+            {
+                context.UserLastActivity.Add(new UserLastActivity()
+                {
+                    UserId = userId,
+                    LastActivity = DateTime.UtcNow,
+                    IsOnline = false
+                });
+            }
+            context.SaveChanges();
         }
     }
 }
