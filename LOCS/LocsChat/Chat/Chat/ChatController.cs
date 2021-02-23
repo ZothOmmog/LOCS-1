@@ -42,7 +42,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -74,7 +75,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -100,7 +102,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -121,7 +124,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -148,7 +152,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -174,7 +179,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -201,7 +207,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
@@ -228,7 +235,8 @@ namespace Chat
             }
             catch (Exception e)
             {
-                return BadRequest();
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
             }
         }
 
