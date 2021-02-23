@@ -85,6 +85,9 @@ D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.EntityFramewor
 D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Npgsql.dll
 D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Npgsql.EntityFrameworkCore.PostgreSQL.dll
 D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\RabbitMQ.Client.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csprojAssemblyReference.cache
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.JsonPatch.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+D:\LOCS\LOCS\LocsChat\Chat\Chat\bin\Debug\netcoreapp3.1\Newtonsoft.Json.Bson.dll
 D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csproj.CoreCompileInputs.cache
 D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.MvcApplicationPartsAssemblyInfo.cache
-D:\LOCS\LOCS\LocsChat\Chat\Chat\obj\Debug\netcoreapp3.1\Chat.csprojAssemblyReference.cache

@@ -10,7 +10,7 @@ namespace Chat.DataBaseModels
         public long Id { get; set; }
         public long? GroupId { get; set; }
         public long? UserId { get; set; }
-        public bool? IsPersonal { get; set; }
+        public bool IsPersonal { get; set; }
 
         public virtual Group Group { get; set; }
         public virtual Userlist User { get; set; }

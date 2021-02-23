@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chat.DataBaseModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,4 +25,33 @@ namespace Chat.Models
     }
 
 
+    public class GroupModel
+    {
+        public long? groupId { get; set; }
+        public bool IsPersonal { get; set; }
+        public ChatMessage lastMessage { get; set; }
+    }
+
+    public class UserActivityModel
+    {
+        public string dateTime { get; set; }
+        public bool? isOnline { get; set; }
+    }
+
+    public class groupModel
+    {
+        public List<long> usersId { get; set; }
+        public string titleGroup { get; set; }
+    }
+
+    public class userToGroupModel
+    {
+        public long userId { get; set; }
+        public long groupId { get; set; }
+    }
+
+    public class idArrayModel
+    {
+        public long[] id { get; set; }
+    }
 }

@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 using Chat.DataBaseModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Chat
 {
@@ -24,15 +26,28 @@ namespace Chat
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSignalR();
+            services.AddSignalR(hubOptions => {
+                hubOptions.ClientTimeoutInterval = TimeSpan.FromDays(1);
+                hubOptions.HandshakeTimeout = TimeSpan.FromDays(1);
+                hubOptions.KeepAliveInterval = System.TimeSpan.FromMinutes(1);
+               // hubOptions.EnableDetailedErrors = true;
+            });
 
             services.AddCors();
 
             services.AddTransient<ChatRepository>();
-
+            services.AddHealthChecks();
             services.AddSingleton(s => new MessageBrokerClient(Configuration.GetConnectionString("BrokerConnectionStrings")));
 
             services.AddDbContext<LocsBD_DevContext>(options => options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+
+            services.AddMvc().AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            });
+            services.AddControllers().AddNewtonsoftJson(); 
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -49,7 +64,7 @@ namespace Chat
 
             app.UseEndpoints(endpoints =>
             {
-
+                endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapGet("/", async context =>
                 {

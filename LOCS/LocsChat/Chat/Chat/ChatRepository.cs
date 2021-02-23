@@ -40,6 +40,231 @@ namespace Chat
         }
 
         /// <summary>
+        /// страничный вывод бесед, в которых состоит пользователь
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="limit"></param>
+        /// <param name="offset"></param>
+        /// <returns></returns>
+        public IEnumerable<GroupModel> GetUserGroups(long? id, int limit, int offset)
+        {
+            offset = offset <= 0 ? 1 : offset;
+            limit = limit <= 0 ? 1 : limit;
+            offset = (offset - 1) * limit;
+
+            var groups = context.GroupUsers.Where(x => x.UserId == id).Skip(offset).Take(limit).Select(x => new GroupModel()
+            {
+                IsPersonal = x.IsPersonal,
+                groupId = x.GroupId,
+                lastMessage = context.ChatMessages.OrderBy(y => y.Datatime).LastOrDefault(z => z.GroupId == x.GroupId && z.Deleted == false)
+            }).ToList();
+
+            return groups;
+        }
+
+        /// <summary>
+        /// удаление сообщения
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="messageId"></param>
+        /// <returns></returns>
+        public bool DeleteMessage(long? id, long messageId)
+        {
+            var mes = context.ChatMessages.FirstOrDefault(x => x.Id == messageId && x.SenderId == id && x.Deleted == false);
+            if (mes != null)
+            {
+                mes.Deleted = true;
+                context.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// устанвока сообщений в состоние прочтения
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="messages"></param>
+        public void ReadMessage(long? userId, IEnumerable<long> messages)
+        {
+            foreach (var messageId in messages)
+            {
+                var message = context.ChatMessages.FirstOrDefault(x => x.Id == messageId && x.SenderId != userId && x.Deleted == false);
+                if (message == null)
+                {
+                    continue;
+                }
+                var group = context.GroupUsers.FirstOrDefault(x => x.GroupId == message.GroupId && x.UserId == userId);
+                if (group == null)
+                {
+                    continue;
+                }
+                message.Isread = true;
+                context.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// получение активности юзера
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public UserActivityModel GetUserActivity(long userId)
+        {
+            var activity = context.UserLastActivity.FirstOrDefault(x => x.UserId == userId);
+            if (activity == null)
+            {
+                return null;
+            }
+            else
+            {
+                return new UserActivityModel()
+                {
+                    isOnline = activity.IsOnline,
+                    dateTime = activity.LastActivity.ToString()
+                };
+            }
+        }
+
+        /// <summary>
+        /// создание группы 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="usersId"></param>
+        /// <returns></returns>
+        public long CreateGroup(long userCreatorId, groupModel group)
+        {
+            var newGroup = context.Groups.Add(new Group()
+            {
+                CreatorId = userCreatorId,
+                Title = group.titleGroup
+            }).Entity;
+            context.SaveChanges();
+
+            var list = group.usersId.Append(userCreatorId);
+            list = list.Distinct().ToList();
+
+            foreach (var id in list)
+            {
+                context.GroupUsers.Add(new GroupUser()
+                {
+                    GroupId = newGroup.Id,
+                    IsPersonal = false,
+                    UserId = id
+                });
+                context.SaveChanges();
+            }
+            context.SaveChanges();
+            return newGroup.Id;
+        }
+
+
+        /// <summary>
+        /// создание личного чата
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="usersId"></param>
+        /// <returns></returns>
+        public long? CreatePersonalChat(long? id, long usersId)
+        {
+            if (id == usersId)
+            {
+                return null;
+            }
+
+            var checkUser = context.GroupUsers.Where(x => x.IsPersonal == true && x.UserId == id).Select(x => x.GroupId).ToList();
+            var checSecondUser = context.GroupUsers.Where(x => x.IsPersonal == true && x.UserId == usersId).Select(x => x.GroupId).ToList();
+
+            var result = checkUser.FirstOrDefault(x => checSecondUser.Contains(x));
+            result = result == null ? 0 : result;
+            if (  result != 0 )
+            {
+                return result;
+            }
+
+            var newGroup = context.Groups.Add(new Group()
+            {
+                CreatorId = null,
+                Title = null
+            }).Entity;
+            context.SaveChanges();
+
+            context.GroupUsers.Add(new GroupUser()
+            {
+                GroupId = newGroup.Id,
+                IsPersonal = true,
+                UserId = id
+            });
+            context.GroupUsers.Add(new GroupUser()
+            {
+                GroupId = newGroup.Id,
+                IsPersonal = true,
+                UserId = usersId
+            });
+            context.SaveChanges();
+
+            return newGroup.Id;
+        }
+
+
+        /// <summary>
+        /// добавление юзера в группу
+        /// </summary>
+        /// <param name="creatorId"></param>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public bool AddUserToGroup(long? creatorId, userToGroupModel groupUser)
+        {
+            var group = context.Groups.FirstOrDefault(x => x.Id == groupUser.groupId && x.CreatorId == creatorId); 
+            var userInGroup = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupUser.groupId && x.UserId == groupUser.userId);
+            if (group == null || userInGroup != null)
+            {
+                return false;
+            }
+
+            context.GroupUsers.Add(new GroupUser()
+            {
+                GroupId = groupUser.groupId,
+                IsPersonal = false,
+                UserId = groupUser.userId
+            });
+            context.SaveChanges();
+            return true;
+        }
+
+        /// <summary>
+        /// получение историии сообщений группы
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public IEnumerable<MessageModel> GetMessages(long? userId, long groupId, int limit, int offset)
+        {
+            offset = offset <= 0 ? 1 : offset;
+            limit = limit <= 0 ? 1 : limit;
+            offset = (offset - 1) * limit;
+
+            var checkGroup = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
+            if (checkGroup == null )
+            {
+                return null;
+            }
+            var history = context.ChatMessages.Where(x => x.GroupId == groupId && x.Deleted == false).Skip(offset).Take(limit).Select(x => new MessageModel()
+            {
+                Id = x.Id,
+                SenderId = x.SenderId,
+                Message = x.Message,
+                Isread = x.Isread,
+                GroupId = x.GroupId,
+                dateTime = x.Datatime
+            });
+            return history;
+        }
+
+        /// <summary>
         /// проверка, что юзер состоит в группе
         /// </summary>
         /// <param name="userId"></param>
@@ -150,6 +375,10 @@ namespace Chat
         }
 
 
+        /// <summary>
+        /// установка юзера в состояние онлайн
+        /// </summary>
+        /// <param name="userId"></param>
         public void UserIsOnline(long userId)
         {
             var user = context.UserLastActivity.FirstOrDefault(x => x.UserId == userId);
