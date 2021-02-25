@@ -32,7 +32,7 @@ namespace Chat.DataBaseModels
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=23028");
+                optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=123");
             }
         }
 
