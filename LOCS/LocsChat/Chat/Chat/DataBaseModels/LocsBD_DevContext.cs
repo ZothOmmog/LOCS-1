@@ -17,20 +17,21 @@ namespace Chat.DataBaseModels
         {
         }
 
+
         public virtual DbSet<ChatMessage> ChatMessages { get; set; }
         public virtual DbSet<Consumer> Consumers { get; set; }
+        public virtual DbSet<FriendList> FriendLists { get; set; }
         public virtual DbSet<Group> Groups { get; set; }
         public virtual DbSet<GroupUser> GroupUsers { get; set; }
         public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<UserLastActivity> UserLastActivity { get; set; }
         public virtual DbSet<Userlist> Userlists { get; set; }
-
+        public virtual DbSet<Visitor> Visitors { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
                 optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=LocsBD_Dev;Username=postgres;Password=23028");
             }
         }
@@ -88,6 +89,35 @@ namespace Chat.DataBaseModels
                     .WithMany(p => p.Consumers)
                     .HasForeignKey(d => d.Userid)
                     .HasConstraintName("consumers_userid_fkey");
+            });
+
+            modelBuilder.Entity<FriendList>(entity =>
+            {
+                entity.ToTable("friend_list");
+
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Accept)
+                    .HasColumnName("accept")
+                    .HasDefaultValueSql("false");
+
+                entity.Property(e => e.Deleted)
+                    .HasColumnName("deleted")
+                    .HasDefaultValueSql("false");
+
+                entity.Property(e => e.IdUser).HasColumnName("id_user");
+
+                entity.Property(e => e.IdUser2).HasColumnName("id_user2");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                    .WithMany(p => p.FriendListIdUserNavigations)
+                    .HasForeignKey(d => d.IdUser)
+                    .HasConstraintName("friend_list_id_user_fkey");
+
+                entity.HasOne(d => d.IdUser2Navigation)
+                    .WithMany(p => p.FriendListIdUser2Navigations)
+                    .HasForeignKey(d => d.IdUser2)
+                    .HasConstraintName("friend_list_id_user2_fkey");
             });
 
             modelBuilder.Entity<Group>(entity =>
@@ -184,6 +214,26 @@ namespace Chat.DataBaseModels
                 entity.Property(e => e.Role)
                     .HasMaxLength(40)
                     .HasColumnName("role");
+            });
+
+            modelBuilder.Entity<Visitor>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("visitor");
+
+                entity.Property(e => e.IdUser).HasColumnName("id_user");
+
+                entity.Property(e => e.Nickname)
+                    .HasMaxLength(40)
+                    .HasColumnName("nickname");
+
+                entity.Property(e => e.ProfilePicture).HasColumnName("profile_picture");
+
+                entity.HasOne(d => d.IdUserNavigation)
+                    .WithMany()
+                    .HasForeignKey(d => d.IdUser)
+                    .HasConstraintName("visitor_id_user_fkey");
             });
 
             OnModelCreatingPartial(modelBuilder);

@@ -39,6 +39,33 @@ namespace Chat
             message.dateTime = result.Datatime;
         }
 
+        public IEnumerable<UsersModel> GetGroupsUsers(long? userId, long? groupId)
+        {
+            var check = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
+            if (check == null)
+            {
+                return null;
+            }
+            return context.GroupUsers.Where(x => x.GroupId == groupId).Select(x => new UsersModel()
+            {
+                userId = x.UserId,
+                nick = context.Visitors.FirstOrDefault(z => z.IdUser == x.UserId).Nickname ?? ""
+            }).ToList();
+        }
+
+        /// <summary>
+        /// получить имя собеседника, название для персональной беседы
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        private string GetTitlePersonalGroup(long? userId, long? groupId)
+        {
+            var grop = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId != userId);
+            var visitor = context.Visitors.FirstOrDefault(x => x.IdUser == grop.UserId);
+            return visitor == null ? "" : visitor.Nickname;
+        }
+
         /// <summary>
         /// страничный вывод бесед, в которых состоит пользователь
         /// </summary>
@@ -46,18 +73,30 @@ namespace Chat
         /// <param name="limit"></param>
         /// <param name="offset"></param>
         /// <returns></returns>
-        public IEnumerable<GroupModel> GetUserGroups(long? id, int limit, int offset)
+        public IEnumerable<GroupModel> GetUserGroups(long? userId, int limit, int offset)
         {
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
 
-            var groups = context.GroupUsers.Where(x => x.UserId == id).Skip(offset).Take(limit).Select(x => new GroupModel()
+            var groups = context.GroupUsers.Where(x => x.UserId == userId).Skip(offset).Take(limit).Select(x => new GroupModel()
             {
                 IsPersonal = x.IsPersonal,
                 groupId = x.GroupId,
+                titleGroup = context.Groups.FirstOrDefault(y => y.Id == x.GroupId).Title,
                 lastMessage = context.ChatMessages.OrderBy(y => y.Datatime).LastOrDefault(z => z.GroupId == x.GroupId && z.Deleted == false)
             }).ToList();
+
+            foreach (var group in groups)
+            {
+                if (!group.IsPersonal)
+                {
+                    continue;
+                }
+                group.titleGroup = GetTitlePersonalGroup(userId, group.groupId);
+
+            }
+
 
             return groups;
         }
@@ -179,7 +218,7 @@ namespace Chat
 
             var result = checkUser.FirstOrDefault(x => checSecondUser.Contains(x));
             result = result == null ? 0 : result;
-            if (  result != 0 )
+            if (result != 0)
             {
                 return result;
             }
@@ -218,7 +257,7 @@ namespace Chat
         /// <returns></returns>
         public bool AddUserToGroup(long? creatorId, userToGroupModel groupUser)
         {
-            var group = context.Groups.FirstOrDefault(x => x.Id == groupUser.groupId && x.CreatorId == creatorId); 
+            var group = context.Groups.FirstOrDefault(x => x.Id == groupUser.groupId && x.CreatorId == creatorId);
             var userInGroup = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupUser.groupId && x.UserId == groupUser.userId);
             if (group == null || userInGroup != null)
             {
@@ -248,7 +287,7 @@ namespace Chat
             offset = (offset - 1) * limit;
 
             var checkGroup = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
-            if (checkGroup == null )
+            if (checkGroup == null)
             {
                 return null;
             }

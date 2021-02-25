@@ -20,6 +20,34 @@ namespace Chat
             rep = new ChatRepository(new LocsBD_DevContext());
         }
 
+
+        /// <summary>
+        /// метод для получения списка пользователей чата
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("groupUsers/{groupId}")]
+        public IActionResult GetGroupsUsers(long groupId)
+        {
+
+            try
+            {
+                var id = getUserId(HttpContext);
+                if (id == null)
+                {
+                    return StatusCode(401);
+                }
+                var result = rep.GetGroupsUsers(id, groupId);
+                return Ok(result);
+
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine($"{e.Message}");
+                return StatusCode(500);
+            }
+        }
+
+
         /// <summary>
         /// список переписок пользователя (должен быть авторизирован)
         /// </summary>
@@ -220,7 +248,7 @@ namespace Chat
         /// <param name="groupId"></param>
         /// <returns></returns>
         [HttpPost("group")]
-        public IActionResult AddUserToGroup([FromBody]userToGroupModel groupUser)
+        public IActionResult AddUserToGroup([FromBody] userToGroupModel groupUser)
         {
             try
             {

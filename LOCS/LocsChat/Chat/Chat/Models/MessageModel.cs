@@ -14,7 +14,7 @@ namespace Chat.Models
         public bool? Isread { get; set; } = false;
         public bool? Deleted { get; set; } = false;
         public long? GroupId { get; set; }
-        public DateTime? dateTime { get; set; } 
+        public DateTime? dateTime { get; set; }
     }
 
 
@@ -29,9 +29,17 @@ namespace Chat.Models
     {
         public long? groupId { get; set; }
         public bool IsPersonal { get; set; }
+        public string titleGroup { get; set; }
+        // public string partnerName { get; set; }
         public ChatMessage lastMessage { get; set; }
     }
 
+
+    public class UsersModel
+    {
+        public long? userId { get; set; }
+        public string nick { get; set; }
+    }
     public class UserActivityModel
     {
         public string dateTime { get; set; }
