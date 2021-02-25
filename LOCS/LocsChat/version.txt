@@ -1,0 +1,2 @@
+RabbitMQ - 3.8.9
+Erlang 23.1
