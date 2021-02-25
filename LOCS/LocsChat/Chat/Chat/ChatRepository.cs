@@ -14,9 +14,11 @@ namespace Chat
     public class ChatRepository
     {
         private LocsBD_DevContext context;
+        private CryptoProvider crypto;
         public ChatRepository(LocsBD_DevContext context)
         {
             this.context = context;
+            crypto = new CryptoProvider();
         }
 
         /// <summary>
@@ -89,11 +91,11 @@ namespace Chat
 
             foreach (var group in groups)
             {
-                if (!group.IsPersonal)
+                if (group.IsPersonal)
                 {
-                    continue;
+                    group.titleGroup = GetTitlePersonalGroup(userId, group.groupId);
                 }
-                group.titleGroup = GetTitlePersonalGroup(userId, group.groupId);
+                group.lastMessage.Message = crypto.DecryptMessage(group.lastMessage.Message, group.lastMessage.SenderId);
 
             }
 
@@ -295,7 +297,7 @@ namespace Chat
             {
                 Id = x.Id,
                 SenderId = x.SenderId,
-                Message = x.Message,
+                Message = crypto.DecryptMessage(x.Message, x.SenderId),
                 Isread = x.Isread,
                 GroupId = x.GroupId,
                 dateTime = x.Datatime

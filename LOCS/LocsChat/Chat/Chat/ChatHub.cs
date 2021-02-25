@@ -14,12 +14,14 @@ namespace Chat
         private ChatRepository repository;
         private IHubContext<ChatHub> hubContext;
         private MessageBrokerClient broker;
+        private CryptoProvider crypto;
 
         public ChatHub(ChatRepository repository, IHubContext<ChatHub> hubContext, MessageBrokerClient broker)
         {
             this.repository = repository;
             this.hubContext = hubContext;
             this.broker = broker;
+            crypto = new CryptoProvider();
         }
 
         /// <summary>
@@ -54,6 +56,7 @@ namespace Chat
                 }
 
                 message.SenderId = userId;
+                message.Message = crypto.CryptMessage(message.Message, userId);
                 repository.CreateMessage(message);
 
                 var usersInGroup = repository.GerUsersId(message.GroupId);
@@ -107,6 +110,7 @@ namespace Chat
                    {
                        if (userId != message.SenderId && repository.CheckoToDelete(message.Id))
                        {
+                           message.Message = crypto.DecryptMessage(message.Message, message.SenderId);
                            await hubContext.Clients.Client(clientId)
                             .SendAsync("EnterResult", message);
                        }

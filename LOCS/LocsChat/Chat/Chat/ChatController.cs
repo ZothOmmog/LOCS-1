@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Chat.DataBaseModels;
 using Chat.Models;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace Chat
 {
