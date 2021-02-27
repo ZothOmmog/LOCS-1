@@ -115,7 +115,7 @@ namespace Chat
         /// </summary>
         /// <param name="messages"></param>
         /// <returns></returns>
-        [HttpPut("message")]
+        [HttpPut("readMessage")]
         public IActionResult ReadMessage([FromBody] idArrayModel messages)
         {
             try
