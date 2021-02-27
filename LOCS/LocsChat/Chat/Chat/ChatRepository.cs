@@ -95,7 +95,9 @@ namespace Chat
                 {
                     group.titleGroup = GetTitlePersonalGroup(userId, group.groupId);
                 }
-                group.lastMessage.Message = crypto.DecryptMessage(group.lastMessage.Message, group.lastMessage.SenderId);
+                if (group.lastMessage != null) {
+                    group.lastMessage.Message = crypto.DecryptMessage(group.lastMessage.Message, group.lastMessage.SenderId);
+                }
 
             }
 
