@@ -43,10 +43,10 @@ app.use(function(request, response, next) {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-app.use(session({
-        key: 'whatisname',
-        secret: 'xiaomitopzasvoidengi1488'
-    }))
+// app.use(session({
+//         key: 'whatisname',
+//         secret: 'xiaomitopzasvoidengi1488'
+//     }))
     //, { maxAge: config.cookieLive }
 
 app.use("/event", eventRouter);
@@ -56,9 +56,8 @@ app.use("/system", sysRouter);
 app.use("/admin", adminRouterController);
 
 app.use((err, req, res, next) => {
-    console.log(err);
+    if(err.err) console.log(err.err);
     let code = err.code ? err.code : 500;
-    let str = err.code ? err.code :"123";
     res.status(code).end();
   })
 

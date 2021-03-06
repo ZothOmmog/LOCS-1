@@ -38,16 +38,19 @@ function getDateOnlyString(str) {
 
 
 async function takeObj(token) {
-    let data;
-    await DataBase.TakeToken(token).then(function(val) {
-        data = val;
-    });
+    const data = await DataBase.TakeToken(token);
     return data;
+}
+
+async function getRole(userId) {
+    const role = await DataBase.RoleUser(userId);
+    return role;
 }
 
 module.exports = {
     'timeConvert': timeConvert,
     'stringToObjectTimeConvert': stringToObjectTimeConvert,
     'takeObj': takeObj,
-    'getDateOnlyString': getDateOnlyString
+    'getDateOnlyString': getDateOnlyString,
+    'getRole' : getRole
 };

@@ -4,7 +4,7 @@ $$
 BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (SELECT visitor.id_user, visitor.nickname FROM visitor WHERE visitor.nickname ~* text_
 										  and (select deleted FROM meta_data where meta_data.id_user = visitor.id_user) = false
-										  ~* count_ OFFSET start_ ) a;
+										  limit count_ OFFSET start_ ) a;
 END;
 $$ LANGUAGE plpgsql;
 
