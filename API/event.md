@@ -43,13 +43,7 @@
 				"organization_name": string,
 				"countvisitor": int,
 				"logo": string,
-				"datatime": {
-						"year": int,
-						"month": int,
-						"date": int,
-						"hours": int,
-						"minutes": int
-				},
+				"datatime": string,
 				"tags": [int]
 		}
 
