@@ -1,116 +1,69 @@
 const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
-var DataBase = require('../scripts/DataBase.js');
+const crypt = require("../scripts/password.js");
+const config = require('../configs/config.json');
+const DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
 
-// async function takeObj(token) {
-//     let data;
-//     await DataBase.TakeToken(token).then(function(val) {
-//         data = val;
-//     });
-//     return data;
-// }
-
-
 exports.postRegistration = async function(request, response, next) {
+    try {   
+        const checkMail = await DataBase.CheckUser(request.body.mail);  
+        const checkNick = await DataBase.CheckNick(request.body.nick);  
 
-    try {
-        var CreateTime;
-        var CheckMail = false;
-        var CheckNick = false;
-        await DataBase.CheckUser(request.body.mail).then(function(val) {
-            CheckMail = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-        await DataBase.CheckNick(request.body.nick).then(function(val) {
-            CheckNick = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-        if (CheckMail == true && CheckNick == true) {
-            await DataBase.TimeNow().then(function(val) {
-                CreateTime = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            if (!CreateTime) {
+        if (checkMail == true && checkNick == true) {
+            const createTime = await DataBase.TimeNow();  
+            if (!createTime) {
                 response.status(500).end("time error");
             }
-            var hash = crypt.hash(request.body.pas, CreateTime);
-            var hashToMail = crypt.hash(request.body.mail, CreateTime);
-            let checkAdd = false;
-            await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, CreateTime).then(function(val) {
-                checkAdd = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+            const hash = crypt.hash(request.body.pas, createTime);
+            const checkAdd  = await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, createTime);
 
             if (!checkAdd) {
                 response.status(500).end("dont added");
             }
             if (checkAdd != -1) {
-                var hashToMail = crypt.hash(request.body.mail, CreateTime);
-                await DataBase.addTokenToAccept(hashToMail, checkAdd).then(function(val) {
-                    checkAdd = val;
-                    ///создать функцию, которая создает ссылку и  отсылает на почту письмо 
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+                const hashToMail = crypt.hash(request.body.mail, createTime);
+
+                //To do: создать функцию, которая создает ссылку и  отсылает на почту письмо 
+                const tokenToAcceptAccount = await DataBase.addTokenToAccept(hashToMail, checkAdd);
 
                 response.status(200).end();
             } else {
                 response.status(400).end();
             }
         } else {
-            response.status(400).end();
+            response.status(400).end( JSON.stringify({ "checkMail" : checkMail, "checkNick" : checkNick}));
         }
     } catch (err) {
         next({err : err, code : 500});
     }
-
 };
 
 exports.postLogin = async function(request, response, next) {
     try {
-        var UserId;
-        var salt;
-        var CreateTime;
-        await DataBase.TimeNow().then(function(val) {
-            CreateTime = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-        await DataBase.DateCreate(request.body.mail).then(function(val) {
-            salt = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+        const createTime = await DataBase.TimeNow();  
+        const salt = await DataBase.DateCreate(request.body.mail);
 
         if (!salt) {
             response.status(400).end();
         }
-        var hash = crypt.hash(request.body.pas, salt);
-        await DataBase.LogUser(request.body.mail, hash).then(function(val) {
-            UserId = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-        if (UserId == -1) {
-            //неправильные данные для входа
+        var hash = crypt.hash(request.body.pas, salt);
+        const userId = await DataBase.LogUser(request.body.mail, hash);
+
+        if (userId == -1) {
             response.status(400).end();
         } else {
-            var Role;
-            await DataBase.RoleUser(UserId).then(function(val) {
-                Role = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+            const role = await funcs.getRole(userId);
+            if (role == 0 || role == 1 || role == 2) {
+                const hashUserId = crypt.hash(userId, createTime);
+                const hashIdRole = crypt.hash(role, createTime);
+  
+                const statusTokenUser = await DataBase.addToken(hashUserId, userId); 
+                const statusTokenRole = await DataBase.addToken(hashIdRole, role); 
 
-            if (Role == 0 || Role == 1 || Role == 2) {
-                const hashId = crypt.hash(UserId, CreateTime);
-                const hashIdR = crypt.hash(Role, CreateTime);
-                let ok1;
-                let ok2;
-                await DataBase.addToken(hashId, UserId).then(function(val) {
-                    ok1 = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-                await DataBase.addToken(hashIdR, Role).then(function(val) {
-                    ok2 = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-                response.cookie('userRole', hashIdR, { maxAge: config.cookieLive });
-                response.cookie('userId', hashId, { maxAge: config.cookieLive });
+                response.cookie('userRole', role, { maxAge: config.cookieLive });
+                response.cookie('userId', hashUserId, { maxAge: config.cookieLive });
                 response.status(200).end("login");
             } else {
                 response.status(500).end("role error");
@@ -125,28 +78,18 @@ exports.acc = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            var masData;
-            await DataBase.DataUserAccount(userId).then(function(val) {
-                masData = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            if (!masData) {
+            const accountData = await DataBase.DataUserAccount(userId);
+            if (!accountData) {
                 return response.status(401).end();
             }
-            let UserMail = masData[0];
-            let UserNickname = masData[1];
-            let UserPicture = masData[2];
-            let UserCity = masData[3];
-            let accept = (masData[4] == 't');
             response.json({
-                "mail": UserMail,
-                "nick": UserNickname,
-                "city": UserCity,
-                "urlPicture": UserPicture,
-                "acceptMail": accept
+                "mail": accountData.loginacc,
+                "nick": accountData.nicknameacc,
+                "city": accountData.cityacc,
+                "urlPicture": accountData.pictureacc,
+                "acceptMail": accountData.confirmed
             });
         } else {
-            //Переход на страницу login
             return response.status(401).end();
         }
     } catch (err) {
@@ -156,63 +99,12 @@ exports.acc = async function(request, response, next) {
 
 exports.logout = async function(request, response, next) {
     try {
-        let masData;
-        await DataBase.deleteToken(request.cookies.userId).then(function(val) {
-            masData = val;
-        }).catch(function(err) {  next({err : err, code : 500}); }); 
-
-        await DataBase.deleteToken(request.cookies.userRole).then(function(val) {
-            masData = val;
-        }).catch(function(err) {  next({err : err, code : 500}); }); 
-
+        const status = await DataBase.deleteToken(request.cookies.userId);
         response.clearCookie("userRole");
         response.clearCookie("userId");
-        response.clearCookie("whatisname");
         response.status(200).end("logout");
     } catch (err) {
        next({err : err, code : 500}); 
-    }
-
-};
-
-exports.searchUser = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            var data;
-            await DataBase.datauserlist(request.body.nick).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            if (!data) {
-                response.status(400).end("not found");
-            } else {
-                response.json(data);
-            }
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-      next({err : err, code : 500}).end();
-    }
-};
-
-
-exports.friendList = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            var data;
-            await DataBase.friendList(userId).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            response.json(data);
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
     }
 };
 
@@ -222,23 +114,18 @@ exports.friendListWithLimit = async function(request, response, next) {
         if (userId) {
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
+
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            var data;
-            var count;
-            await DataBase.CountfriendListLimit(userId).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-            await DataBase.friendListLimit(userId, limit, offset).then(function(val) {
-                let users = [];
-                for (i in val) {
-                    users.push(val[i].friend);
+            const count = await DataBase.CountfriendListLimit(userId);
+            const usersNotFormated = await DataBase.friendListLimit(userId, limit, offset);
+            let users = [];
+                for (i in usersNotFormated) {
+                    users.push(usersNotFormated[i].friend);
                 }
                 response.json({ count, users });
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
         } else {
             return response.status(401).end();
         }
@@ -247,25 +134,20 @@ exports.friendListWithLimit = async function(request, response, next) {
     }
 };
 
-
 exports.searchUserWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            var data;
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
+
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            let count;
-            await DataBase.Countdatauserlist(request.body.nick, limit, offset).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-            await DataBase.datauserlistLimit(request.body.nick, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
+            const nickname = String(request.body.nick);
+            const count = await DataBase.Countdatauserlist(nickname, limit, offset);
+            const data = await DataBase.datauserlistLimit(nickname, limit, offset);
 
             if (!data) {
                 response.status(400).end(er);
@@ -274,27 +156,8 @@ exports.searchUserWithLimit = async function(request, response, next) {
                 for (i in data) {
                     users.push(data[i].user);
                 }
-
                 response.json({ count, users });
             }
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
-exports.friendRequests = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            var data;
-            await DataBase.friendRequests(userId).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            response.json(data);
         } else {
             return response.status(401).end();
         }
@@ -307,45 +170,22 @@ exports.friendRequestsWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
+
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
+
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            var data;
-            var count;
-            await DataBase.friendRequestsWithLimit(userId, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-            await DataBase.CountfriendRequests(userId, limit, offset).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
+            const data = await DataBase.friendRequestsWithLimit(userId, limit, offset);
+            const count = await DataBase.countFriendRequests(userId, limit, offset);
+            console.log(count);
             var users = [];
             for (i in data) {
                 users.push(data[i].request);
             }
             response.json({ count, users });
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
-
-exports.friendRequestsSent = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            var data;
-            await DataBase.friendRequestsSent(userId).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            response.json(data);
         } else {
             return response.status(401).end();
         }
@@ -360,25 +200,17 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response,
         if (userId) {
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
+
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            var data;
-            var count;
-            await DataBase.friendRequestsSentWithLimit(userId, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
 
-            await DataBase.countfriendRequestsSent(userId).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
+            const data = await DataBase.friendRequestsSentWithLimit(userId, limit, offset);
+            const count = await DataBase.countfriendRequestsSent(userId);
             let users = [];
             for (i in data) {
                 users.push(data[i].request);
             }
-
-
             response.json({ count, data });
         } else {
             return response.status(401).end();
@@ -391,14 +223,10 @@ exports.friendRequestsWithLimitSentWithLimit = async function(request, response,
 exports.addfriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+        const userIdFriend = request.body.newFriend ? request.body.newFriend : undefined;
         if (userId) {
-            if (userid2 && userId != userid2) {
-                let checkAdd = false;
-                await DataBase.addFriend(userId, userid2).then(function(val) {
-                    checkAdd = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
+            if (userIdFriend && userId != userIdFriend) {
+                const checkAdd = await DataBase.addFriend(userId, userIdFriend); 
                 if (!checkAdd) {
                     response.status(500).end("error on AddFriend");
                 }
@@ -414,18 +242,13 @@ exports.addfriend = async function(request, response, next) {
     }
 };
 
-
 exports.acceptfriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        const userid2 = request.body.newFriend ? request.body.newFriend : undefined;
+        const userIdFriend = request.body.newFriend ? request.body.newFriend : undefined;
         if (userId) {
-            if (userid2 && userId != userid2) {
-                let checkAdd = false;
-                await DataBase.acceptFriend(userId, userid2).then(function(val) {
-                    checkAdd = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
+            if (userIdFriend && userId != userIdFriend) {
+                const checkAdd = await DataBase.acceptFriend(userId, userIdFriend);
                 if (!checkAdd) {
                     response.status(500).end("error on acceptfriend");
                 }
@@ -441,19 +264,13 @@ exports.acceptfriend = async function(request, response, next) {
     }
 };
 
-
-
 exports.deletefriend = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        const userid2 = request.body.friend ? request.body.friend : undefined;
+        const userIdFriend = request.body.friend ? request.body.friend : undefined;
         if (userId) {
-            if (userid2 && userId != userid2) {
-                let checkAdd = false;
-                await DataBase.deleteFriend(userId, userid2).then(function(val) {
-                    checkAdd = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
+            if (userIdFriend && userId != userIdFriend) {
+                const checkAdd = await DataBase.deleteFriend(userId, userIdFriend);
                 if (!checkAdd) {
                     response.status(500).end("error on deleteFriend");
                 }
@@ -469,36 +286,27 @@ exports.deletefriend = async function(request, response, next) {
     }
 };
 
-
 exports.UserAccount = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        const userId2 = request.body.user ? request.body.user : undefined;
+        const userIdUser = request.body.user ? request.body.user : undefined;
         if (userId) {
-            var data;
-            var status;
-            await DataBase.friendStatus(userId, userId2).then(function(val) {
-                status = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            await DataBase.DataUserAccount(userId2).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); }); 
-
-            if (!data) {
-                response.status(500).end("account search data");
+            if(!userIdUser || userId == userIdUser){
+                return response.status(400).end("bad id user");
             }
-            let UserMail = data[0];
-            let UserNickname = data[1];
-            let UserPicture = data[2];
-            let UserCity = data[3];
+            const status = await DataBase.friendStatus(userId, userIdUser);
+            const accountData = await DataBase.DataUserAccount(userIdUser);
+            if (!accountData || !status) {
+                response.status(400).end("account search data");
+            }
+            
             response.json({
-                "Status": status[0].friendstatus,
+                "Status": status,
                 "User": {
-                    "Mail": UserMail,
-                    "Nick": UserNickname,
-                    "City": UserCity,
-                    "UrlPicture": UserPicture,
+                    "mail": accountData.loginacc,
+                    "nick": accountData.nicknameacc,
+                    "city": accountData.cityacc,
+                    "urlPicture": accountData.pictureacc
                 }
             });
         } else {

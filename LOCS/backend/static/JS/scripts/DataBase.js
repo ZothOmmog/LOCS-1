@@ -3,116 +3,53 @@ let db = intiDB.db;
 
 
 //проверка, что такое мыло есть
-const CheckUser = (mail) => {
-    return new Promise((resolve, reject) => {
-        db.many("select CheckUser($1);", mail)
-            .then(function(data) {
-                resolve(data[0].checkuser);
-            }).catch(function() {
-                reject("ERROR BD: CheckUser");
-                return;
-            });
-    });
+const CheckUser = async (mail) => {
+    var data = await db.one("select CheckUser($1);", mail);
+    return  data.checkuser;
 };
 
 //проверка, что такой ник есть
-const CheckNick = (nick) => {
-    return new Promise((resolve, reject) => {
-        db.one("select CheckNick($1);", nick)
-            .then(function(data) {
-                resolve(data.checknick);
-            }).catch(function() {
-                console.log("ERROR BD: CheckNick");
-                reject(false);
-                return;
-            });
-    });
+const CheckNick = async (nick) => {
+    var data = await db.one("select CheckNick($1);", nick);
+    return  data.checknick;
 };
 
 //время бд сейчас
-const TimeNow = () => {
-    return new Promise((resolve, reject) => {
-        db.many("SELECT CURRENT_TIMESTAMP;")
-            .then(function(data) {
-                resolve(String(data[0].current_timestamp));
-            }).catch(function() {
-                reject("ERROR BD: TimeNow");
-                return;
-            });
-    });
+const TimeNow = async () => {
+    var data = await db.one("SELECT CURRENT_TIMESTAMP;");
+    return  data.current_timestamp;
 };
+
 //регистрация нового пользователя
-const AddUser = (nick, mail, hashpas, role, city, createtime) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select * from  CreateUser($1, $2, $3, $4, $5, $6);', [nick, mail, hashpas, role, city, createtime])
-            .then(function(data) {
-                resolve(data.createuser);
-            }).catch(function(data) {
-                console.log(data);
-                reject("ERROR BD: AddUser");
-                return;
-            });
-    });
+const AddUser = async (nick, mail, hashpas, role, city, createtime) => {
+    var data = await db.oneOrNone('select * from  CreateUser($1, $2, $3, $4, $5, $6);', [nick, mail, hashpas, role, city, createtime]);
+    return  data.createuser;
 };
 
 //Дата создания по почте
-
-const DateCreate = (mail) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select DateCreate($1);", [mail])
-            .then(function(data) {
-                resolve(data[0].datecreate);
-            }).catch(function() {
-                reject("ERROR BD: DateCreate");
-                return;
-            });
-    });
+const DateCreate = async (mail) => {
+    const data = await db.oneOrNone("select DateCreate($1);", [mail]);
+    return data.datecreate;
 };
 
 //ID авторазации 
-const LogUser = (mail, hashpas) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select LogUser($1,$2);", [mail, hashpas])
-            .then(function(data) {
-                resolve(data[0].loguser);
-            }).catch(function() {
-                reject("ERROR BD: LogUser");
-                return;
-            });
-    });
+const LogUser = async  (mail, hashpas) => {
+    const data = await db.oneOrNone("select LogUser($1,$2);", [mail, hashpas]);
+    return data.loguser;
 };
 
 //Роль пользователя
-const RoleUser = (UserId) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select RoleUser($1);", UserId)
-            .then(function(data) {
-                resolve(data[0].roleuser);
-            }).catch(function() {
-                reject("ERROR BD: RoleUser");
-                return;
-            });
-    });
+const RoleUser = async (userId) => {
+    const data = await db.oneOrNone("select RoleUser($1);", userId)
+    return data.roleuser;
 };
 
 //Данные об аккаунте по ID
-
-const DataUserAccount = (userId, cityId = null) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select DataUserAccount($1,$2);", [userId, cityId])
-            .then(function(data) {
-
-                let strData = String(data[0].datauseraccount).replace(")", "");
-                strData = strData.replace("(", "");
-                resolve(strData.split(','));
-
-            }).catch(function() {
-                reject("ERROR BD: DataUserAccount");
-                return;
-            });
-    });
+const DataUserAccount = async (userId, cityId = null) => { 
+    const data = await db.oneOrNone("select DataUserAccount($1,$2);", [userId, cityId]);
+    if(data == null) return null;
+    return data.datauseraccount.result_record;
 };
-
 
 //ID и ник по поиску 
 const datauserlist = (nick) => {
@@ -128,29 +65,15 @@ const datauserlist = (nick) => {
 };
 
 //count(ID и ник по поиску )
-const Countdatauserlist = (nick) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone("select count(*) from ( select datauserlist($1) )a;", [nick])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: Countdatauserlist");
-                return;
-            });
-    });
+const Countdatauserlist = async (nick) => {
+    const data = await db.oneOrNone("select count(*) from ( select datauserlist($1) )a;", [nick]);
+    return data.count;
 };
 
 //ID и ник по поиску с ограничениями 
-const datauserlistLimit = (nick, limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select datauserlistwithlimit($1,$2,$3) as User;", [nick , limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: datauserlistLimit");
-                return;
-            });
-    });
+const datauserlistLimit = async (nick, limit, offset) => {
+    const data = await db.manyOrNone("select datauserlistwithlimit($1,$2,$3) as User;", [nick , limit, offset]);  
+    return data;
 };
 
 
@@ -171,33 +94,15 @@ const friendList = (id) => {
 
 
 //Список друзей странично
-const friendListLimit = (id, limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select friendListWithLimit($1,$2,$3) as friend;", [id, limit, offset])
-            .then(data => {
-                resolve(data);
-            }).catch(function(err) {
-                console.log(err);
-                reject("ERROR BD: friendListLimit ");
-                return;
-            });
-
-    });
+const friendListLimit = async (id, limit, offset) => {
+    const data = await db.manyOrNone("select friendListWithLimit($1,$2,$3) as friend;", [id, limit, offset]);
+    return data;
 };
 
 //Размер списка друзей 
-const CountfriendListLimit = (id) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone("select count(*) from (select friendList($1))a;", [id])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function(err) {
-                console.log(err);
-                reject("ERROR BD: CountfriendListLimit ");
-                return;
-            });
-
-    });
+const CountfriendListLimit = async (id) => {
+    const data = await db.oneOrNone("select count(*) from (select friendList($1))a;", [id]);
+    return data.count;
 };
 
 //Список отправленых заявок 
@@ -214,33 +119,16 @@ const friendRequestsSent = (id) => {
 };
 
 //колличество отправленых заявок 
-const countfriendRequestsSent = (id) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select count(*) from (select friendRequestsSent($1))a;", [id])
-            .then(function(data) {
-                resolve(data[0].count);
-            }).catch(function() {
-                reject("ERROR BD: countfriendRequestsSent");
-                return;
-            });
-    });
+const countfriendRequestsSent = async (id) => {
+    const data = await db.oneOrNone("select count(*) from (select friendRequestsSent($1))a;", [id]);
+    return data.count;
 };
-
 
 //Список отправленых заявок странично 
-const friendRequestsSentWithLimit = (id, limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select friendRequestsSentWithLimit($1,$2,$3) as request;", [id, limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: friendRequestsSentWithLimit");
-                return;
-            });
-    });
+const friendRequestsSentWithLimit = async (id, limit, offset) => {
+    const data = await db.manyOrNone("select friendRequestsSentWithLimit($1,$2,$3) as request;", [id, limit, offset]);
+    return data;
 };
-
-
 
 //Список входящих заявок 
 let friendRequests = (id) => {
@@ -256,112 +144,55 @@ let friendRequests = (id) => {
 };
 
 //Список входящих заявок (колличество)
-let CountfriendRequests = (id) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select count(*) from (select friendRequests($1))a;", [id])
-            .then(function(data) {
-                resolve(data[0].count);
-            }).catch(function() {
-                reject("ERROR BD: CountfriendRequests");
-                return;
-            });
-    });
+const countFriendRequests = async (id) => {
+    const data = await db.oneOrNone("select count(*) from (select friendRequests($1))a;", [id]);
+    return data.count;
 };
 
 
 //Список входящих заявок  странично
-let friendRequestsWithLimit = (id, limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select friendRequestsWithLimit($1,$2,$3) as request;", [id, limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: friendRequestsWithLimit");
-                return;
-            });
-    });
+const friendRequestsWithLimit = async (id, limit, offset) => {
+    const data = await db.manyOrNone("select friendRequestsWithLimit($1,$2,$3) as request;", [id, limit, offset]);
+    return data;
 };
 
 
 //доабвление в друзья
-let addFriend = (id, id2) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddFriend($1, $2);', [id, id2])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: AddFriend");
-                return;
-            });
-    })
+const addFriend = async (id, id2) => {
+    const result = await db.result('Call AddFriend($1, $2);', [id, id2]).catch( () =>{ return false;});
+    return true;
 }
 
 //Подтверждение заявки в друзья (user 1 Подтверждает)
-let acceptFriend = (id, id2) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AcceptFriend($1, $2);', [id, id2])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: AcceptFriend");
-                return;
-            });
-    })
+const acceptFriend = async (id, id2) => {
+    const result = await db.result('Call AcceptFriend($1, $2);', [id, id2]).catch( () =>{ return false;});
+    return true;
 }
 
 //Удаление из друзей
-let deleteFriend = (id, id2) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteFriend($1, $2);', [id, id2])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: DeleteFriend");
-                return;
-            });
-    })
+let deleteFriend = async (id, id2) => {
+    const data = await db.result('Call DeleteFriend($1, $2);', [id, id2]).catch( () =>{ return false;});
+    return true;     
 }
 
 
 // Статус друзей. Проверка,  -1 - нет в друзьях, 0 отпралена заявка, 1 - входящая заявка, 2 - в друзьях
-let friendStatus = (id, id2) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select FriendStatus($1, $2);", [id, id2])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: FriendStatus");
-                return;
-            });
-    });
+const friendStatus = async (id, id2) => {
+    const data = await db.oneOrNone("select FriendStatus($1, $2);", [id, id2]);
+    return data.friendstatus;
 };
 
 ///////////////////
 //добавить токен
-let addToken = (tok, obj) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddToken($1, $2);', [String(tok), String(obj)])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: addToken");
-                return;
-            });
-    })
+const addToken = async (tok, obj) => {
+    const data = await db.result('Call AddToken($1, $2);', [String(tok), String(obj)]).catch( () =>{ return false;});
+    return true;
 }
 
 //удалить токен
-let DeleteToken = (tok) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteToken($1);', [tok])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: DeleteToken");
-                return;
-            });
-    })
+let DeleteToken = async (token) => {
+    const data = await db.result('Call DeleteToken($1);', [token]).catch( () =>{ return false;});
+     return true;      
 }
 
 //изменить роль на организатора в токене
@@ -378,117 +209,40 @@ let changeTokenToOrg = (tok) => {
 }
 
 // вернуть токен 
-let TakeToken = (tok) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone("select TakeToken($1);", [tok])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: TakeToken");
-                return;
-            });
-    });
+const TakeToken = async (token) => {
+    const data = db.oneOrNone("select TakeToken($1);", [token]);
+    return data;
 };
 
 //добавить токен для создания ссылки подтверждения аккаунта
-let addTokenToAccept = (tok, obj) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddTokenToAccept($1, $2);', [String(tok), Number(obj)])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: AddTokenToAccept");
-                return;
-            });
-    })
+let addTokenToAccept = async (tok, obj) => {
+    var data = await db.result('Call AddTokenToAccept($1, $2);', [String(tok), Number(obj)]).catch( () =>{ return false;});
+    return true;
 }
 
 //подтв аккаунт
-let acceptMail = (tok) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call acceptMail($1);', [tok])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: acceptMail");
-                return;
-            });
-    })
+const acceptMail = async (tok) => {
+    const data = await db.result('Call acceptMail($1);', [tok]).catch( () =>{ return false;});
+    return true;
 }
 
 //вернуть токен по id для подтв аккаунт
-let returnTokenAcceptMail = (id) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select * from returnTokenAcceptMail($1);', [id])
-            .then(function(e) {
-                resolve(e.returntokenacceptmail);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: returnTokenAcceptMail");
-                return;
-            });
-    })
+const returnTokenAcceptMail = async (id) => {
+    const data = await db.oneOrNone('select * from returnTokenAcceptMail($1);', [id]);
+    if(data == null ) return null;
+    return data.returntokenacceptmail;
 }
 
-
-
-// ////
-// //Добавить район
-// let addDistrict = (title, id_city) => {
-//     return new Promise((resolve, reject) => {
-//         db.result('Call AddDistrict($1, $2);', [title, id_city])
-//             .then(function(data) {
-//                 resolve(true);
-//             }).catch(function() {
-//                 reject("ERROR BD: AddDistrict");
-//                 return;
-//             });
-//     })
-// }
-
-// //Добавить адрес
-// let addAddress = (street, house, latitude, longitude, idDistrict) => {
-//     return new Promise((resolve, reject) => {
-//         db.result('Call AddAddress($1, $2,$3,$4,$5);', [street, house, latitude, longitude, idDistrict])
-//             .then(function(data) {
-//                 resolve(true);
-//             }).catch(function() {
-//                 reject("ERROR BD: AddAddress");
-//                 return;
-//             });
-//     })
-// }
-
-
-///////////////////
-
 //id тегов по Id евента
-let EventTags = (id) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select EventTags($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: EventTags");
-                return;
-            });
-    })
+const EventTags = async (id) => {
+    const data = await db.manyOrNone('select EventTags($1);', [id]);
+    return data;
 }
 
 //  данные для главной страницы 
-let eventShortList = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select eventShortList($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: eventShortList");
-                return;
-            });
-    })
+const eventShortList = async (limit, offset) => {
+    const data = await db.manyOrNone('select eventShortList($1,$2);', [limit, offset]);
+    return data;
 }
 
 //  колличество данных event для главной страницы 
@@ -505,94 +259,25 @@ let countEventShortList = () => {
     })
 }
 
-
 // полные данные о событии
-let event = (id) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select Event($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: Event");
-                return;
-            });
-    })
+const event = async (id) => {
+    const data = await db.oneOrNone('select Event($1);', [id]);
+    return data;
 }
 
 //  тег по id
-let tagById = (id) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select tagById($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: tagById");
-                return;
-            });
-    })
-
+const tagById = async (id) => {
+    const data = await db.oneOrNone('select tagById($1);', [id]);
+    return data;
 };
-
-// // удалить тег по id
-// let deleteTag = (id) => {
-//     return new Promise((resolve, reject) => {
-//         db.result('call deleteTag($1);', [id])
-//             .then(function(data) {
-//                 resolve(data);
-//             }).catch(function(e) {
-//                 console.log(e);
-//                 reject("ERROR BD: deleteTag");
-//                 return;
-//             });
-//     })
-
-// };
-
-// // подтв. тег 
-// let acceptTag = (id) => {
-//     return new Promise((resolve, reject) => {
-//         db.result('call acceptTag($1);', [id])
-//             .then(function(data) {
-//                 resolve(data);
-//             }).catch(function(e) {
-//                 console.log(e);
-//                 reject("ERROR BD: acceptTag");
-//                 return;
-//             });
-//     })
-// };
 
 // добавить тег 
-let addTag = (title) => {
-    return new Promise((resolve, reject) => {
-        db.result('call addTag($1);', [title])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: addTag");
-                return;
-            });
-    })
+const addTag = async (title) => {
+    const data = await db.result('call addTag($1);', [title]);
+    return data;
 };
 
-// весь лист тегов
-let tags = () => {
-        return new Promise((resolve, reject) => {
-            db.manyOrNone('select Tags();')
-                .then(function(data) {
-                    resolve(data);
-                }).catch(function(e) {
-                    console.log(e);
-                    reject("ERROR BD: tags");
-                    return;
-                });
-        })
-
-    }
-    // кол. тегов
+// кол. тегов
 let CountTags = () => {
     return new Promise((resolve, reject) => {
         db.oneOrNone('select CountTags();')
@@ -608,103 +293,45 @@ let CountTags = () => {
 }
 
 // весь лист тегов странично
-let tagsLim = (limit, offset) => {
-        return new Promise((resolve, reject) => {
-            db.manyOrNone('select Tags($1,$2);', [limit, offset])
-                .then(function(data) {
-                    resolve(data);
-                }).catch(function(e) {
-                    console.log(e);
-                    reject("ERROR BD: tags");
-                    return;
-                });
-        })
-
-    }
-    // поиск евентов 
-let searchEvent = (word, limit, offset) => {
-        return new Promise((resolve, reject) => {
-            db.manyOrNone('select searchEvent($1,$2,$3);', [word, limit, offset])
-                .then(function(data) {
-                    resolve(data);
-                }).catch(function(e) {
-                    console.log(e);
-                    reject("ERROR BD: searchEvent");
-                    return;
-                });
-        })
-    }
-    //кол поиск евентов 
-let countSearchEvent = (word) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select countSearchEvent($1);', [ word ])
-            .then(function(data) {
-                resolve(data.countsearchevent.count);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: searchEvent");
-                return;
-            });
-    })
+const tagsLim = async (limit, offset) => {
+    const data = await db.manyOrNone('select Tags($1,$2);', [limit, offset]);
+    return data;
+}
+// поиск евентов 
+const searchEvent = async (word, limit, offset) => {
+    const data = db.manyOrNone('select searchEvent($1,$2,$3);', [word, limit, offset]);
+    return data;
+}
+//кол поиск евентов 
+const countSearchEvent = async (word) => {
+    const data = await db.oneOrNone('select countSearchEvent($1);', [ word ]);
+    if(data == null) return null;
+    return data.countsearchevent;
 }
 
 ///регистрация организатора 
-let registationOrganizer = (id, info, organizationName, organizationLink, logo) => {
-    return new Promise((resolve, reject) => {
-        db.result('call userToOrganizer($1,$2,$3,$4,$5);', [id, info, organizationName, organizationLink, logo])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: searchEvent");
-                return;
-            });
-    })
+const registationOrganizer = async (id, info, organizationName, organizationLink, logo) => {
+    const data = await db.result('call userToOrganizer($1,$2,$3,$4,$5);', [id, info, organizationName, organizationLink, logo]).catch((e) => {return false;});
+    return true;
 }
 
 //изменние профиля организатора
-let changeDataAboutOrg = (id, name, info, organizationLink) => {
-    return new Promise((resolve, reject) => {
-        db.result('call changedataaboutorg($1,$2,$3,$4);', [id, name, info, organizationLink])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                // console.log(e);
-                //console.log("ERROR BD: changeDataAboutOrg");
-                reject(e);
-                return;
-            });
-    });
+const changeDataAboutOrg = async (id, name, info, organizationLink) => {
+    const data = await db.result('call changedataaboutorg($1,$2,$3,$4);', [id, name, info, organizationLink]).catch((e) => {return false;});
+    return data;
 }
 
-
-
-
 //Добавить событие (не учитывает теги, отдельная процедура)
-let addEvent = (name, info, link, ticket_price, id_org, id_address, datatime, publish = true) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7,$8);', [name, info, link, ticket_price, id_org, id_address, publish, datatime])
-            .then(function(data) {
-                resolve(data.addevent);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR BD: AddEvent");
-                return;
-            });
-    })
+const addEvent = async (name, info, link, ticket_price, id_org, id_address, datatime, publish = true) => {
+    const data = await db.oneOrNone('select AddEvent($1, $2,$3,$4,$5,$6,$7,$8);', [name, info, link, ticket_price, id_org, id_address, publish, datatime]);
+    if(data == null) return null;
+    return data.addevent;
 }
 
 //Удалить событие
-let deleteEvent = (idEvent, idOrganizer) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteEvent($1,$2);', [idEvent, idOrganizer])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: deleteEvent");
-                return;
-            });
-    })
+const deleteEvent = async (idEvent, idOrganizer) => {
+    const data = await db.result('Call DeleteEvent($1,$2);', [idEvent, idOrganizer]).catch((e) => {return false;});
+    return true;
 }
 
 //добавить тег евенту (tag - или название или id)
@@ -721,59 +348,29 @@ let addEventTag = (idEvent, tag) => {
 }
 
 //добавить массив тегов евенту 
-let addEventTagsArray = (idEvent, arrayTagId) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call add_event_tags($1,$2);', [idEvent, arrayTagId])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: add_event_tags");
-                return;
-            });
-    })
+const addEventTagsArray = async (idEvent, arrayTagId) => {
+    const data = db.result('Call add_event_tags($1,$2);', [idEvent, arrayTagId]).catch((e) => {return false;});
+    return data;
 }
 
-
-
-
 //Изменение мероприятия (без тегов)
-let changeEvent = (idev, name, info, link, ticketPrice, idOrg,
-    idAddress, datatime, publish = true) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8,$9);', [idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: changeEvent");
-                return;
-            });
-    })
+const changeEvent = async (idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish = true) => {
+    const data = await db.oneOrNone('select ChangeEvent($1,$2,$3,$4,$5,$6,$7,$8,$9);', [idev, name, info, link, ticketPrice, idOrg, idAddress, datatime, publish]);
+    if(data == null) return null;
+    return data.changeevent;
 }
 
 //удаление тегов у события 
-let deleteEventTag = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call deleteEventTag($1);', [id])
-            .then(function() {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: deleteEventTag");
-                return;
-            });
-    })
+const deleteEventTag = async (id) => {
+    const data = await db.result('Call deleteEventTag($1);', [id]).catch((e) => {return false;});
+    return true;
 }
 
 //данные об организаторе
-let organizerData = (id) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select  organizerData($1);', [id])
-            .then(function(data) {
-                resolve(data.organizerdata);
-            }).catch(function() {
-                reject("ERROR BD: organizerData");
-                return;
-            });
-    })
+const organizerData = async (id) => {
+    const data = await db.oneOrNone('select  organizerData($1);', [id]);
+    if(data == null) return null;
+    return data.organizerdata;
 }
 
 //данные об мероприятиях для организатора
@@ -790,16 +387,9 @@ let organizerEvents = (id) => {
 }
 
 //Поиск организаторов странично
-let searchOrglimit = (word, limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select  searchOrg($1,$2,$3);', [word , limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: searchOrglimit");
-                return;
-            });
-    })
+const searchOrglimit = async (word, limit, offset) => {
+    const data = await db.manyOrNone('select  searchOrg($1,$2,$3);', [word , limit, offset]);
+    return data;
 }
 
 //Поиск организаторов 
@@ -814,57 +404,31 @@ let searchOrg = (word) => {
                 });
         })
     }
-    //кол Поиск организаторов 
-let countSearchOrg = (word) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from  searchOrg($1);', [ word ])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: countSearchOrg");
-                return;
-            });
-    })
+
+//кол Поиск организаторов 
+const countSearchOrg = async (word) => {
+    const data = await db.oneOrNone('select count(*) from  searchOrg($1);', [ word ]);
+    if(data == null) return null;
+    return data.count;
 }
 
 //Статус подписки, Проверка, 0 не подписан, 1 - подписан
-let subStatus = (idOrg, idUser) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select   subStatus($1,$2);', [idOrg, idUser])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: subStatus");
-                return;
-            });
-    })
+const subStatus = async (idOrg, idUser) => {
+    const data = db.oneOrNone('select   subStatus($1,$2);', [idOrg, idUser]);
+    return data;
 }
 
 
 //Подписка на организатора
-let subOrg = (id_org, id_user) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call subOrg($1,$2);', [id_org, id_user])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: subOrg");
-                return;
-            });
-    })
+const subOrg = async (id_org, id_user) => {
+    const data = db.result('Call subOrg($1,$2);', [id_org, id_user]).catch((e) => {return false;});
+    return data
 }
 
 //список подписчиков организатора странично
-let subscribersLimit = (idOrg, count, start) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select   subscribers($1,$2,$3);', [idOrg, count, start])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: subscribersLimit");
-                return;
-            });
-    })
+const subscribersLimit = async (idOrg, count, start) => {
+    const data = await db.manyOrNone('select   subscribers($1,$2,$3);', [idOrg, count, start]);
+    return data;
 }
 
 //список подписчиков организатора
@@ -882,43 +446,24 @@ let subscribers = (idOrg) => {
 
 
 //кол подп организатора
-let countSubscribers = (idOrg) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from subscribers($1);', [idOrg])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: countSubscribers");
-                return;
-            });
-    })
+const countSubscribers = async (idOrg) => {
+    const data = await db.oneOrNone('select count(*) from subscribers($1);', [idOrg]);
+    if(data == null) return null;
+    return data.count;
 }
 
 //кол. подписчиков организатора
-let countSub = (idOrg) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from   subscribers($1);', [idOrg])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: countSub");
-                return;
-            });
-    })
+const countSub = async (idOrg) => {
+    const data = await db.oneOrNone('select count(*) from   subscribers($1);', [idOrg]);
+    if(data == null) return null;
+    return data.count;
 }
 
 
 //Отписка от организатора
-let unSubOrg = (id_org, id_user) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call unSubOrg($1,$2);', [id_org, id_user])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR BD: unSubOrg");
-                return;
-            });
-    })
+const unSubOrg = async (id_org, id_user) => {
+    const data = db.result('Call unSubOrg($1,$2);', [id_org, id_user]).catch( (e) => {return false;});
+    return data;
 }
 
 //Список подписок
@@ -935,43 +480,23 @@ let subList = (id_user) => {
 }
 
 //кол записей Список подписок
-let countSubList = (id_user) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from subList($1);', [id_user])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: countSubList");
-                return;
-            });
-    })
+const countSubList = async (id_user) => {
+    const data = await db.oneOrNone('select count(*) from subList($1);', [id_user]);
+    if(data == null) return null;
+    return data.count;  
 }
 
 //Список подписок странично
-let subListLimit = (id_user, count, start) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select subList($1,$2,$3);', [id_user, count, start])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: subListLimit");
-                return;
-            });
-    })
+const subListLimit = async (id_user, count, start) => {
+    const data = await db.manyOrNone('select subList($1,$2,$3);', [id_user, count, start]);
+    return data;
 }
 
 
 //Список событий странично по id организатора
-let eventOrgListLimit = (id_user, count, start) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select eventOrgListLimit($1,$2,$3);', [id_user, count, start])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: eventOrgListLimit");
-                return;
-            });
-    })
+const eventOrgListLimit = async (id_user, count, start) => {
+    const data = await db.manyOrNone('select eventOrgListLimit($1,$2,$3);', [id_user, count, start]);
+    return data;
 }
 
 //Список событий по id организатора
@@ -987,32 +512,18 @@ let eventOrgList = (id_user) => {
     })
 }
 
-
 //кол Список событий по id организатора
-let countEventOrgList = (id_user) => {
-    return new Promise((resolve, reject) => {
-        db.oneOrNone('select count(*) from eventOrgList($1);', [id_user])
-            .then(function(data) {
-                resolve(data.count);
-            }).catch(function() {
-                reject("ERROR BD: countEventOrgList");
-                return;
-            });
-    })
+const countEventOrgList = async (id_user) => {
+    const data = await db.oneOrNone('select count(*) from eventOrgList($1);', [id_user]);
+    if(data == null) return null;
+    return data.count;
 }
 
-
 //проверка имени организатора
-const checkOrganizationName = (nick) => {
-    return new Promise((resolve, reject) => {
-        db.one("select checkOrg($1);", [nick])
-            .then(function(data) {
-                resolve(data.checkorg);
-            }).catch(function() {
-                reject("ERROR BD: checkOrganizationName");
-                return;
-            });
-    });
+const checkOrganizationName = async (nick) => {
+    const data = await db.one("select checkOrg($1);", [nick]);
+    if(data == null) return null;
+    return data.checkorg;
 };
 
 //получение id адреса
@@ -1029,70 +540,47 @@ const getIdAddress = (street, house) => {
 };
 
 //получение id адреса, поиск
-const searchAddress = (word) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select searchAddress($1);", [ word ])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: searchAddress");
-                return;
-            });
-    });
+const searchAddress = async (word) => {
+    const data = await db.manyOrNone("select searchAddress($1);", [ word ]);
+    return data;
 };
 
 //получение id адреса, поиск по адресу и дому
-const searchAddressWithHouse = (word, house) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone("select searchAddress($1,$2);", [ word,  house ])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR BD: searchAddressWithHouse");
-                return;
-            });
-    });
+const searchAddressWithHouse = async (word, house) => {
+    const data = await db.manyOrNone("select searchAddress($1,$2);", [ word,  house ]);
+    return data;
 };
 
 ////загрузка фото
 //загрузка фото лк
-const addPhotoAcc = (id, photo) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddPhotoAcc($1, $2);', [id, photo])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                reject("ERROR BD: addPhotoAcc");
-                return;
-            });
-    });
+const addPhotoAcc = async (id, photo) => {
+    const data = await db.result('Call AddPhotoAcc($1, $2);', [id, photo]).catch( (e) => { return false;});
+    return data;
 };
 
 //загрузка фото организатора
-const addPhotoOrg = (id, photo) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddPhotoOrg($1, $2);', [id, photo])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                reject("ERROR BD: addPhotoOrg");
-                return;
-            });
-    });
+const addPhotoOrg = async (id, photo) => {
+    const data = await db.result('Call AddPhotoOrg($1, $2);', [id, photo]).catch( (e) => { return false;});
+    return data;
 };
 
 //загрузка фото события
-const addPhotoEvent = (idOrg, idEvent, photo) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddPhotoEvent($1, $2, $3);', [idOrg, idEvent, photo])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(e) {
-                reject("ERROR BD: addPhotoEvent");
-                return;
-            });
-    });
+const addPhotoEvent = async (idOrg, idEvent, photo) => {
+    const data = await db.result('Call AddPhotoEvent($1, $2, $3);', [idOrg, idEvent, photo]).catch( (e) => { return false;});
+    return data;
 };
+
+//авторизированный пользователь идет на событие
+const visitEvent = async (idUser, idEvent) => {
+    const data = await db.result('Call visit_event($1, $2);', [idUser, idEvent]).catch( (e) => { return false;});
+    return data;
+};
+//авторизированный пользователь больше не идет на событие
+const notVisitEvent = async (idUser, idEvent) => {
+    const data = await db.result('Call not_visit_event($1, $2);', [idUser, idEvent]).catch( (e) => { return false;});
+    return data;
+};
+
 module.exports = {
 
     //пользователь
@@ -1114,7 +602,7 @@ module.exports = {
 
     'friendRequestsWithLimit': friendRequestsWithLimit, //Список входящих заявок постранично 
     'friendRequests': friendRequests, //Список входящих заявок
-    'CountfriendRequests': CountfriendRequests, //Колличество  входящих заявок
+    'countFriendRequests': countFriendRequests, //Колличество  входящих заявок
 
     'friendRequestsSent': friendRequestsSent, //Список отправленых заявок 
     'countfriendRequestsSent': countfriendRequestsSent, //Колличество отправленых заявок
@@ -1137,11 +625,7 @@ module.exports = {
     'returnTokenAcceptMail': returnTokenAcceptMail, //вернуть токен по id для подтв аккаунт
 
     //для админки 
-    //'addDistrict': addDistrict, //Добавить район
-    //'addAddress': addAddress, //Добавить адрес
     'addTag': addTag, //добавить тег
-    // 'acceptTag': acceptTag, // подтв. тег
-    //  'deleteTag': deleteTag, //удалить тег
 
     //события 
     'EventTags': EventTags, //Теги по Id евента
@@ -1149,7 +633,6 @@ module.exports = {
     'event': event, //полные данные о событии
     'countEventShortList': countEventShortList, //  колличество данных event для главной страницы 
 
-    'tags': tags, //весь лист тегов
     'CountTags': CountTags, //кол тегов
     'tagsLim': tagsLim, //весь лист тегов странично
     'tagById': tagById, //  тег по id
@@ -1160,6 +643,9 @@ module.exports = {
 
 
     //организатор
+    'visitEvent': visitEvent, //авторизированный пользователь идет на событие
+    'notVisitEvent': notVisitEvent, //авторизированный пользователь больше не идет на событие
+
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
@@ -1204,12 +690,10 @@ module.exports = {
 
     'eventOrgList': eventOrgList, //Список событий по id организатора
     'eventOrgListLimit': eventOrgListLimit, //Список событий странично по id организатора
-
     'checkOrganizationName': checkOrganizationName, //проверка имени организатора
 
     //фото
     'addPhotoAcc': addPhotoAcc, //загрузка фото лк
     'addPhotoOrg': addPhotoOrg, //загрузка фото организатора
     'addPhotoEvent': addPhotoEvent, //загрузка фото события
-
 };

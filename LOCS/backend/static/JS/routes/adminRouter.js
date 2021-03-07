@@ -2,9 +2,6 @@ const express = require("express");
 const adminRouterController = require("../controllers/adminRouterController.js");
 const adminRouter = express.Router();
 
-
-
-
 //теги
 adminRouter.put("/accepttag/:id", adminRouterController.acceptTag); //подтвердить тег 
 adminRouter.delete("/tag/:id", adminRouterController.deleteTag); //удалить тег 
@@ -12,18 +9,11 @@ adminRouter.get("/tag/:limit/:offset$", adminRouterController.getTag); //все 
 adminRouter.post("/tag$", adminRouterController.addTag); //добавить тег
 adminRouter.put("/tag/:id", adminRouterController.changeTag); //изменить тег 
 
-
 //Город
 adminRouter.get("/city/:limit/:offset$", adminRouterController.getCity); //все города
 adminRouter.post("/city$", adminRouterController.createCity); //добавить город
 adminRouter.put("/city/:id", adminRouterController.changeCity); //изменить город 
 adminRouter.delete("/city/:id", adminRouterController.deleteCity); //удалить город 
-
-//район
-adminRouter.get("/district/:limit/:offset$", adminRouterController.getDistrict); //все районы
-adminRouter.post("/district$", adminRouterController.createDistrict); //добавить район
-adminRouter.put("/district/:id", adminRouterController.changeDistrict); //изменить район 
-adminRouter.delete("/district/:id", adminRouterController.deleteDistrict); //удалить район 
 
 //адрес
 adminRouter.get("/address/:limit/:offset$", adminRouterController.getAddress); //все адреса
@@ -42,10 +32,5 @@ adminRouter.get("/event/:limit/:offset$", adminRouterController.getEvents); //в
 adminRouter.post("/event$", adminRouterController.publishEvent); //опубликовать 
 adminRouter.put("/event$", adminRouterController.unpublishEvent); //отмена публикации
 adminRouter.delete("/event$", adminRouterController.deleteEvent); //удалить 
-
-
-
-
-
 
 module.exports = adminRouter;

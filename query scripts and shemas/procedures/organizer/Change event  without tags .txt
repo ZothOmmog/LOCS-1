@@ -7,7 +7,7 @@ CREATE OR REPLACE function  public.changeevent(
 	ticket_price_ numeric,
 	id_org bigint,
 	id_address_ bigint,
-	datatime_ timestamp without time zone,
+	datatime_ timestamp with time zone,
 	publish_ boolean DEFAULT false)
 	RETURNS int
 LANGUAGE 'plpgsql'
@@ -27,6 +27,7 @@ BEGIN
 
 END;
 $BODY$;
+
 
 
 

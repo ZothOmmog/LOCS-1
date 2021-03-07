@@ -6,8 +6,6 @@ const multer = require("multer");
 const DataBase = require('../scripts/DataBase.js');
 const { json } = require('body-parser');
 
-
-
 const upload = multer({
     fileFilter: function(req, file, callback) {
         var ext = path.extname(file.originalname);
@@ -26,11 +24,10 @@ sysRouter.post("/PhotoOrg", upload.single("file"), sysController.uploadPhotoOrg)
 
 sysRouter.post("/PhotoEvent/:event", upload.single("file"), sysController.uploadPhotoEvent); // для загрузки фото события, имя файла в запросе - file
 
-
 sysRouter.get("/accept/:hash", sysController.acceptAccount); //функция для подтв почты/аккаунта личного кабинета
 
-sysRouter.get("/forwardMail", sysController.forwardMail);
+sysRouter.get("/forwardMail", sysController.forwardMail); //функция для повторной отправки письма с ссылкой для подтв.
 
-///создать функцию повторной отправки письма с ссылкой для подтв.
+//востановление/изменение пароля
 
 module.exports = sysRouter;

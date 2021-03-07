@@ -3,7 +3,13 @@
 CREATE OR REPLACE PROCEDURE AddFriend(iduser1 bigint,iduser2 bigint)
     LANGUAGE 'plpgsql'
 AS $BODY$
+DECLARE
+    check_ bigint;
 BEGIN
-    INSERT INTO friend_list(id_user, id_user2) values (iduser1, iduser2);
+	select into check_ count(*) from friend_list where deleted = false and (id_user = iduser1  and id_user2 = iduser2) or (id_user = iduser2 and id_user2 =iduser1);
+	    IF check_ = 0 THEN
+        INSERT INTO friend_list(id_user, id_user2) values (iduser1, iduser2);
+        END IF;
 END;
 $BODY$;
+

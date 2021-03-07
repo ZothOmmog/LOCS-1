@@ -41,6 +41,7 @@
 				"id_address": int,
 				"image": string,
 				"organization_name": string,
+				"countvisitor": int,
 				"logo": string,
 				"datatime": {
 						"year": int,
@@ -53,8 +54,8 @@
 		}
 
 ---
-# url/event/tag
-- ***список всех тегов***
+# url/event/tag/колличеcтво_данных/страница
+- ***список всех тегов странично***
 - **GET запрос**
  Формат JSON ***Сервер->React***
  Данные:

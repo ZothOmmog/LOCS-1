@@ -1,0 +1,20 @@
+CREATE OR REPLACE PROCEDURE visit_event(id_user_ bigint, id_event_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+declare
+	check_ bigint;
+BEGIN
+		select into check_ count(*) from visit where id_event = id_event_ and id_user = id_user_;
+	    IF check_ = 0 THEN
+        insert into visit (id_event, id_user) values (id_event_, id_user_);
+        END IF;
+END;
+$BODY$;
+
+CREATE OR REPLACE PROCEDURE not_visit_event(id_user_ bigint, id_event_ bigint)
+    LANGUAGE 'plpgsql'
+AS $BODY$
+BEGIN
+	delete from visit where id_event = id_event_ and id_user = id_user_;
+END;
+$BODY$;

@@ -125,59 +125,7 @@
 - ***Ответ на корректность данных***
  Формат http status ***Сервер->Клиент***
  
-# РАЙОНЫ
---------
-# url/admin/district/:limit/:offset
-- **Все районы **
- Формат GET ***Клиент->Сервер***		
-- ***Ответ ***
- Формат JSON ***сервер->Клиент***
- Данные :
 
-		{
-			"id" : text,
-			"title" : bool,
-			"id_city" : int,
-			"deleted" : bool
-		}
-	
-	
---------
-# url/admin/district
-- **Добавить район **
- Формат POST ***Клиент->Сервер***
- Данные входа:
- 
-		{
-			"title" : bool,
-			"id_city" : int,
-			"deleted" : bool
-		}
-		
-- ***Ответ на корректность данных***
- Формат http status ***Сервер->Клиент***
- 
- --------
-# url/admin/district/:id
-- **Изменить район **
- Формат PUT ***Клиент->Сервер***
- Данные входа:
- 
-		{
-			"title" : bool,
-			"id_city" : int,
-			"deleted" : bool
-		}
-		
-- ***Ответ на корректность данных***
- Формат http status ***Сервер->Клиент***
- 
- --------
-# url/admin/district/:id
-- **Удалить район **
-- **DELETE запрос**
-- ***Ответ на корректность данных***
- Формат http status ***Сервер->Клиент***
  
 # АДРЕС
 --------
@@ -193,7 +141,7 @@
 			"house" : text,
 			"latitude" : decimal,
 			"longitude" : decimal,
-			"id_district" : int,
+			"id_city" : int,
 			"deleted" : bool,
 		}
 	
@@ -208,7 +156,7 @@
 			"house" : text,
 			"latitude" : decimal,
 			"longitude" : decimal,
-			"id_district" : int,
+			"id_city" : int,
 			"deleted" : bool,
 		}
 		
@@ -226,7 +174,7 @@
 			"house" : text,
 			"latitude" : decimal,
 			"longitude" : decimal,
-			"id_district" : int,
+			"id_city" : int,
 			"deleted" : bool,
 		}
 		

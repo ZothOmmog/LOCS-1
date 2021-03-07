@@ -8,30 +8,15 @@ const takeObj = funcs.takeObj;
 exports.event = async function(request, response,next)  {
     try {
         var idEvent = Number(request.body.idEvent);
-        var tags;
-        var event;
-       
-        await DataBase.event(idEvent).then(function(val) {
-            event = val;
-        }).catch(function(val) {
-            next({err : val, code : 400}).end();
-        });
-
+        const event = await DataBase.event(idEvent);
         if(event == null){
             next({err : 'event by id not found', code : 400}).end();
         }
-
-        await DataBase.EventTags(idEvent).then(function(val) {
-            tags = val;
-        }).catch(function(val) {
-            next({err : val, code : 400}).end();
-        });
-
-        var masTags = [];
+        const tags = await DataBase.EventTags(idEvent);
+        let masTags = [];
         for (j in tags) {
             masTags.push(tags[j].eventtags.id);
         };
-        event.event.datatime = funcs.stringToObjectTimeConvert(event.event.datatime);
         event.event.tags = masTags;
         response.json(event.event);
 
@@ -42,7 +27,6 @@ exports.event = async function(request, response,next)  {
 
 exports.shortList = async function(request, response, next) {
     try {
-
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
 
@@ -50,31 +34,23 @@ exports.shortList = async function(request, response, next) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
-        var Events = [];
-        var eventList = [];
+        let eventList = [];
 
-        await DataBase.eventShortList(limit, offset).then(function(val) {
-            Events = val;
-        }).catch(function(val) {
-            next({err : val, code : 400}).end();
-        });
+        const events = await DataBase.eventShortList(limit, offset);
 
-        for (i in Events) {
-            var tags;
-            await DataBase.EventTags(Events[i].eventshortlist.id).then(function(val) {
-                tags = val;
-            });
+        for (i in events) {
+            const tags = await DataBase.EventTags(events[i].eventshortlist.id);
             var masTags = [];
             for (j in tags) {
                 masTags.push(tags[j].eventtags.id);
             };
-            let date = Events[i].eventshortlist.datatime == null ? null : funcs.getDateOnlyString(Events[i].eventshortlist.datatime);
-            var a = {
-                id: Events[i].eventshortlist.id,
-                name: Events[i].eventshortlist.name,
+            let date = events[i].eventshortlist.datatime == null ? null : funcs.getDateOnlyString(events[i].eventshortlist.datatime);
+            let a = {
+                id: events[i].eventshortlist.id,
+                name: events[i].eventshortlist.name,
                 date: date,
-                idAddress: Events[i].eventshortlist.id_address,
-                image: Events[i].eventshortlist.image,
+                idAddress: events[i].eventshortlist.id_address,
+                image: events[i].eventshortlist.image,
                 tags: masTags,
             };
             eventList.push(a);
@@ -94,29 +70,14 @@ exports.search = async function(request, response, next) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
-        var word = request.body.word;
-        var eventList;
-        var count;
-        var events = [];
-
-        await DataBase.searchEvent(word, limit, offset).then(function(val) {
-            eventList = val;
-        }).catch(function(val) {
-            next({err : val, code : 400}).end();
-        });
-
-        await DataBase.countSearchEvent(word).then(function(val) {
-            count = val;
-        }).catch(function(val) {
-            next({err : val, code : 400}).end();
-        });
+        const word = request.body.word;
+        let events = [];
+        const eventList = await DataBase.searchEvent(word, limit, offset);
+        const count = await DataBase.countSearchEvent(word);
 
         for (i in eventList) {
-            var tags;
-            await DataBase.EventTags(eventList[i].searchevent.id).then(function(val) {
-                tags = val;
-            });
-            var masTags = [];
+            let tags = await DataBase.EventTags(eventList[i].searchevent.id);
+            let masTags = [];
             for (j in tags) {
                 masTags.push(tags[j].eventtags.id);
             };
@@ -129,25 +90,21 @@ exports.search = async function(request, response, next) {
     }
 };
 
-
 exports.addTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            var word = request.body.title;
-
+            const word = request.body.title;
             if (word == null) {
                 response.status(400).end("");
                 return;
             }
-            var tags;
-
-            await DataBase.addTag(word).then(function(val) {
-                tags = val;
+            const tags = await DataBase.addTag(word);
+            if(tags) {
                 response.status(200).end("added");
-            }).catch(function(val) {
-                next({err : val, code : 500}).end();
-            });
+            } else {
+                response.status(400).end();
+            }
 
         } else {
             response.status(401).end();
@@ -158,19 +115,18 @@ exports.addTag = async function(request, response, next) {
 
 };
 
-
-
 exports.tag = async function(request, response, next) {
     try {
-        var tags;
+        let limit = Number(request.params.limit);
+        let offset = Number(request.params.offset);
 
-        await DataBase.tags().then(function(val) {
-            tags = val;
-        }).catch(function(val) {
-            next({err : val, code : 500}).end();
-        });
+        offset = offset <= 0 ? 1 : offset;
+        limit = limit <= 0 ? 1 : limit;
+        offset = (offset - 1) * limit;
 
-        var masTags = [];
+        const tags = await DataBase.tagsLim(limit, offset);
+
+        let masTags = [];
         for (j in tags) {
             masTags.push({ "id": tags[j].tags.id, "title": tags[j].tags.title });
         };
@@ -183,13 +139,7 @@ exports.tag = async function(request, response, next) {
 exports.tagById = async function(request, response, next) {
     try {
         let id = Number(request.params.id);
-        var tags;
-
-        await DataBase.tagById(id).then(function(val) {
-            tags = val;
-        }).catch(function(val) {
-                next({err : val, code : 500}).end();
-            });
+        const tags = await DataBase.tagById(id);
 
         if (tags != null) {
             response.json({ "id": tags.tagbyid.id, "title": tags.tagbyid.title });
