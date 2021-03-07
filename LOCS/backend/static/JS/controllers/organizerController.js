@@ -6,30 +6,19 @@ const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
 
 exports.personAccount = async function(request, response, next) {
-try {
+    try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 2 || Role == 0) {
-
-                let data;
-                let countSub;
-
-                await DataBase.countSub(userId).then(function(val) {
-                    countSub = val;
-                }).catch(function(err) {   next({err : err, code : 500}).end(); });
-
-                await DataBase.organizerData(userId).then(function(val) {
-                    data = val;
-                }).catch(function(err) {   next({err : err, code : 500}).end(); });
-
+                const countSub = await DataBase.countSub(userId);
+                const data = await DataBase.organizerData(userId);
                 if (data && countSub) {
                     data.countSub = countSub;
                     response.json({ data });
                 } else {
                     response.status(400).end("acc error");
                 }
-
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -43,51 +32,25 @@ try {
 
 exports.delete = async function(request, response, next) {
     try {
-            const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-            if (userId) {
-                const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-                //организатор или админ
-                if (Role == 2 || Role == 0) {
-
-                        let idEvent = request.body.idEvent;
-                        var Check;
-
-                        await DataBase.deleteEvent(idEvent, userId).then(function(val) {
-                            Check = val;
-                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                        if (Check) {
-                            await DataBase.deleteEventTag(idEvent).then(function(val) {
-                                Check = val;
-                            }).catch(function(err){  next({err : err, code : 500}).end(); });
-                            response.status(200).end("has been deleted");
-                        } else {
-                            response.status(400).end("Deleted");
-                        }
-                
-                } else {
-                    response.status(403).end("have not permissions");
-                }
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = await funcs.getRole(userId);
+            //организатор или админ
+            if (Role == 2 || Role == 0) {
+                    let idEvent = request.body.idEvent;
+                    const Check = await DataBase.deleteEvent(idEvent, userId);
+                    if (Check) {
+                        const status = await DataBase.deleteEventTag(idEvent);
+                        response.status(200).end("has been deleted");
+                    } else {
+                        response.status(400).end("Deleted");
+                    }
             } else {
-                return response.status(401).end();
+                response.status(403).end("have not permissions");
             }
-        } catch (err) {
-            next({err : err, code : 500});
-    }
-};
-
-exports.search = async function(request, response, next) {
-    try {
-        let word = request.body.word;
-        let data;
-
-        await DataBase.searchOrg(word).then(function(val) {
-            data = val;
-        }).catch(function(err) {
-            next({err : err, code : 500}).end();
-        });
-
-        response.json(data);
+        } else {
+            return response.status(401).end();
+        }
     } catch (err) {
         next({err : err, code : 500});
     }
@@ -95,97 +58,41 @@ exports.search = async function(request, response, next) {
 
 exports.searchLimit = async function(request, response, next) {
     try {
-        let word = request.body.word;
-        let count;
+        const word = request.body.word;
         let limit = Number(request.params.limit);
         let offset = Number(request.params.offset);
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
-        let data;
-        await DataBase.countSearchOrg(word).then(function(val) {
-            count = val;
-        }).catch(function(err) {
-            next({err : err, code : 500}).end();
-        });
-
-        await DataBase.searchOrglimit(word, limit, offset).then(function(val) {
-            data = val;
-        }).catch(function(err) {
-            next({err : err, code : 500}).end();
-        });
-
+        const count = await DataBase.countSearchOrg(word);
+        const data = await DataBase.searchOrglimit(word, limit, offset);
         let users = []
         for (i in data) {
             users.push(data[i].searchorg);
         }
-
         response.json({ count, users });
     } catch (err) {
         next({err : err, code : 500});
     }
 };
 
-exports.mySubscribers = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-            if (Role == 2 || Role == 0) {
-                let data;
-
-                await DataBase.subscribers(userId).then(function(val) {
-                    data = val;
-                }).catch(function(err) {
-                    next({err : err, code : 500}).end();
-                });
-
-                response.json(data);
-            } else {
-                response.status(403).end("have not permissions");
-            }
-        } else {
-            return response.status(401).end();
-        };
-    } catch (err) {
-          next({err : err, code : 500});
-    }
-};
-
-
-
 exports.mySubscribersLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 2 || Role == 0) {
-                let count;
-
-                await DataBase.countSubscribers(userId).then(function(val) {
-                    count = val;
-                }).catch(function(err) {
-                    next({err : err, code : 500}).end();
-                });
-
+                const count = await DataBase.countSubscribers(userId);
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
-                let data;
-
-                await DataBase.subscribersLimit(userId, limit, offset).then(function(val) {
-                    data = val;
-                }).catch(function(err) {
-                      next({err : err, code : 500}).end();
-                });
-
+                const data = await DataBase.subscribersLimit(userId, limit, offset);
                 let subscribers = []
                 for (i in data) {
                     subscribers.push(data[i].subscribers);
                 }
-
                 response.json({ count, subscribers });
             } else {
                 response.status(403).end("have not permissions");
@@ -198,54 +105,18 @@ exports.mySubscribersLimit = async function(request, response, next) {
     }
 };
 
-
-exports.subscribers = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            let orgId = request.body.org;
-            let data;
-            await DataBase.subscribers(orgId).then(function(val) {
-                data = val;
-            }).catch(function(err) {
-                next({err : err, code : 500}).end();
-            });
-            response.json(data);
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
-
-
 exports.subscribersLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            let orgId = request.body.org;
+            const orgId = request.body.org;
             let limit = Number(request.params.limit);
             let offset = Number(request.params.offset);
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            let count;
-            let data;
-
-            await DataBase.countSubscribers(orgId).then(function(val) {
-                count = val;
-            }).catch(function(err) {
-                next({err : err, code : 500}).end();
-            });
-
-            await DataBase.subscribersLimit(orgId, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {
-                next({err : err, code : 500}).end();
-            });
-
+            const count = await DataBase.countSubscribers(orgId);
+            const data = await DataBase.subscribersLimit(orgId, limit, offset);
             let users = [];
             for (i in data) {
                 users.push(data[i].subscribers);
@@ -259,34 +130,21 @@ exports.subscribersLimit = async function(request, response, next) {
     }
 };
 
-
 exports.organizerAccount = async function(request, response, next) {
     try {
-        let orgId = request.body.org;
-        let data;
-        let countSub;
-        let statusSub;
-        await DataBase.countSub(orgId).then(function(val) {
-            countSub = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-        await DataBase.organizerData(orgId).then(function(val) {
-            data = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+        const orgId = request.body.org;
+        const countSub = await DataBase.countSub(orgId);
+        const data = await DataBase.organizerData(orgId);
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            await DataBase.subStatus(orgId, userId).then(function(val) {
-                statusSub = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+        if (userId && orgId && data) {
+            const statusSub = await DataBase.subStatus(orgId, userId);
+            if (countSub) {
+                data.count = countSub;
+            } 
             data.Status = statusSub.substatus;
-        }
-        if (data && countSub) {
-            data.count = countSub;
             response.json({ data });
         } else {
-            response.status(500).end("acc error");
+            response.status(400).end("acc or org error");
         }
     } catch (err) {
         next({err : err, code : 500});
@@ -297,17 +155,12 @@ exports.subscribe = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            let check;
-            let orgId = request.body.org;
-
-            await DataBase.subOrg(orgId, userId).then(function(val) {
-                check = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+            const orgId = request.body.org;
+            const check = await DataBase.subOrg(orgId, userId);
             if (check) {
                 response.status(200).end("has been subscribe");
             } else {
-                response.status(500).end("err in subscribe");
+                response.status(400).end("err subscribe");
             }
         } else {
             return response.status(401).end();
@@ -321,13 +174,8 @@ exports.unSubscribe = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            let check;
-            let orgId = request.body.org;
-            
-            await DataBase.unSubOrg(orgId, userId).then(function(val) {
-                check = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+            const orgId = request.body.org;
+            const check = await DataBase.unSubOrg(orgId, userId);
             if (check) {
                 response.status(200).end("has been unsubscribe");
             } else {
@@ -341,93 +189,6 @@ exports.unSubscribe = async function(request, response, next) {
     }
 };
 
-exports.mySubscribeList = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            let data;
-
-            await DataBase.subList(userId).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-            if (data) {
-                response.json(data);
-            } else {
-                response.status(500).end("user in list sub list");
-            }
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
-exports.mySubscribeListLimit = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            let count;
-            let data;
-            let limit = Number(request.params.limit);
-            let offset = Number(request.params.offset);
-            offset = offset <= 0 ? 1 : offset;
-            limit = limit <= 0 ? 1 : limit;
-            offset = (offset - 1) * limit;
-            await DataBase.countSubList(userId).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-            await DataBase.subListLimit(userId, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-            if (data) {
-                response.json({ "count": count, data });
-            } else {
-                response.status(500).end("user in list sub list");
-            }
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-       next({err : err, code : 500}).end();
-    }
-};
-
-
-exports.subscribeUserList = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            let data;
-            let user = request.body.user ? request.body.user : undefined;
-            if (user) {
-
-                await DataBase.subList(user).then(function(val) {
-                    data = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-            } else {
-                await DataBase.subList(userId).then(function(val) {
-                    data = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-            }
-            if (data) {
-                response.json(data);
-            } else {
-                response.status(500).end("user in list sub list");
-            }
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-       next({err : err, code : 500});
-    }
-};
-
-
 exports.subscribeUserListLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
@@ -439,31 +200,19 @@ exports.subscribeUserListLimit = async function(request, response, next) {
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            let user = request.body.user ? request.body.user : undefined;
+            const user = request.body.user ? request.body.user : undefined;
             if (user) {
-                await DataBase.countSubList(user).then(function(val) {
-                    count = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                await DataBase.subListLimit(user, limit, offset).then(function(val) {
-                    data = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+                count = await DataBase.countSubList(user);
+                data = await DataBase.subListLimit(user, limit, offset);
             } else {
-                await DataBase.countSubList(userId).then(function(val) {
-                    count = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-                await DataBase.subListLimit(userId, limit, offset).then(function(val) {
-                    data = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
+                count = await DataBase.countSubList(userId);
+                data = await DataBase.subListLimit(userId, limit, offset);
             }
             if (data) {
                 let sublist = [];
                 for (i in data) {
                     sublist.push(data[i].sublist);
                 }
-
-
                 response.json({ count, sublist });
             } else {
                 response.status(500).end("user in list sub list");
@@ -476,31 +225,6 @@ exports.subscribeUserListLimit = async function(request, response, next) {
     }
 };
 
-
-
-exports.myEventsList = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            let data;
-            await DataBase.eventOrgList(userId).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-            if (data) {
-                response.json(data);
-            } else {
-                response.status(500).end("user in list sub list");
-            }
-
-        } else {
-            return response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
 exports.myEventsListLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
@@ -510,14 +234,8 @@ exports.myEventsListLimit = async function(request, response, next) {
             offset = offset <= 0 ? 1 : offset;
             limit = limit <= 0 ? 1 : limit;
             offset = (offset - 1) * limit;
-            let count;
-            let data;
-            await DataBase.countEventOrgList(userId).then(function(val) {
-                count = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
-            await DataBase.eventOrgListLimit(userId, limit, offset).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+            const count = await DataBase.countEventOrgList(userId);
+            const data = await DataBase.eventOrgListLimit(userId, limit, offset);
             if (data) {
                 let events = []
                 for (i in data) {
@@ -535,25 +253,6 @@ exports.myEventsListLimit = async function(request, response, next) {
     }
 };
 
-
-
-exports.eventsList = async function(request, response, next) {
-    try {
-        let orgId = request.body.org;
-        let data;
-        await DataBase.eventOrgList(orgId).then(function(val) {
-            data = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-        if (data) {
-            response.json(data);
-        } else {
-            response.status(500).end("user in list sub list");
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-};
-
 exports.eventsListLimit = async function(request, response, next) {
     try {
         let limit = Number(request.params.limit);
@@ -561,23 +260,14 @@ exports.eventsListLimit = async function(request, response, next) {
         offset = offset <= 0 ? 1 : offset;
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
-        let orgId = request.body.org;
-        let data;
-        let count;
-        await DataBase.countEventOrgList(orgId).then(function(val) {
-            count = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-        await DataBase.eventOrgListLimit(orgId, limit, offset).then(function(val) {
-            data = val;
-        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+        const orgId = request.body.org;
+        const count = await DataBase.countEventOrgList(orgId);
+        const data = await DataBase.eventOrgListLimit(orgId, limit, offset);
         if (data) {
             let events = [];
             for (i in data) {
                 events.push(data[i].eventorglistlimit);
             }
-
             response.json({ count, events });
         } else {
             response.status(500).end("user in list sub list");
@@ -591,31 +281,17 @@ exports.registration = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 1 || Role == 0) {
-                let checkName;
-
-                let info = request.body.info;
-                let organizationName = request.body.organizationName;
-                let organizationLink = request.body.organizationLink;
-                let logo = request.body.logo;
-
-                await DataBase.checkOrganizationName(organizationName).then(function(val) {
-                    checkName = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+                const info = request.body.info;
+                const organizationName = request.body.organizationName;
+                const organizationLink = request.body.organizationLink;
+                const logo = request.body.logo;
+                const checkName = await DataBase.checkOrganizationName(organizationName);
                 if (checkName == 1) {
-                    let data;
-                    await DataBase.registationOrganizer(userId, info, organizationName, organizationLink, logo).then(function(val) {
-                        data = val;
-                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+                    const data = await DataBase.registationOrganizer(userId, info, organizationName, organizationLink, logo);
                     if (data) {
-                        await DataBase.changeTokenToOrg(request.cookies.userRole).then(function(val) {
-                            data = val;
-                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                        response.status(200).end("has been registration");
+                        response.status(200).end("has been registration, re-login to your account");
                     } else {
                         response.status(500).end("error registationOrganizer");
                     }
@@ -633,35 +309,23 @@ exports.registration = async function(request, response, next) {
     }
 };
 
-
-
 exports.createEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 2 || Role == 0) {
-                let idAddress = request.body.idAddress;
-                let name = request.body.name;
-                let info = request.body.info;
-                let link = request.body.link;
-                let price = request.body.price;
-                let timestamp = request.body.timestamp;
-                let datatime = funcs.timeConvert(timestamp);
-                let idEvent;
-
-                await DataBase.addEvent(name, info, link, price, userId, idAddress, datatime).then(function(val) {
-                    idEvent = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+                const idAddress = request.body.idAddress;
+                const name = request.body.name;
+                const info = request.body.info;
+                const link = request.body.link;
+                const price = request.body.price;
+                const timestamp = request.body.timestamp;
+                const datatime = funcs.timeConvert(timestamp);
+                const idEvent = await DataBase.addEvent(name, info, link, price, userId, idAddress, datatime);
                 if (idEvent) {
-                    let tags = request.body.tags;
-                    console.log(tags);
-                    let check;
-                        await DataBase.addEventTagsArray(idEvent, tags).then(function(val) {
-                            check = val;
-                        }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
+                    const tags = request.body.tags;
+                    const check = await DataBase.addEventTagsArray(idEvent, tags);
                     if (check) {
                         response.status(200).end("has been created");
                     } else {
@@ -681,25 +345,19 @@ exports.createEvent = async function(request, response, next) {
     }
 };
 
-
 exports.searchAddress = async function(request, response, next) {
     try {
-        let word = request.body.word;
+        const word = request.body.word;
+        const splitWords = word.split(' ').filter(n => n);
         let data;
-        var splitWords = word.split(' ').filter(n => n);
         if(splitWords.length == 1) {
-            await DataBase.searchAddress(word).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+            data = await DataBase.searchAddress(word);
         } else {
-            let endWord = splitWords[splitWords.length - 1];
+            const endWord = splitWords[splitWords.length - 1];
             splitWords.splice(splitWords.length - 1, 1);
-            let halfWord = splitWords.join(' ');
-            await DataBase.searchAddressWithHouse(halfWord, endWord).then(function(val) {
-                data = val;
-            }).catch(function(err) {  next({err : err, code : 500}).end(); });
+            const halfWord = splitWords.join(' ');
+            data = await DataBase.searchAddressWithHouse(halfWord, endWord);
         }
-
         let address = [];
         for (i in data) {
             address.push(data[i].searchaddress);
@@ -710,37 +368,25 @@ exports.searchAddress = async function(request, response, next) {
     }
 };
 
-
 exports.changeEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 2 || Role == 0) {
-                let idAddress = request.body.idAddress;
-                let name = request.body.name;
-                let info = request.body.info;
-                let link = request.body.link;
-                let price = request.body.price;
-                let idEvent = request.body.idEvent;
-                let tags = request.body.tags;
-                let timestamp = request.body.timestamp;
-                let datatime = funcs.timeConvert(timestamp);
-                let check;
-                await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress, datatime).then(function(val) {
-                    check = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                if (check.changeevent == 1) {
-                    await DataBase.deleteEventTag(idEvent).then(function(val) {
-                        check = val;
-                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                    await DataBase.addEventTagsArray(idEvent, tags).then(function(val) {
-                        check = val;
-                    }).catch(function(err) {  next({err : err, code : 500}).end(); });
-                    
-                    if (check) {
+                const idAddress = request.body.idAddress;
+                const name = request.body.name;
+                const info = request.body.info;
+                const link = request.body.link;
+                const price = request.body.price;
+                const idEvent = request.body.idEvent;
+                const tags = request.body.tags;
+                const timestamp = request.body.timestamp;
+                const check = await DataBase.changeEvent(idEvent, name, info, link, price, userId, idAddress, timestamp);
+                if (check == 1) {
+                    const checkDeleteTag = await DataBase.deleteEventTag(idEvent);
+                    const checkAddTag = await DataBase.addEventTagsArray(idEvent, tags);
+                    if (checkDeleteTag && checkAddTag) {
                         response.status(200).end("has been change");
                     } else {
                         response.status(500).end("error to change tags");
@@ -759,29 +405,20 @@ exports.changeEvent = async function(request, response, next) {
     }
 };
 
-
 exports.changeOrgAcc = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 2) {
-                let orgName = request.body.orgName;
-                let info = request.body.info;
-                let link = request.body.link;
-                let check;
-                await DataBase.changeDataAboutOrg(userId, orgName, info, link).then(function(val) {
-                    check = val;
-                }).catch(function(err) {  next({err : err, code : 500}).end(); });
-
-                if (check == true) {
+                const orgName = request.body.orgName;
+                const info = request.body.info;
+                const link = request.body.link;
+                const check = await DataBase.changeDataAboutOrg(userId, orgName, info, link);
+                if (check) {
                     response.status(200).end("has been changed");
-                } else if (check.constraint.includes("org_name_unique")) {
-                    response.status(400).end("org name is already use");
                 } else {
-                    console.log(check);
-                    console.log("ERROR BD: changeDataAboutOrg");
-                    response.status(500).end("db changeDataAboutOrg error");
+                    response.status(400).end("org name is already use");
                 }
             } else {
                 response.status(403).end("have not permissions");

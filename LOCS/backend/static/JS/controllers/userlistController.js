@@ -134,7 +134,6 @@ exports.friendListWithLimit = async function(request, response, next) {
     }
 };
 
-
 exports.searchUserWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
@@ -292,12 +291,15 @@ exports.UserAccount = async function(request, response, next) {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         const userIdUser = request.body.user ? request.body.user : undefined;
         if (userId) {
-            const status = await DataBase.friendStatus(userId, userIdUser);
-            const data = await DataBase.DataUserAccount(userIdUser);
-
-            if (!data) {
-                response.status(500).end("account search data");
+            if(!userIdUser || userId == userIdUser){
+                return response.status(400).end("bad id user");
             }
+            const status = await DataBase.friendStatus(userId, userIdUser);
+            const accountData = await DataBase.DataUserAccount(userIdUser);
+            if (!accountData || !status) {
+                response.status(400).end("account search data");
+            }
+            
             response.json({
                 "Status": status,
                 "User": {

@@ -12,15 +12,11 @@ const adminRouterController = require("./static/JS/routes/adminRouter.js");
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
-
-//const test = require("./static/JS/scripts/funcs.js");
-
 const corsOptions = {
     credentials: true,
     origin: 'http://localhost:3000',
     optionsSuccessStatus: 200
 };
-
 
 app.use(cors(corsOptions));
 app.use(cookieParser());
@@ -43,12 +39,6 @@ app.use(function(request, response, next) {
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// app.use(session({
-//         key: 'whatisname',
-//         secret: 'xiaomitopzasvoidengi1488'
-//     }))
-    //, { maxAge: config.cookieLive }
-
 app.use("/event", eventRouter);
 app.use("/org", organizerRouter);
 app.use("/user", userlistRouter);
@@ -60,8 +50,6 @@ app.use((err, req, res, next) => {
     let code = err.code ? err.code : 500;
     res.status(code).end();
   })
-
-
 
 app.use(function(req, res, next) {
     res.status(404).send("Not Found");

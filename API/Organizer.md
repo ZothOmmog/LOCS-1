@@ -282,7 +282,7 @@
           "price": string,
           "link": string,
           "tags": [int],
-		  "timestamp" :int 
+		  "timestamp" : string ("2020-10-14 16:23:00")
         }
  
 - ***Ответ на корректность данных***
@@ -303,7 +303,7 @@
             "price": string,
             "link": string,
             "tags":[int],
-			"timestamp" :int 
+			"timestamp" :  string ("2020-10-14 16:23:00") 
         }
  
 - ***Ответ на корректность данных***
