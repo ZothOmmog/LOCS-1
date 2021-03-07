@@ -9,18 +9,14 @@ exports.event = async function(request, response,next)  {
     try {
         var idEvent = Number(request.body.idEvent);
         const event = await DataBase.event(idEvent);
-
         if(event == null){
             next({err : 'event by id not found', code : 400}).end();
         }
-
         const tags = await DataBase.EventTags(idEvent);
-
         let masTags = [];
         for (j in tags) {
             masTags.push(tags[j].eventtags.id);
         };
-        event.event.datatime = funcs.stringToObjectTimeConvert(event.event.datatime);
         event.event.tags = masTags;
         response.json(event.event);
 

@@ -555,20 +555,30 @@ const searchAddressWithHouse = async (word, house) => {
 //загрузка фото лк
 const addPhotoAcc = async (id, photo) => {
     const data = await db.result('Call AddPhotoAcc($1, $2);', [id, photo]).catch( (e) => { return false;});
-    return true;
+    return data;
 };
 
 //загрузка фото организатора
 const addPhotoOrg = async (id, photo) => {
     const data = await db.result('Call AddPhotoOrg($1, $2);', [id, photo]).catch( (e) => { return false;});
-    console.log(data);
-    return true;
+    return data;
 };
 
 //загрузка фото события
 const addPhotoEvent = async (idOrg, idEvent, photo) => {
     const data = await db.result('Call AddPhotoEvent($1, $2, $3);', [idOrg, idEvent, photo]).catch( (e) => { return false;});
-    return true;
+    return data;
+};
+
+//авторизированный пользователь идет на событие
+const visitEvent = async (idUser, idEvent) => {
+    const data = await db.result('Call visit_event($1, $2);', [idUser, idEvent]).catch( (e) => { return false;});
+    return data;
+};
+//авторизированный пользователь больше не идет на событие
+const notVisitEvent = async (idUser, idEvent) => {
+    const data = await db.result('Call not_visit_event($1, $2);', [idUser, idEvent]).catch( (e) => { return false;});
+    return data;
 };
 
 module.exports = {
@@ -633,6 +643,9 @@ module.exports = {
 
 
     //организатор
+    'visitEvent': visitEvent, //авторизированный пользователь идет на событие
+    'notVisitEvent': notVisitEvent, //авторизированный пользователь больше не идет на событие
+
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту

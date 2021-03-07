@@ -4,7 +4,9 @@ RETURNS table (j json) AS
 $$
 BEGIN
     RETURN QUERY  SELECT to_json(a) FROM (SELECT event.id, event.name, event.info, event.link, event.ticket_price, event.id_organizer
-										  , event.id_address,event.image,organizer.organization_name, organizer.logo, event.datatime from event, organizer 
+										  , event.id_address,event.image,organizer.organization_name, organizer.logo, event.datatime,
+										  (select count(*) from visit where id_event = idev_) as countVisitor
+										  from event, organizer 
 										  where event.id = idev_ and event.id_organizer = organizer.id_user) a ;
 END;
 $$ LANGUAGE plpgsql;

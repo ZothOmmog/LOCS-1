@@ -1,9 +1,9 @@
 --добавление адреса
 --drop PROCEDURE AddAddress;
-CREATE OR REPLACE PROCEDURE AddAddress(street_ text,house_ text, latitude_ decimal, longitude_ decimal, idDistrict_ bigint)
+CREATE OR REPLACE PROCEDURE AddAddress(street_ text,house_ text, latitude_ decimal, longitude_ decimal, idCity_ bigint)
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
-    INSERT INTO address(street,house,latitude,longitude,id_district) values (street_, house_,latitude_,longitude_,idDistrict_);
+    INSERT INTO address(street,house,latitude,longitude,id_city) values (street_, house_,latitude_,longitude_,idCity_);
 END;
 $BODY$;

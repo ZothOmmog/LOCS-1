@@ -3,6 +3,6 @@
     "user": "postgres",
     "host": "localhost",
     "database": "LocsBD_Dev",
-    "password": "23028",
+    "password": "123",
     "port": 5432
 }

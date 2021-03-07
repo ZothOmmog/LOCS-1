@@ -430,3 +430,41 @@ exports.changeOrgAcc = async function(request, response, next) {
         next({err : err, code : 500});
     }
 };
+
+exports.visitEvent = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        const eventId = request.body.eventId;
+        if (userId && eventId) {
+            const check = await DataBase.visitEvent(userId, eventId);
+            if (check) {
+                response.status(200).end();
+            } else {
+                response.status(400).end();
+            }
+        } else {
+            response.status(403).end("have not permissions");
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+exports.notvisitEvent = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        const eventId = request.body.eventId;
+        if (userId && eventId) {
+            const check = await DataBase.notVisitEvent(userId, eventId);
+            if (check) {
+                response.status(200).end();
+            } else {
+                response.status(400).end();
+            }
+        } else {
+            response.status(403).end("have not permissions");
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};

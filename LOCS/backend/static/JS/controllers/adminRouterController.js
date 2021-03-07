@@ -11,8 +11,7 @@ exports.getUsers = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
 
                 let limit = Number(request.params.limit);
@@ -22,16 +21,12 @@ exports.getUsers = async function(request, response, next) {
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
 
-                await DataBase.getUsers(limit, offset).then(function(val) {
-                    mas = []
-                    for (i in val) {
-                        mas.push(val[i].all_user_admin);
-                    }
-                    response.json(mas);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const users = await DataBase.getUsers(limit, offset);
+                let mas = [];
+                for (i in users) {
+                    mas.push(users[i].all_user_admin);
+                }
+                response.json(mas);
 
             } else {
                 response.status(403).end("have not permissions");
@@ -48,8 +43,7 @@ exports.getOrganization = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
 
                 let limit = Number(request.params.limit);
@@ -59,16 +53,12 @@ exports.getOrganization = async function(request, response, next) {
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
 
-                await DataBase.getOrganization(limit, offset).then(function(val) {
-                    mas = []
-                    for (i in val) {
-                        mas.push(val[i].all_org_admin);
-                    }
-                    response.json(mas);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const orgs = await DataBase.getOrganization(limit, offset);
+                let mas = []
+                for (i in orgs) {
+                    mas.push(orgs[i].all_org_admin);
+                }
+                response.json(mas);
 
             } else {
                 response.status(403).end("have not permissions");
@@ -85,19 +75,17 @@ exports.banUser = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.body.id ? request.body.id  : 0);
-                let reason = request.body.reason ? request.body.reason : "";
-                await DataBase.banStatusAccount(id, true, reason).then(function(val) {
-
-                    //TO DO : высылается письмо на почту 
-                    
+                const id = Number(request.body.id ? request.body.id  : 0);
+                const reason = request.body.reason ? request.body.reason : "";
+                const result = await DataBase.banStatusAccount(id, true, reason);
+                //TO DO : высылается письмо на почту 
+                if(result) {
                     response.status(200).end("banned");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-                
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -113,16 +101,15 @@ exports.unbanUser = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.body.id ? request.body.id  : 0);
-                await DataBase.banStatusAccount(id, false).then(function(val) {
+                const id = Number(request.body.id ? request.body.id  : 0);
+                const result = await DataBase.banStatusAccount(id, false);
+                if(result) {
                     response.status(200).end("unbanned");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-                
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -139,27 +126,20 @@ exports.getAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
-        
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
 
-                await DataBase.getaddress(limit, offset).then(function(val) {
-                    var tags = []
-                    for (i in val) {
-                        tags.push(val[i].getaddress);
-                    }
-                    response.json(tags);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const addressDB = await DataBase.getaddress(limit, offset);
+                var address = []
+                for (i in addressDB) {
+                    address.push(addressDB[i].getaddress);
+                }
+                response.json(address);
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -176,23 +156,24 @@ exports.createAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let street = request.body.street;
-                let house = request.body.house;
-                let latitude = request.body.latitude;
-                let longitude = request.body.longitude;
-                let id_district = request.body.id_district;
-                let deleted = request.body.deleted;
-                if (street == null || house == null || latitude == null || longitude == null || id_district == null || deleted == null) {
+                const street = request.body.street;
+                const house = request.body.house;
+                const latitude = request.body.latitude;
+                const longitude = request.body.longitude;
+                const id_city = request.body.id_city;
+                const deleted = request.body.deleted;
+                if (street == null || house == null || latitude == null || longitude == null || id_city == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.addAddress(street, house, latitude, longitude, id_district, deleted).then(function(val) {
+                const result = await DataBase.addAddress(street, house, latitude, longitude, id_city, deleted);
+                if(result) {
                     response.status(200).end();
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -209,24 +190,25 @@ exports.changeAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
-                let street = request.body.street;
-                let house = request.body.house;
-                let latitude = request.body.latitude;
-                let longitude = request.body.longitude;
-                let id_district = request.body.id_district;
-                let deleted = request.body.deleted;
-                if (id == null || street == null || house == null || latitude == null || longitude == null || id_district == null || deleted == null) {
+                const id = Number(request.params.id);
+                const street = request.body.street;
+                const house = request.body.house;
+                const latitude = request.body.latitude;
+                const longitude = request.body.longitude;
+                const id_city = request.body.id_city;
+                const deleted = request.body.deleted;
+                if (id == null || street == null || house == null || latitude == null || longitude == null || id_city == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.updateAddress(id, street, house, latitude, longitude, id_district, deleted).then(function(val) {
+                const result = await DataBase.updateAddress(id, street, house, latitude, longitude, id_city, deleted);
+                if(result) {
                     response.status(200).end();
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -243,143 +225,19 @@ exports.deleteAddress = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
                 let id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.deleteAddress(id).then(function(val) {
-                    tags = val;
+                const result = await DataBase.deleteAddress(id);
+                if(result) {
                     response.status(200).end("deleted");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-            } else {
-                response.status(403).end("have not permissions");
-            }
-        } else {
-            response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-
-};
-
-//район
-exports.getDistrict = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-            if (Role == 0) {
-                let limit = Number(request.params.limit);
-                let offset = Number(request.params.offset);
-        
-                offset = offset <= 0 ? 1 : offset;
-                limit = limit <= 0 ? 1 : limit;
-                offset = (offset - 1) * limit;
-                await DataBase.districts(limit, offset).then(function(val) {
-                    var tags = []
-                    for (i in val) {
-                        tags.push(val[i].districts);
-                    }
-                    response.json(tags);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-            } else {
-                response.status(403).end("have not permissions");
-            }
-        } else {
-            response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-
-};
-
-exports.createDistrict = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-            if (Role == 0) {
-                let title = request.body.title;
-                let id_city = request.body.id_city;
-                let deleted = request.body.deleted;
-                if (title == null || id_city == null || deleted == null) {
+                } else {
                     response.status(400).end();
-                    return;
                 }
-                await DataBase.addDistrict(title, id_city, deleted).then(function(val) {
-                    response.status(200).end();
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-            } else {
-                response.status(403).end("have not permissions");
-            }
-        } else {
-            response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-
-};
-
-exports.changeDistrict = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-            if (Role == 0) {
-                let id = Number(request.params.id);
-                let title = request.body.title;
-                let id_city = request.body.id_city;
-                let deleted = request.body.deleted;
-                if (id == null || title == null || id_city == null || deleted == null) {
-                    response.status(400).end();
-                    return;
-                }
-                await DataBase.updateDistrict(id, title, id_city, deleted).then(function(val) {
-                    response.status(200).end();
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-            } else {
-                response.status(403).end("have not permissions");
-            }
-        } else {
-            response.status(401).end();
-        }
-    } catch (err) {
-        next({err : err, code : 500});
-    }
-
-};
-
-exports.deleteDistrict = async function(request, response, next) {
-    try {
-        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
-            if (Role == 0) {
-                let id = Number(request.params.id);
-                if (id == null) {
-                    response.status(400).end();
-                    return;
-                }
-                await DataBase.deleteDistrict(id).then(function(val) {
-                    tags = val;
-                    response.status(200).end("deleted");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -397,23 +255,19 @@ exports.getCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
-        
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
-                await DataBase.сitys(limit, offset).then(function(val) {
-                    var tags = []
-                    for (i in val) {
-                        tags.push(val[i].citys);
-                    }
-                    response.json(tags);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                const citysArray = await DataBase.сitys(limit, offset);
+                var tags = []
+                for (i in citysArray) {
+                    tags.push(citysArray[i].citys);
+                }
+                response.json(tags);
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -430,21 +284,20 @@ exports.createCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let title = request.body.title;
-                let deleted = request.body.deleted;
+                const title = request.body.title;
+                const deleted = request.body.deleted;
                 if (title == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.addCity(title, deleted).then(function(val) {
+                const result = await DataBase.addCity(title, deleted);
+                if(result){
                     response.status(200).end(val);
-                    //response.json(val);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                } else {
+                    response.status(400).end(val);
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -461,21 +314,21 @@ exports.changeCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
-                let title = request.body.title;
-                let deleted = request.body.deleted;
+                const id = Number(request.params.id);
+                const title = request.body.title;
+                const deleted = request.body.deleted;
                 if (id == null || title == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.updateCity(id, title, deleted).then(function(val) {
-                    esponse.status(200).end(val);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const result = await DataBase.updateCity(id, title, deleted);
+                if(result){
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -492,18 +345,19 @@ exports.deleteCity = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
+                const id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.deleteCity(id).then(function(val) {
+                const result = await DataBase.deleteCity(id);
+                if(result){
                     response.status(200).end("deleted");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -521,24 +375,23 @@ exports.changeTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
-                let title = request.body.title;
-                let deleted = request.body.deleted;
-                let accept = request.body.accept;
-                let countevents = request.body.countevents;
+                const id = Number(request.params.id);
+                const title = request.body.title;
+                const deleted = request.body.deleted;
+                const accept = request.body.accept;
+                const countevents = request.body.countevents;
                 if (id == null || countevents == null || title == null || accept == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.updateTagsAdmin(id, title, deleted, accept, countevents).then(function(val) {
-                    response.status(200).end(val);
-                    //response.json(val);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const result = await DataBase.updateTagsAdmin(id, title, deleted, accept, countevents);
+                if(result){
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -555,22 +408,22 @@ exports.addTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let title = request.body.title;
-                let deleted = request.body.deleted;
-                let accept = request.body.accept;
-                let countEvents = request.body.countEvents;
+                const title = request.body.title;
+                const deleted = request.body.deleted;
+                const accept = request.body.accept;
+                const countEvents = request.body.countEvents;
                 if (countEvents == null || title == null || accept == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.addTagsAdmin(title, deleted, accept, countEvents).then(function(val) {
-                    response.status(200).end(val);
-                    //response.json(val);
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.addTagsAdmin(title, deleted, accept, countEvents);
+                if(result){
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -587,23 +440,19 @@ exports.getTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
-        
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
-                await DataBase.getTags(limit, offset).then(function(val) {
-                    var tags = []
-                    for (i in val) {
-                        tags.push(val[i].gettags);
-                    }
-                    response.json(tags);
-                }).catch(function(val) {
-                   next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.getTags(limit, offset);
+                let tags = []
+                for (i in result) {
+                    tags.push(result[i].gettags);
+                }
+                response.json(tags);
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -620,19 +469,19 @@ exports.deleteTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
+                const id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.deleteTag(id).then(function(val) {
-                    tags = val;
-                    response.status(200).end("deleted");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.deleteTag(id);
+                if(result) {
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -649,21 +498,19 @@ exports.acceptTag = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let idTag = Number(request.params.id);
-                if (id == null) {
+                const idTag = Number(request.params.id);
+                if (idTag == null) {
                     response.status(400).end();
                     return;
                 }
-
-                await DataBase.acceptTag(idTag).then(function(val) {
-                    tags = val;
-                    response.status(200).end("accept");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
-
+                const result = await DataBase.acceptTag(idTag);
+                if(result) {
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -681,7 +528,7 @@ exports.getEvents = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
                 let limit = Number(request.params.limit);
                 let offset = Number(request.params.offset);
@@ -689,15 +536,12 @@ exports.getEvents = async function(request, response, next) {
                 offset = offset <= 0 ? 1 : offset;
                 limit = limit <= 0 ? 1 : limit;
                 offset = (offset - 1) * limit;
-                await DataBase.getEvents(limit, offset).then(function(val) {
-                    var events = []
-                    for (i in val) {
-                        events.push(val[i].events);
-                    }
-                    response.json(events);
-                }).catch(function(val) {
-                   next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.getEvents(limit, offset);
+                let events = []
+                for (i in result) {
+                    events.push(result[i].events);
+                }
+                response.json(events);
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -714,20 +558,19 @@ exports.publishEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
-
+                const id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.publishEvent(id, true).then(function(val) {
-                    tags = val;
-                    response.status(200).end("publish");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.publishEvent(id, true);
+                if(result) {
+                    response.status(200).end();
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -743,20 +586,19 @@ exports.unpublishEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
-
+                const id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.publishEvent(id, false).then(function(val) {
-                    tags = val;
+                const result = await DataBase.publishEvent(id, false);
+                if(result) {
                     response.status(200).end("unpublish");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }
@@ -772,19 +614,19 @@ exports.deleteEvent = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
-            const Role = request.cookies.userRole ? await takeObj(request.cookies.userRole).then(function(val) { return val.taketoken; }) : undefined;
+            const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                let id = Number(request.params.id);
+                const id = Number(request.params.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
-                await DataBase.deleteEvent(id).then(function(val) {
-                    tags = val;
-                    response.status(200).end("deleted");
-                }).catch(function(val) {
-                    next({err : val, code : 500}).end();
-                });
+                const result = await DataBase.deleteEvent(id);
+                if(result) {
+                    response.status(200).end("unpublish");
+                } else {
+                    response.status(400).end();
+                }
             } else {
                 response.status(403).end("have not permissions");
             }

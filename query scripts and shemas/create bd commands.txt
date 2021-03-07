@@ -219,4 +219,14 @@ create table user_last_activity(
 );
 
 alter table public.user_last_activity add column is_online bool default false;
+ALTER TABLE public.reason_to_ban ADD CONSTRAINT id_user FOREIGN KEY (id_user) REFERENCES userlist (id);
+drop table district_preference;
+alter table public.address drop column id_district;
+alter table public.address add column id_city bigint;
+ALTER TABLE public.address ADD CONSTRAINT id_city FOREIGN KEY (id_city) REFERENCES city (id);
+drop table district;
+drop table topic_preference;
+drop table recommendation;
+ALTER TABLE public.tokentoresetpassword ADD CONSTRAINT userid FOREIGN KEY (userid) REFERENCES userlist (id);
+--изменить формат на timestamp with timezon у: event
 	

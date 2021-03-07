@@ -27,12 +27,12 @@ $BODY$;
 
 
 ///////////////////
-CREATE OR REPLACE PROCEDURE UpdateAddress(id_ bigint, street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_district_ bigint, deleted_ bool)
+CREATE OR REPLACE PROCEDURE UpdateAddress(id_ bigint, street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_city_ bigint, deleted_ bool)
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
     update address set street = street_, house = house_, latitude = latitude_, longitude = longitude_,
-	deleted = deleted_, id_district = id_district_ where id = id_;
+	deleted = deleted_, id_city = id_city_ where id = id_;
 END;
 $BODY$;
 

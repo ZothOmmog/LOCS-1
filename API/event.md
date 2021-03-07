@@ -41,6 +41,7 @@
 				"id_address": int,
 				"image": string,
 				"organization_name": string,
+				"countvisitor": int,
 				"logo": string,
 				"datatime": {
 						"year": int,

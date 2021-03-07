@@ -1,292 +1,99 @@
 const intiDB = require('./DBinit.js');
 let db = intiDB.db;
 
-
 //организатор
-let getOrganization= (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select all_org_admin($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR admin BD: all_org_admin");
-                return;
-            });
-    })
+const getOrganization = async (limit, offset) => {
+    const data = await db.manyOrNone('select all_org_admin($1,$2);', [limit, offset]);
+    return data;
 };
 
-let getUsers = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select all_user_admin($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR admin BD: all_user_admin");
-                return;
-            });
-    })
+const getUsers = async (limit, offset) => {
+    const data = await db.manyOrNone('select all_user_admin($1,$2);', [limit, offset]);
+    return data;
 };
 
-let banStatusAccount = (id, status, reason = null) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call ban_Status_Account($1,$2,$3);', [id, status, reason])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function(val) {
-               // console.log(val);
-                reject("ERROR admin BD: banStatusAccount");
-                return;
-            });
-    })
+const banStatusAccount = async (id, status, reason = null) => {
+    const data = await db.result('Call ban_Status_Account($1,$2,$3);', [id, status, reason]).catch((e) => {return false;});
+    return data;
 };
-
-
 
 //адрес 
-let getaddress = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select getaddress($1,$2);',  [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR admin BD: getaddress");
-                return;
-            });
-    })
+const getaddress = async (limit, offset) => {
+    const data = await db.manyOrNone('select getaddress($1,$2);',  [limit, offset]);
+    return data;
 };
-let addAddress = (street, house, latitude, longitude, id_district, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddAddress($1,$2,$3,$4,$5,$6);', [street, house, latitude, longitude, id_district, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: AddAddress");
-                return;
-            });
-    })
+const addAddress = async (street, house, latitude, longitude, id_city, deleted) => {
+    const data = await db.result('Call AddAddress($1,$2,$3,$4,$5,$6);', [street, house, latitude, longitude, id_city, deleted]).catch((e) => {return false;});
+    return data;
 };
-let updateAddress = (id, street, house, latitude, longitude, id_district, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call updateAddress($1,$2,$3,$4,$5,$6,$7);', [id, street, house, latitude, longitude, id_district, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: updateAddress");
-                return;
-            });
-    })
+const updateAddress = async (id, street, house, latitude, longitude, id_city, deleted) => {
+    const data = await db.result('Call updateAddress($1,$2,$3,$4,$5,$6,$7);', [id, street, house, latitude, longitude, id_city, deleted]).catch((e) => {return false;});
+    return data;
 };
 
-let deleteAddress = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call deleteAddress($1);', [id])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: deleteAddress");
-                return;
-            });
-    })
-};
-
-//район 
-let districts = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select districts($1,$2);' , [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR admin BD: districts");
-                return;
-            });
-    })
-};
-let addDistrict = (title, id_city, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddDistrict($1,$2,$3);', [title, id_city, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: AddDistrict");
-                return;
-            });
-    })
-};
-let updateDistrict = (id, title, id_city, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call UpdateDistrict($1,$2,$3,$4);', [id, title, id_city, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: UpdateDistrict");
-                return;
-            });
-    })
-};
-let deleteDistrict = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteDistrict($1);', [id])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: DeleteDistrict");
-                return;
-            });
-    })
+const deleteAddress = async (id) => {
+    const data = await db.result('Call deleteAddress($1);', [id]).catch((e) => {return false;});
+    return data;
 };
 
 //город
-let сitys = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select Citys($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function() {
-                reject("ERROR admin BD: Citys");
-                return;
-            });
-    })
+const сitys = async (limit, offset) => {
+    const data = await db.manyOrNone('select Citys($1,$2);', [limit, offset]);
+    return data;
 };
-let addCity = (title, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddCity($1,$2);', [title, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: AddCity");
-                return;
-            });
-    })
+const addCity = async (title, deleted) => {
+    const data = await db.result('Call AddCity($1,$2);', [title, deleted]).catch((e) => {return false;});
+    return data;
 };
-let updateCity = (id, title, deleted) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call UpdateCity($1,$2,$3);', [id, title, deleted])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: UpdateCity");
-                return;
-            });
-    })
+const updateCity = async (id, title, deleted) => {
+    const data = await db.result('Call UpdateCity($1,$2,$3);', [id, title, deleted]).catch((e) => {return false;});
+    return data;
 };
-let deleteCity = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call DeleteCity($1);', [id])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: DeleteCity");
-                return;
-            });
-    })
+const deleteCity = async (id) => {
+    const data = await db.result('Call DeleteCity($1);', [id]).catch((e) => {return false;});
+    return data;
 };
 
 //теги
-
-let getTags = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select GetTags($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                reject("ERROR admin BD: GetTags");
-                return;
-            });
-    })
+const getTags = async (limit, offset) => {
+    const data = await db.manyOrNone('select GetTags($1,$2);', [limit, offset]);
+    return data;
 };
-let addTagsAdmin = (title, deleted, accept, countevents) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call AddTagsAdmin($1,$2,$3,$4);', [title, deleted, accept, countevents])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: AddTagsAdmin");
-                return;
-            });
-    })
+const addTagsAdmin = async (title, deleted, accept, countevents) => {
+    const data = await db.result('Call AddTagsAdmin($1,$2,$3,$4);', [title, deleted, accept, countevents]).catch((e) => {return false;});
+    return data;
 };
-let updateTagsAdmin = (id, title, deleted, accept, countevents) => {
-    return new Promise((resolve, reject) => {
-        db.result('Call UpdateTagsAdmin($1,$2,$3,$4,$5);', [id, title, deleted, accept, countevents])
-            .then(function(data) {
-                resolve(true);
-            }).catch(function() {
-                reject("ERROR admin BD: UpdateTagsAdmin");
-                return;
-            });
-    })
+const updateTagsAdmin = async (id, title, deleted, accept, countevents) => {
+    const data = await db.result('Call UpdateTagsAdmin($1,$2,$3,$4,$5);', [id, title, deleted, accept, countevents]).catch((e) => {return false;});
+    return data;
 };
-
-
 
 // подтв. тег 
-let acceptTag = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('call acceptTag($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR admin BD: acceptTag");
-                return;
-            });
-    })
+const acceptTag = async (id) => {
+    const data = await db.result('call acceptTag($1);', [id]).catch((e) => {return false;});
+    return data;
 };
 
-
 // удалить тег по id
-let deleteTag = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('call deleteTag($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR admin BD: deleteTag");
-                return;
-            });
-    })
-
+const deleteTag = async (id) => {
+    const data = await db.result('call deleteTag($1);', [id]).catch((e) => {return false;});
+    return data;
 };
 
 //ивент
-
-let getEvents = (limit, offset) => {
-    return new Promise((resolve, reject) => {
-        db.manyOrNone('select events($1,$2);', [limit, offset])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                reject("ERROR admin BD:  getEvents");
-                return;
-            });
-    })
+const getEvents = async (limit, offset) => {
+    const data = await db.manyOrNone('select events($1,$2);', [limit, offset]);
+    return data;
 };
 
-let deleteEvent = (id) => {
-    return new Promise((resolve, reject) => {
-        db.result('call Delete_event($1);', [id])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR admin BD: deleteEvent");
-                return;
-            });
-    })
+const deleteEvent = async (id) => {
+    const data = await db.result('call Delete_event($1);', [id]).catch((e) => {return false;});
+    return data;
 };
 
-let publishEvent = (id, status) => {
-    return new Promise((resolve, reject) => {
-        db.result('call published_event($1,$2);', [id,status])
-            .then(function(data) {
-                resolve(data);
-            }).catch(function(e) {
-                console.log(e);
-                reject("ERROR admin BD: publishEvent");
-                return;
-            });
-    })
+const publishEvent = async  (id, status) => {
+    const data = await db.result('call published_event($1,$2);', [id,status]).catch((e) => {return false;});
+    return data;
 };
 
 
@@ -296,11 +103,6 @@ module.exports = {
     'addAddress': addAddress,
     'updateAddress': updateAddress,
     'deleteAddress': deleteAddress,
-    //район
-    'districts': districts,
-    'addDistrict': addDistrict,
-    'updateDistrict': updateDistrict,
-    'deleteDistrict': deleteDistrict,
     //город
     'сitys': сitys,
     'addCity': addCity,
