@@ -1,0 +1,14 @@
+--Функция, которая возвращает данные евентов без тегов, на которые пользователь планирует пойти 
+CREATE OR REPLACE FUNCTION user_visit_list(userId_ bigint, limit_ numeric, offset_ numeric) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select event.id, event.name FROM event where event.id in (
+		select visit.id_event	FROM visit where visit.id_user = userId_) 
+										  LIMIT limit_ OFFSET offset_ )a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+

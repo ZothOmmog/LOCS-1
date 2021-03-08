@@ -30,7 +30,6 @@ namespace Chat.Models
         public long? groupId { get; set; }
         public bool IsPersonal { get; set; }
         public string titleGroup { get; set; }
-        // public string partnerName { get; set; }
         public ChatMessage lastMessage { get; set; }
     }
 

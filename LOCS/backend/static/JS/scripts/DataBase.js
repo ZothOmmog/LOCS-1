@@ -578,6 +578,11 @@ const addPhotoEvent = async (idOrg, idEvent, photo) => {
     return data;
 };
 
+//список событий, на которые пользователь планирует пойти 
+const userVisitList = async (userId, limit, offset) => {
+    const data = await db.manyOrNone('select user_visit_list($1, $2, $3);', [userId, limit, offset]);
+    return data;
+}
 //авторизированный пользователь идет на событие
 const visitEvent = async (idUser, idEvent) => {
     const data = await db.result('Call visit_event($1, $2);', [idUser, idEvent]).catch( (e) => { return false;});
@@ -653,7 +658,7 @@ module.exports = {
     //организатор
     'visitEvent': visitEvent, //авторизированный пользователь идет на событие
     'notVisitEvent': notVisitEvent, //авторизированный пользователь больше не идет на событие
-
+    'userVisitList': userVisitList, //список событий, на которые пользователь планирует пойти 
     'addEvent': addEvent, //создать событие
     'deleteEvent': deleteEvent, //удалить событие
     'addEventTag': addEventTag, //добавить тег евенту
