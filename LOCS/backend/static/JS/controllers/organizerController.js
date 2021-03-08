@@ -130,6 +130,29 @@ exports.subscribersLimit = async function(request, response, next) {
     }
 };
 
+exports.userVisitList = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            let limit = Number(request.params.limit);
+            let offset = Number(request.params.offset);
+            offset = offset <= 0 ? 1 : offset;
+            limit = limit <= 0 ? 1 : limit;
+            offset = (offset - 1) * limit;
+            const data = await DataBase.userVisitList(userId, limit, offset);
+            let events = [];
+            for (i in data) {
+                events.push(data[i].user_visit_list);
+            }
+            response.json( events );
+        } else {
+            return response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
 exports.organizerAccount = async function(request, response, next) {
     try {
         const orgId = request.body.org;

@@ -34,6 +34,8 @@ organizerRouter.post("/changeEvent$", organizerController.changeEvent); //изм
 
 organizerRouter.post("/searchAddress$", organizerController.searchAddress); //поиск id адреса 
 
+organizerRouter.get("/visitEvent/:limit/:offset$", organizerController.userVisitList); //пользователь отмечает, что он идет на событие 
+
 organizerRouter.post("/visitEvent$", organizerController.visitEvent); //пользователь отмечает, что он идет на событие 
 
 organizerRouter.delete("/visitEvent$", organizerController.notvisitEvent); //пользователь отмечает, что он не идет на событие 
