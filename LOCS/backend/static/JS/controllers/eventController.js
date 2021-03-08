@@ -18,8 +18,12 @@ exports.event = async function(request, response,next)  {
             masTags.push(tags[j].eventtags.id);
         };
         event.event.tags = masTags;
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const statusVisit = await DataBase.userVisitStatus(userId, idEvent);
+            event.event.statusVisit = statusVisit;
+        }
         response.json(event.event);
-
     } catch (err) {
         next({err : err, code : 500});
     }

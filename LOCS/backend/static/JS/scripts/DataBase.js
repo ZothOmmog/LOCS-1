@@ -239,6 +239,14 @@ const EventTags = async (id) => {
     return data;
 }
 
+//получить статус - идет ли пользователь на мероприятие или нет 
+const userVisitStatus = async (idUser, idEvent) => {
+    const data = await db.oneOrNone('select UserVisitStatus($1,$2)', [idUser, idEvent]);
+    if(data == null) return null;
+    return data.uservisitstatus;
+}
+
+
 //  данные для главной страницы 
 const eventShortList = async (limit, offset) => {
     const data = await db.manyOrNone('select eventShortList($1,$2);', [limit, offset]);
@@ -632,7 +640,7 @@ module.exports = {
     'eventShortList': eventShortList, //  данные для главной страницы 
     'event': event, //полные данные о событии
     'countEventShortList': countEventShortList, //  колличество данных event для главной страницы 
-
+    'userVisitStatus': userVisitStatus, //получить статус - идет ли пользователь на мероприятие или нет 
     'CountTags': CountTags, //кол тегов
     'tagsLim': tagsLim, //весь лист тегов странично
     'tagById': tagById, //  тег по id

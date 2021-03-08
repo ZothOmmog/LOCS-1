@@ -1,0 +1,16 @@
+--Функция, которая по id пользователя возвращает статус - собирается ли пользователь пойти на событие или нет
+CREATE OR REPLACE function UserVisitStatus(userId_ bigint, eventId_ bigint)
+	RETURNS bool
+    LANGUAGE 'plpgsql'
+AS $BODY$
+DECLARE
+    count_ bigint;
+BEGIN
+	select into count_ count(*) from visit where id_event = eventId_ and id_user = userId_;
+	IF count_ = 0  THEN
+        RETURN false;
+    	ELSE 
+		return true;
+    END IF;
+END;
+$BODY$;
