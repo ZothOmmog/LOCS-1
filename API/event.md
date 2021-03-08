@@ -44,7 +44,8 @@
 				"countvisitor": int,
 				"logo": string,
 				"datatime": string,
-				"tags": [int]
+				"tags": [int],
+				"statusVisit": bool ( отображается при авторизации, true - идет на событие, false - не идет)
 		}
 
 ---
