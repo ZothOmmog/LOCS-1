@@ -89,29 +89,30 @@
 		
 ---
 # url/event/search/колличеcтво_данных/страница
-- ***поиск по мероприятиям (по названию и информации о нем)***
+- ***поиск по мероприятиям (по названию и информации о нем), (каждый отрибут необязательный, должен быть хотя бы один)***
 - **POST запрос**
  Формат POST ***React->Сервер***
  Данные входа:
  
 		{
-			"word" : string
+			"word" : string,
+			"tags": [int],
+			"dateFrom" : string ("2021-05-05 14:30:30+00") ,
+			"dateTo" : string
 		}
 
  Формат JSON ***сервер->React***
  Данные аккаунта:
 
-		{
-			"count": int,
-			"events": [
-					{
-						"id": int,
-						"name": string,
-						"info": string,
-						"image": string,
-						"tags": [int]
-					}	
-				]
-		}
+		[
+			{
+				"id": int,
+				"name": string,
+				"info": string,
+				"image": string,
+				"tags": [int]
+			}	
+		]
+		
 
 ---

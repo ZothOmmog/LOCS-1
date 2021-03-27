@@ -46,6 +46,7 @@ app.use("/system", sysRouter);
 app.use("/admin", adminRouterController);
 
 app.use((err, req, res, next) => {
+    console.log(err);
     if(err.err) console.log(err.err);
     let code = err.code ? err.code : 500;
     res.status(code).end();

@@ -1,3 +1,157 @@
+/////////////////////////////
+--Поиск данных евентов
+CREATE OR REPLACE FUNCTION searchEvent(word_ text, limit_ numeric, offset_ numeric, dateFrom timestamp,  dateTo timestamp, ids BIGINT[] ) 
+RETURNS table (j json) AS
+$$
+BEGIN
+	if (dateFrom is null or dateTo is null ) then 
+		if (dateFrom is null and dateTo is null)
+		then
+			IF  (word_ is null) then
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false  
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+			else  
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						and (name ~* word_ or info ~* word_ )
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						(name ~* word_ or info ~* word_ ) 
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+		   END IF;
+		ELSIF (dateFrom is null)
+		then
+			IF  (word_ is null) then
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						and datatime <= dateTo 
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false  
+						and datatime <= dateTo 
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+			else  
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						and (name ~* word_ or info ~* word_ )
+						and datatime <= dateTo 
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						(name ~* word_ or info ~* word_ ) 
+						and datatime <= dateTo 
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+		   END IF;
+  		else
+			IF  (word_ is null) then
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						and datatime >= dateFrom
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false  
+						and datatime >= dateFrom
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+			else  
+				if (ids is not null)
+				then
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+						and (name ~* word_ or info ~* word_ )
+						and datatime >= dateFrom 
+						LIMIT limit_ OFFSET offset_ )a;
+				else 
+						RETURN QUERY  SELECT to_json(a) FROM 
+						(select id, name, image, datatime FROM event
+						where published=true and deleted=false and 
+						(name ~* word_ or info ~* word_ ) 
+						and datatime >= dateFrom
+						LIMIT limit_ OFFSET offset_ )a;
+				END IF;  
+		   END IF;
+		END IF;  
+  	ELSIF  (word_ is null) then
+	  	if (ids is not null)
+		then
+				RETURN QUERY  SELECT to_json(a) FROM 
+				(select id, name, image, datatime FROM event
+				where published=true and deleted=false and 
+				(datatime <= dateTo and datatime >= dateFrom and 
+				 id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+				 ) LIMIT limit_ OFFSET offset_ )a;
+   		else 
+				RETURN QUERY  SELECT to_json(a) FROM 
+				(select id, name, image, datatime FROM event
+				where published=true and deleted=false and 
+				datatime <= dateTo and datatime >= dateFrom  LIMIT limit_ OFFSET offset_ )a;
+		END IF;  
+  	else  
+		if (ids is not null)
+		then
+				RETURN QUERY  SELECT to_json(a) FROM 
+				(select id, name, image, datatime FROM event
+				where published=true and deleted=false and 
+				(datatime <= dateTo and datatime >= dateFrom and 
+				 id in (SELECT id_event FROM event_topic where id_topic = ANY(ids)) 
+				 and (name ~* word_ or info ~* word_ )) LIMIT limit_ OFFSET offset_ )a;
+   		else 
+				RETURN QUERY  SELECT to_json(a) FROM 
+				(select id, name, image, datatime FROM event
+				where published=true and deleted=false and 
+				datatime <= dateTo and datatime >= dateFrom and (name ~* word_ or info ~* word_ ) LIMIT limit_ OFFSET offset_ )a;
+		END IF;  
+   END IF;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+
+/////////////////////////////
 --Поиск данных евентов без тегов 
 
 CREATE OR REPLACE FUNCTION searchEvent(word_ text, limit_ numeric, offset_ numeric) 
