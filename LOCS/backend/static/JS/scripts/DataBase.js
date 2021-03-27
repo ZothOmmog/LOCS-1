@@ -306,8 +306,8 @@ const tagsLim = async (limit, offset) => {
     return data;
 }
 // поиск евентов 
-const searchEvent = async (word, limit, offset) => {
-    const data = db.manyOrNone('select searchEvent($1,$2,$3);', [word, limit, offset]);
+const searchEvent = async (word, limit, offset, dateFrom, dateTo, tags) => {
+    const data = db.manyOrNone('select searchEvent($1,$2,$3,$4,$5,$6);', [word, limit, offset, dateFrom, dateTo, tags]);
     return data;
 }
 //кол поиск евентов 

@@ -74,10 +74,16 @@ exports.search = async function(request, response, next) {
         limit = limit <= 0 ? 1 : limit;
         offset = (offset - 1) * limit;
 
-        const word = request.body.word;
+        const word = request.body.word ? request.body.word  : undefined;
+        const tags = request.body.tags ? request.body.tags  : undefined;
+        const dateFrom = request.body.dateFrom  ? request.body.dateFrom  : undefined;
+        const dateTo = request.body.dateTo ? request.body.dateTo  : undefined;
+        if(word == undefined && tags == undefined && dateFrom== undefined && dateTo == undefined ) {
+            response.json( [] );
+            return;
+        }
         let events = [];
-        const eventList = await DataBase.searchEvent(word, limit, offset);
-        const count = await DataBase.countSearchEvent(word);
+        const eventList = await DataBase.searchEvent(word, limit, offset, dateFrom, dateTo, tags);
 
         for (i in eventList) {
             let tags = await DataBase.EventTags(eventList[i].searchevent.id);
@@ -88,8 +94,9 @@ exports.search = async function(request, response, next) {
             eventList[i].searchevent.tags = masTags;
             events.push(eventList[i].searchevent);
         };
-        response.json({ "count": count, events });
+        response.json( events );
     } catch (err) {
+
         next({err : err, code : 500});
     }
 };
