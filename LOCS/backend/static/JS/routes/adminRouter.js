@@ -3,7 +3,7 @@ const adminRouterController = require("../controllers/adminRouterController.js")
 const adminRouter = express.Router();
 
 //теги
-adminRouter.put("/accepttag/:id", adminRouterController.acceptTag); //подтвердить тег 
+adminRouter.put("/accepttag/:id", adminRouterController.acceptTags); //подтвердить тег 
 adminRouter.delete("/tag/:id", adminRouterController.deleteTag); //удалить тег 
 adminRouter.get("/tag/:limit/:offset$", adminRouterController.getTag); //все теги
 adminRouter.post("/tag$", adminRouterController.addTag); //добавить тег

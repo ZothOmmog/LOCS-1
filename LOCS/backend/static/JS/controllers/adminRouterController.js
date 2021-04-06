@@ -436,7 +436,7 @@ exports.addTag = async function(request, response, next) {
 
 };
 
-exports.getTag = async function(request, response, next) {
+exports.getTags = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
