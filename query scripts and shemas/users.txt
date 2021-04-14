@@ -1,7 +1,6 @@
 Аккаунты:
-	login: mail@mail.ru
+	login: user@mail.ru (Organizer)
 	password: 123
-	login: mail1@mail.ru (Organizer)
+	login: admin@mail.ru (admin)
 	password: 123
-	login: nick@mail.ru (admin)
-	password: 123
+Также все существующие пользователи имеют пароль 123.
