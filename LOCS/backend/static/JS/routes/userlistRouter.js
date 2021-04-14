@@ -16,7 +16,7 @@ userlistRouter.get("/Friends/:limit/:offset", userlistController.friendListWithL
 
 userlistRouter.get("/FriendRequests/:limit/:offset", userlistController.friendRequestsWithLimit); //Список входящих заявок пользователя  страничный вывод
 
-userlistRouter.get("/FriendRequestsSent/:limit/:offset", userlistController.friendRequestsWithLimitSentWithLimit); //Список отправленных заявок пользователя  страничный вывод
+userlistRouter.get("/FriendRequestsSent/:limit/:offset", userlistController.friendRequestsSentWithLimit); //Список отправленных заявок пользователя  страничный вывод
 
 userlistRouter.post("/AddFriend$", userlistController.addfriend); //добавление в друзья 
 

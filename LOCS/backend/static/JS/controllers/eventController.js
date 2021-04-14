@@ -1,6 +1,3 @@
-const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;

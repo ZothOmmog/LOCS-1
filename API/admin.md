@@ -24,8 +24,7 @@
 		{
 			"title" : text,
 			"deleted" : bool,
-			"accept" : bool,
-			"countevents" : int
+			"accept" : bool
 		}
 		
 - ***Ответ на корректность данных***
@@ -66,8 +65,7 @@
 		{
 			"title" : text,
 			"deleted" : bool,
-			"accept" : bool,
-			"countevents" : int
+			"accept" : bool
 		}
 		
 - ***Ответ на корректность данных***

@@ -1,10 +1,9 @@
-const path = require('path')
-const crypt = require("../scripts/password.js");
-const config = require('../configs/config.json');
 const DataBase = require('../scripts/adminDataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
-
+const path = require('path')
+const crypt = require("../scripts/password.js");
+const config = require('../configs/config.json');
 
 //организатор юзер
 exports.getUsers = async function(request, response, next) {
@@ -160,8 +159,8 @@ exports.createAddress = async function(request, response, next) {
             if (Role == 0) {
                 const street = request.body.street;
                 const house = request.body.house;
-                const latitude = request.body.latitude;
-                const longitude = request.body.longitude;
+                const latitude = parseFloat(request.body.latitude);
+                const longitude = parseFloat(request.body.longitude);
                 const id_city = request.body.id_city;
                 const deleted = request.body.deleted;
                 if (street == null || house == null || latitude == null || longitude == null || id_city == null || deleted == null) {
@@ -294,9 +293,9 @@ exports.createCity = async function(request, response, next) {
                 }
                 const result = await DataBase.addCity(title, deleted);
                 if(result){
-                    response.status(200).end(val);
+                    response.status(200).end();
                 } else {
-                    response.status(400).end(val);
+                    response.status(400).end();
                 }
             } else {
                 response.status(403).end("have not permissions");
@@ -381,12 +380,11 @@ exports.changeTag = async function(request, response, next) {
                 const title = request.body.title;
                 const deleted = request.body.deleted;
                 const accept = request.body.accept;
-                const countevents = request.body.countevents;
-                if (id == null || countevents == null || title == null || accept == null || deleted == null) {
+                if (id == null  || title == null || accept == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                const result = await DataBase.updateTagsAdmin(id, title, deleted, accept, countevents);
+                const result = await DataBase.updateTagsAdmin(id, title, deleted, accept, 0);
                 if(result){
                     response.status(200).end();
                 } else {
@@ -413,12 +411,11 @@ exports.addTag = async function(request, response, next) {
                 const title = request.body.title;
                 const deleted = request.body.deleted;
                 const accept = request.body.accept;
-                const countEvents = request.body.countEvents;
-                if (countEvents == null || title == null || accept == null || deleted == null) {
+                if ( title == null || accept == null || deleted == null) {
                     response.status(400).end();
                     return;
                 }
-                const result = await DataBase.addTagsAdmin(title, deleted, accept, countEvents);
+                const result = await DataBase.addTagsAdmin(title, deleted, accept, 0);
                 if(result){
                     response.status(200).end();
                 } else {
@@ -523,6 +520,35 @@ exports.acceptTag = async function(request, response, next) {
 
 };
 
+exports.getTag = async function(request, response, next) {
+    try {
+        const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
+        if (userId) {
+            const Role = await funcs.getRole(userId);
+            if (Role == 0) {
+                let limit = Number(request.params.limit);
+                let offset = Number(request.params.offset);
+                offset = offset <= 0 ? 1 : offset;
+                limit = limit <= 0 ? 1 : limit;
+                offset = (offset - 1) * limit;
+                const result = await DataBase.getTags(limit, offset);
+                let tags = []
+                for (i in result) {
+                    tags.push(result[i].gettags);
+                }
+                response.json(tags);
+            } else {
+                response.status(403).end("have not permissions");
+            }
+        } else {
+            response.status(401).end();
+        }
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+
+};
+
 //ивент
 exports.getEvents = async function(request, response, next) {
     try {
@@ -560,12 +586,13 @@ exports.publishEvent = async function(request, response, next) {
         if (userId) {
             const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                const id = Number(request.params.id);
+                const id = Number(request.body.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
                 const result = await DataBase.publishEvent(id, true);
+                console.log(id);
                 if(result) {
                     response.status(200).end();
                 } else {
@@ -588,7 +615,7 @@ exports.unpublishEvent = async function(request, response, next) {
         if (userId) {
             const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                const id = Number(request.params.id);
+                const id = Number(request.body.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
@@ -616,14 +643,14 @@ exports.deleteEvent = async function(request, response, next) {
         if (userId) {
             const Role = await funcs.getRole(userId);
             if (Role == 0) {
-                const id = Number(request.params.id);
+                const id = Number(request.body.id);
                 if (id == null) {
                     response.status(400).end();
                     return;
                 }
                 const result = await DataBase.deleteEvent(id);
                 if(result) {
-                    response.status(200).end("unpublish");
+                    response.status(200).end("deleted");
                 } else {
                     response.status(400).end();
                 }

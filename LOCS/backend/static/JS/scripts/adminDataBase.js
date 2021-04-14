@@ -27,7 +27,7 @@ const addAddress = async (street, house, latitude, longitude, id_city, deleted) 
     return data;
 };
 const updateAddress = async (id, street, house, latitude, longitude, id_city, deleted) => {
-    const data = await db.result('Call updateAddress($1,$2,$3,$4,$5,$6,$7);', [id, street, house, latitude, longitude, id_city, deleted]).catch((e) => {return false;});
+    const data = await db.result('Call updateAddress($1,$2,$3,$4,$5,$6,$7);', [id, street, house, latitude, longitude, id_city, deleted]).catch((e) => {  return false;});
     return data;
 };
 

@@ -1,4 +1,3 @@
-const path = require('path')
 const crypt = require("../scripts/password.js");
 const config = require('../configs/config.json');
 const DataBase = require('../scripts/DataBase.js');
@@ -11,10 +10,11 @@ exports.postRegistration = async function(request, response, next) {
         const checkNick = await DataBase.CheckNick(request.body.nick);  
 
         if (checkMail == true && checkNick == true) {
-            const createTime = await DataBase.TimeNow();  
+            let createTime = await DataBase.TimeNow();  
             if (!createTime) {
                 response.status(500).end("time error");
             }
+            createTime = String(createTime);
             const hash = crypt.hash(request.body.pas, createTime);
             const checkAdd  = await DataBase.AddUser(request.body.nick, request.body.mail, hash, "User", null, createTime);
 
@@ -180,7 +180,6 @@ exports.friendRequestsWithLimit = async function(request, response, next) {
 
             const data = await DataBase.friendRequestsWithLimit(userId, limit, offset);
             const count = await DataBase.countFriendRequests(userId, limit, offset);
-            console.log(count);
             var users = [];
             for (i in data) {
                 users.push(data[i].request);
@@ -194,7 +193,7 @@ exports.friendRequestsWithLimit = async function(request, response, next) {
     }
 };
 
-exports.friendRequestsWithLimitSentWithLimit = async function(request, response, next) {
+exports.friendRequestsSentWithLimit = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {

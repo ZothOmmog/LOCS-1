@@ -230,13 +230,3 @@ drop table recommendation;
 ALTER TABLE public.tokentoresetpassword ADD CONSTRAINT userid FOREIGN KEY (userid) REFERENCES userlist (id);
 --изменить формат на timestamp with timezon у: event
 --изменить формат на text у address (street, house), city (title), event (name, info, link), meta_data (date_create, date_last_change), organizer (info, organization_name, organization_link), topic (title), userlist (login, hashpassword, role), visitor (nickname)	
-
-
-create table reason_to_ban_organization(
-	id bigserial primary key,
-	id_org bigserial,
-	creation timestamp with time zone,
-	reason text default null,
-	deleted bool default false
-);
-ALTER TABLE public.reason_to_ban_organization ADD CONSTRAINT id_org FOREIGN KEY (id_org) REFERENCES organizer (id_user);

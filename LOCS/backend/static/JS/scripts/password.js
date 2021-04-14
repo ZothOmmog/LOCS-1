@@ -1,19 +1,19 @@
 var crypto = require('crypto');
 
-function createHash(password, salt) {
-    var hash = md5(password + salt);
-    return hash;
-}
+// function createHash(password, salt) {
+//     var hash = md5(password + salt);
+//     return hash;
+// }
 
-function validateHash(hash, password, salt) {
-    var validHash = md5(password + salt);
-    return hash === validHash;
-}
+// function validateHash(hash, password, salt) {
+//     var validHash = md5(password + salt);
+//     return hash === validHash;
+// }
 
 
-function md5(string) {
-    return crypto.createHash('md5').update(string).digest('hex');
-}
+// function md5(string) {
+//     return crypto.createHash('md5').update(string).digest('hex');
+// }
 
 function createSHA(password, salt) {
     var hash = sha256(password + salt);
@@ -25,15 +25,13 @@ function validateSHA(hash, password, salt) {
     return hash === validHash;
 }
 
-function sha256(inputString){
+function sha256(string){
     return crypto.createHash('sha256')
-   .update(inputString)
-   .digest('base64');
+   .update(string)
+   .digest('hex');
 }
 
 module.exports = {
-    'hash': createHash,
-    'validate': validateHash,
-    'createSHA': createSHA,
-    'validateSHA':validateSHA
+    'hash': createSHA,
+    'validate': validateSHA
 };

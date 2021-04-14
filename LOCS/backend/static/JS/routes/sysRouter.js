@@ -3,8 +3,6 @@ const express = require("express");
 const sysController = require("../controllers/sysController.js");
 const sysRouter = express.Router();
 const multer = require("multer");
-const DataBase = require('../scripts/DataBase.js');
-const { json } = require('body-parser');
 
 const upload = multer({
     fileFilter: function(req, file, callback) {

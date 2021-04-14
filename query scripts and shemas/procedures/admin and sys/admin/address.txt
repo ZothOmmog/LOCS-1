@@ -17,14 +17,14 @@ $$ LANGUAGE plpgsql;
 
 
 ///////////////////
-CREATE OR REPLACE PROCEDURE AddAddress(street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_district_ bigint, deleted_ bool)
+
+CREATE OR REPLACE PROCEDURE AddAddress(street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_city_ bigint, deleted_ bool)
     LANGUAGE 'plpgsql'
 AS $BODY$
 BEGIN
-	insert into address (street, house, latitude, longitude, id_district, deleted) values (street_, house_, latitude_, longitude_, id_district_, deleted_);
+	insert into address (street, house, latitude, longitude, id_city, deleted) values (street_, house_, latitude_, longitude_, id_city_, deleted_);
 END;
 $BODY$;
-
 
 ///////////////////
 CREATE OR REPLACE PROCEDURE UpdateAddress(id_ bigint, street_ text, house_ text, latitude_ numeric, longitude_ numeric, id_city_ bigint, deleted_ bool)
