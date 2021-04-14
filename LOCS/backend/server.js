@@ -1,14 +1,10 @@
 const express = require("express");
-const config = require('./static/JS/configs/config.json');
 const app = express();
-const session = require('express-session');
-
 const userlistRouter = require("./static/JS/routes/userlistRouter.js");
 const eventRouter = require("./static/JS/routes/eventRouter.js");
 const organizerRouter = require("./static/JS/routes/organizerRouter.js");
 const sysRouter = require("./static/JS/routes/sysRouter.js");
 const adminRouterController = require("./static/JS/routes/adminRouter.js");
-
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 
@@ -21,21 +17,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(cookieParser());
 app.use(express.static('static'));
-
-app.use(function(request, response, next) {
-    /*
-    let now = new Date();
-    let hour = now.getHours();
-    let minutes = now.getMinutes();
-    let seconds = now.getSeconds();
-    let data = `${hour}:${minutes}:${seconds} ${request.method} ${request.url} ${request.get("user-agent")}`;
-    console.log(data);
-    console.log(data + request.url + "\n");*/
-    //test.stringToObjectTimeConvert("2020-01-01T00:05:30");
-    //  console.log(request);
-    next();
-});
-
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

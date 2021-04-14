@@ -41,6 +41,12 @@ namespace Chat
             message.dateTime = result.Datatime;
         }
 
+        /// <summary>
+        /// список пользователей чата
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
         public IEnumerable<UsersModel> GetGroupsUsers(long? userId, long? groupId)
         {
             var check = context.GroupUsers.FirstOrDefault(x => x.GroupId == groupId && x.UserId == userId);
@@ -354,7 +360,7 @@ namespace Chat
         /// </summary>
         /// <param name="groupId"></param>
         /// <returns></returns>
-        public List<long?> GerUsersId(long? groupId)
+        public List<long?> GetUsersId(long? groupId)
         {
             return context.GroupUsers.Where(x => x.GroupId == groupId).Select(x => x.UserId).ToList();
         }

@@ -1,6 +1,3 @@
-const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
@@ -147,6 +144,7 @@ exports.tag = async function(request, response, next) {
     }
 
 };
+
 exports.tagById = async function(request, response, next) {
     try {
         let id = Number(request.params.id);

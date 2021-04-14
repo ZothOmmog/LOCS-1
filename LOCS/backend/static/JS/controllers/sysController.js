@@ -1,4 +1,3 @@
-const path = require('path')
 const fs = require("fs");
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
@@ -146,6 +145,7 @@ exports.acceptAccount = async function(request, response, next) {
     }
 
 };
+
 exports.forwardMail = async function(request, response, next) {
     try {
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;

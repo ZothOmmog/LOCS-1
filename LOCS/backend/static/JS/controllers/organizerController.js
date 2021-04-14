@@ -1,6 +1,3 @@
-const path = require('path')
-let crypt = require("../scripts/password.js");
-var config = require('../configs/config.json');
 var DataBase = require('../scripts/DataBase.js');
 const funcs = require('../scripts/funcs.js');
 const takeObj = funcs.takeObj;
@@ -342,9 +339,8 @@ exports.createEvent = async function(request, response, next) {
                 const name = request.body.name;
                 const info = request.body.info;
                 const link = request.body.link;
-                const price = request.body.price;
-                const timestamp = request.body.timestamp;
-                const datatime = funcs.timeConvert(timestamp);
+                const price = request.body.price == undefined ? 0 : request.body.price;
+                const datatime = request.body.timestamp;
                 const idEvent = await DataBase.addEvent(name, info, link, price, userId, idAddress, datatime);
                 if (idEvent) {
                     const tags = request.body.tags;
@@ -401,7 +397,7 @@ exports.changeEvent = async function(request, response, next) {
                 const name = request.body.name;
                 const info = request.body.info;
                 const link = request.body.link;
-                const price = request.body.price;
+                const price = request.body.price  == undefined ? 0 : request.body.price;
                 const idEvent = request.body.idEvent;
                 const tags = request.body.tags;
                 const timestamp = request.body.timestamp;

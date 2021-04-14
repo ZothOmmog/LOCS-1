@@ -59,7 +59,7 @@ namespace Chat
                 message.Message = crypto.CryptMessage(message.Message, userId);
                 repository.CreateMessage(message);
 
-                var usersInGroup = repository.GerUsersId(message.GroupId);
+                var usersInGroup = repository.GetUsersId(message.GroupId);
 
                 try
                 {
