@@ -238,6 +238,11 @@ const EventTags = async (id) => {
     const data = await db.manyOrNone('select EventTags($1);', [id]);
     return data;
 }
+//поиск тегов 
+const searchTags = async (word) => {
+    const data = await db.manyOrNone('select search_tag($1);', [word]);
+    return data;
+}
 
 //получить статус - идет ли пользователь на мероприятие или нет 
 const userVisitStatus = async (idUser, idEvent) => {
@@ -649,7 +654,7 @@ module.exports = {
     'CountTags': CountTags, //кол тегов
     'tagsLim': tagsLim, //весь лист тегов странично
     'tagById': tagById, //  тег по id
-
+    'searchTags' : searchTags, //поиск тегов
 
     'searchEvent': searchEvent, //поиск евентов (без тегов)
     'countSearchEvent': countSearchEvent, //кол поиск евентов 

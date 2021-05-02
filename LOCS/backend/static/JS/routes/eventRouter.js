@@ -13,4 +13,8 @@ eventRouter.get("/tag/:limit/:offset", eventController.tag); //все теги �
 eventRouter.post("/tag$", eventController.addTag); //добавить тег для предложения
 
 eventRouter.post("/search/:limit/:offset", eventController.search); //поиск событий по наименованию
+
+eventRouter.post("/searchTag", eventController.searchTags); //поиск событий по наименованию
+
+
 module.exports = eventRouter;

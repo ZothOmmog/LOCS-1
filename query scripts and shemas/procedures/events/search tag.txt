@@ -1,0 +1,7 @@
+CREATE OR REPLACE FUNCTION search_tag(_word text) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, title from topic where deleted = false and accept = true and title ~* _word limit 10)a;
+END;
+$$ LANGUAGE plpgsql;

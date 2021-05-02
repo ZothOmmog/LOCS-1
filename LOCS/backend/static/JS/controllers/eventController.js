@@ -62,6 +62,22 @@ exports.shortList = async function(request, response, next) {
     }
 };
 
+exports.searchTags = async function(request, response, next) {
+    try {
+        const word = request.body.word;
+        const tagsList = await DataBase.searchTags(word);
+        let tags = [];
+        for (i in tagsList) {
+            tags.push(tagsList[i].search_tag);
+        }
+        response.json(tags);
+    } catch (err) {
+        next({err : err, code : 500});
+    }
+};
+
+
+
 exports.search = async function(request, response, next) {
     try {
         let limit = Number(request.params.limit);
