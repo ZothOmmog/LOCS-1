@@ -1,0 +1,65 @@
+.Filter-Tag-Item{
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: none;
+    margin-bottom: 10px ;
+}
+
+.Filter-Tag-Item.active{
+    background: #ffb74a;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+.Tags-Flush{
+    background: #282C34;
+    border-width:0px;
+    color: white;
+    box-sizing: border-box;
+    border-radius: 10px;
+    outline: none;
+    height:32px;
+    margin-bottom: 10px ;
+
+}
+.Filter-container{
+    display: flex;
+    flex-direction: column;
+    padding: 10px 10px 0 10px;
+}
+
+.Filter-tag-suggest {
+	padding: 0;
+    margin: 0;
+	list-style: none;
+	position: relative;
+}
+.Filter-Tag-search{
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    border-radius: 10px;
+    text-align: center;
+    outline: none;
+    height:32px;
+    transition: 0.5s;
+    min-width: 280px;
+}
+.Filter-icon{
+    float: right;
+    padding-top: 3px;
+}
+.suggest-item{
+    background: #7a818d;
+    border-width:0px;
+    color: white;
+    box-sizing: border-box;
+    border-bottom:1px solid #FFFFFF;
+    outline: none;
+    height:32px;
+}
+
+.suggest-item:hover{
+    
+}

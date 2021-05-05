@@ -1,0 +1,25 @@
+.Clear-Button{
+    border:none;
+    outline: none;
+    background-color: inherit;
+    cursor: pointer;
+    align-items: center;
+}
+
+
+.Date-input-wrap{
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+.Date-input-wrap input{
+    background: #FFFFFF;
+    border: 2px solid #000000;
+    box-sizing: border-box;
+    border-radius: 15px;
+    text-align: center;
+    outline: none;
+    height:32px;
+}

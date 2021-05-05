@@ -1,0 +1,10 @@
+.Search-Input{
+    background: #FFFFFF;
+    border:none;
+    outline: none;
+    height: 42px;
+    width: 100%;
+    font-size:20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}

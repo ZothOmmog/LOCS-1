@@ -1,0 +1,34 @@
+.Event-Item{
+  text-align: center;
+  text-align: left;
+  height: 350px;
+}
+.Event-Item a{
+    text-decoration: none;
+    color:#000;
+    width:300px;
+
+}
+
+.Event-item-image{
+   border-radius: 15px;
+
+}
+
+.Event-item-image img{
+  width: 280px;
+  -o-object-fit: cover;
+  object-fit: cover;
+    height: auto;
+   border-radius: 15px;
+
+}
+ .Title-Item{
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 22px;
+    text-decoration: none;
+}
