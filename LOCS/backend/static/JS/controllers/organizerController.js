@@ -156,12 +156,14 @@ exports.organizerAccount = async function(request, response, next) {
         const countSub = await DataBase.countSub(orgId);
         const data = await DataBase.organizerData(orgId);
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
-        if (userId && orgId && data) {
-            const statusSub = await DataBase.subStatus(orgId, userId);
-            if (countSub) {
-                data.count = countSub;
-            } 
-            data.Status = statusSub.substatus;
+        if (orgId && data) {
+            if (userId) {
+                const statusSub = await DataBase.subStatus(orgId, userId);
+                if (countSub) {
+                    data.count = countSub;
+                } 
+                data.Status = statusSub.substatus;
+            }
             response.json({ data });
         } else {
             response.status(400).end("acc or org error");
