@@ -15,6 +15,8 @@ exports.event = async function(request, response,next)  {
             masTags.push(tags[j].eventtags.id);
         };
         event.event.tags = masTags;
+        event.event.address = await DataBase.getAddressById( event.event.id_address);
+        delete event.event.id_address;
         const userId = request.cookies.userId ? await takeObj(request.cookies.userId).then(function(val) { return val.taketoken; }) : undefined;
         if (userId) {
             const statusVisit = await DataBase.userVisitStatus(userId, idEvent);
@@ -46,11 +48,12 @@ exports.shortList = async function(request, response, next) {
                 masTags.push(tags[j].eventtags.id);
             };
             let date = events[i].eventshortlist.datatime == null ? null : funcs.getDateOnlyString(events[i].eventshortlist.datatime);
+            let address = await DataBase.getAddressById(events[i].eventshortlist.id_address);
             let a = {
                 id: events[i].eventshortlist.id,
                 name: events[i].eventshortlist.name,
                 date: date,
-                idAddress: events[i].eventshortlist.id_address,
+                address: address ,
                 image: events[i].eventshortlist.image,
                 tags: masTags,
             };
@@ -100,11 +103,13 @@ exports.search = async function(request, response, next) {
 
         for (i in eventList) {
             let tags = await DataBase.EventTags(eventList[i].searchevent.id);
+            let address = await DataBase.getAddressByEventId(eventList[i].searchevent.id);
             let masTags = [];
             for (j in tags) {
                 masTags.push(tags[j].eventtags.id);
             };
             eventList[i].searchevent.tags = masTags;
+            eventList[i].searchevent.address = address;
             events.push(eventList[i].searchevent);
         };
         response.json( events );
