@@ -1,0 +1,22 @@
+
+--Функция, которая возвращает адрес по id
+CREATE OR REPLACE FUNCTION getAddressById(id_ bigint) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, street, house, latitude, longitude, id_city from address 
+										  where id = _id and deleted = false)a;
+END;
+$$ LANGUAGE plpgsql;
+
+
+--Функция, которая возвращает адрес по id event
+CREATE OR REPLACE FUNCTION getAddressByEventId(id_ bigint) 
+RETURNS table (j json) AS
+$$
+BEGIN
+    RETURN QUERY  SELECT to_json(a) FROM (select id, street, house, latitude, longitude, id_city from address 
+				where id = (SELECT id_address FROM event where id = id_ and deleted = false) 
+										  and deleted = false)a;
+END;
+$$ LANGUAGE plpgsql;

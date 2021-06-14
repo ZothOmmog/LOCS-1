@@ -10,7 +10,14 @@
 				"id": int,
 				"name": string,
 				"date": string,
-				"idAddress": int,
+				"address": {
+					"id": int,
+					"street": string,
+					"house": string,
+					"latitude": decimal,
+					"longitude": decimal,
+					"id_city": 1
+				},
 				"image": string,
 				"tags": [int]
 			}
@@ -38,7 +45,14 @@
 				"link": string,
 				"ticket_price": float,
 				"id_organizer": int,
-				"id_address": int,
+				"address": {
+					"id": int,
+					"street": string,
+					"house": string,
+					"latitude": decimal,
+					"longitude": decimal,
+					"id_city": 1
+				},
 				"image": string,
 				"organization_name": string,
 				"countvisitor": int,
@@ -110,7 +124,15 @@
 				"name": string,
 				"info": string,
 				"image": string,
-				"tags": [int]
+				"tags": [int],
+				"address": {
+					"id": 65065,
+					"street": "Петропавловская улица",
+					"house": "121",
+					"latitude": 58.0069246,
+					"longitude": 56.1957681,
+					"id_city": 1
+				}
 			}	
 		]
 		

@@ -1,5 +1,4 @@
 {
-
     "user": "postgres",
     "host": "localhost",
     "database": "LocsBD_Dev",

@@ -244,6 +244,19 @@ const searchTags = async (word) => {
     return data;
 }
 
+//адрес по id 
+const getAddressById = async (id) => {
+    const data = await db.oneOrNone('select  getAddressById($1);', [id]);
+    if(data == null) return null;
+    return data.getaddressbyid;
+}
+//адрес по id события
+const getAddressByEventId = async (id) => {
+    const data = await db.oneOrNone('select  getAddressByEventId($1);', [id]);
+    if(data == null) return null;
+    return data.getaddressbyeventid;
+}
+
 //получить статус - идет ли пользователь на мероприятие или нет 
 const userVisitStatus = async (idUser, idEvent) => {
     const data = await db.oneOrNone('select UserVisitStatus($1,$2)', [idUser, idEvent]);
@@ -655,6 +668,9 @@ module.exports = {
     'tagsLim': tagsLim, //весь лист тегов странично
     'tagById': tagById, //  тег по id
     'searchTags' : searchTags, //поиск тегов
+
+    'getAddressById' : getAddressById, //адрес по id
+    'getAddressByEventId' : getAddressByEventId, //адрес по id мероприятия
 
     'searchEvent': searchEvent, //поиск евентов (без тегов)
     'countSearchEvent': countSearchEvent, //кол поиск евентов 
